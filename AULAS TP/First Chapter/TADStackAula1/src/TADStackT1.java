@@ -26,7 +26,7 @@ public class TADStackT1 {
         stack.push(5);
 
         System.out.println("Ultimo empilhado: " + stack.peek());
-        System.out.println(stack);
+        //System.out.println(stack);
         
         StackArray<String> stackStrings = new StackArray(5);
         stackStrings.push("A");

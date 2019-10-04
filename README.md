@@ -1,2 +1,2 @@
-# SiMaranta
-Projeto teste para a Igreja Crista Maranta de Portugal
+# Disciplina de Programação Avançada
+Laboratórios e projetos a serem guardados nesse repositório.

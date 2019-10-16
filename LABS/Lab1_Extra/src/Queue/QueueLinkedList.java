@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pa_queuell_junit.queue;
+package Queue;
 
 /**
  *
@@ -22,10 +22,10 @@ public class QueueLinkedList<E> implements Queue<E> {
     }
     
     @Override
-    public int size() {
-        return this.size;
+    public int size() { 
+        return this.size; 
     }
-
+   
     @Override
     public boolean isEmpty() {
         return (this.size == 0);
@@ -54,8 +54,10 @@ public class QueueLinkedList<E> implements Queue<E> {
         
         E front = this.header.next.elem;   
         
-        this.header.next = this.header.next.next.prev;
+        this.header.next = this.header.next.next;
         this.header.next.prev = this.header;
+        
+        this.size--;
         
         return front;
     }

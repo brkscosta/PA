@@ -5,6 +5,8 @@
  */
 package Main;
 
+import Queue.QueueLinkedList;
+
 /**
  *
  * @author BRKsCosta
@@ -16,6 +18,16 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Queue.QueueLinkedList queue = new QueueLinkedList();
+        
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+        System.out.println(queue);
+        System.out.println("Tamanho da fila " + queue.size());
+        
+        
+        
     }
     
 }

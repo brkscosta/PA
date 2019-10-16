@@ -5,10 +5,12 @@
  */
 package Queue;
 
+import Queue.QueueLinkedList.ListNode;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
+import Queue.QueueLinkedList.ListNode;
+import java.util.ArrayList;
 /**
  *
  * @author BRKsCosta
@@ -47,6 +49,26 @@ public class QueueLinkedListTest {
         }
         
     }
+    
+    @Test
+    public void size_iterativo() {
+        for(int i = 0; i < 5; i++){
+            queueLinkedList.enqueue(i);
+        }
+        assertEquals("O valor esperado do peek ", 5, queueLinkedList.size());
+    }
+    
+    @Test
+    public void size_recursive() {
+        
+        queueLinkedList.enqueue(1);
+        queueLinkedList.enqueue(2);
+        queueLinkedList.enqueue(3);
+        ListNode current = this.queueLinkedList.header.next.next;
+        int a = queueLinkedList.recursiveSize(current);
+        assertEquals("Implementação size recursivo ",3, a);
+    }
+    
     
     
 

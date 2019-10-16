@@ -20,4 +20,6 @@ public interface Queue<E> {
     public E dequeue() throws QueueEmptyException;
 
     public E peek() throws QueueEmptyException;
+    
+    
 }

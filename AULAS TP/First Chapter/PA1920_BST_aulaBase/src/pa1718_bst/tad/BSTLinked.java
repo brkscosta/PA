@@ -153,7 +153,10 @@ public class BSTLinked<E extends Comparable> implements BinarySearchTree<E> {
 
     @Override
     public void remove(E elem) throws EmptyContainerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isEmpty()) {
+            throw new EmptyContainerException();
+        }
+        remove(elem, root);
 
     }
 
@@ -235,9 +238,88 @@ public class BSTLinked<E extends Comparable> implements BinarySearchTree<E> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public String toString() {
-        return root.element.toString();
+        if (isEmpty()) {
+            return "Empty tree.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        inOrderPrettyString(root, new StringBuilder(), true, sb);
+        return sb.toString();
+    }
+
+    private void inOrderPrettyString(TreeNode treeRoot,
+            StringBuilder prefix, boolean isTail, StringBuilder sb) {
+
+        if (treeRoot.right != null) {
+            inOrderPrettyString(treeRoot.right, new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb);
+        }
+
+        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(treeRoot.element).append("\n");
+
+        if (treeRoot.left != null) {
+            inOrderPrettyString(treeRoot.left, new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb);
+        }
+
+    }
+
+    private void remove(E elem, TreeNode treeRoot) throws EmptyContainerException {
+        if (treeRoot == null) {
+            throw new IllegalArgumentException("This method cannot take a null node!");
+        }
+
+        int comparasion = elem.compareTo(treeRoot.element);
+
+        if (comparasion == 0) {
+            removeNode(elem, treeRoot);
+        } else if (comparasion < 0) {
+            remove(elem, treeRoot.left);
+        } else {
+            remove(elem, treeRoot.right);
+        }
+    }
+
+    private void removeNode(E elem, TreeNode treeRoot) {
+        if (treeRoot == null) {
+            return;
+        }
+
+        TreeNode parent = getParent(treeRoot);
+
+        //Caso for um nó externo, basta remover
+        if (treeRoot.left == null && treeRoot.right == null) {
+            
+            if (parent == null) 
+                this.root = null;
+             else if (treeRoot.left == treeRoot) 
+                parent.left = null;
+             else 
+                parent.right = null;
+        }
+        //Caso 3 possui ambas as subarvores. Temos duas opções:
+        // 1 - Substituir o elemento pelo maior elemento da subarvore esquerda ou
+        // 2 - Substituir o elemento pelo menor elemento da subarvore direita.
+        else if(treeRoot.left != null && treeRoot.right != null) {
+            E minimunRigth = minimum(treeRoot.right);
+            //A ordem da proximas duas instrucoes e critica se forem trocadas
+            // a remocao ira ocorrer depois da substituicao, logo o valor deixa
+            // de existir na arvore.
+            remove(minimunRigth);
+            treeRoot.element = minimunRigth;
+        } else {
+          // Caso 2: So tem uma subarvore, substituir   
+        }
+        
+        
+    }
+
+    private TreeNode getParent(TreeNode treeRoot) {
+        if(treeRoot == root)
+            return this.root;
+        else if(treeRoot.left == treeRoot)
+            return treeRoot.left;
+        else
+            return treeRoot.right;
     }
 
     private class TreeNode {

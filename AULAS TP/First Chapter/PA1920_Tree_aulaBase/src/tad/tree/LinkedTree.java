@@ -207,9 +207,6 @@ public class LinkedTree<E> implements Tree<E> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
- 
-
    
     private class TreeNode implements Position<E> {
 

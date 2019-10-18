@@ -18,9 +18,16 @@ public class LinkedTree<E> implements Tree<E> {
     private TreeNode root;
 
     public LinkedTree() {
+<<<<<<< HEAD
         this.root = null;
     }
 
+=======
+     this.root=null;
+    }
+
+   
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     public LinkedTree(E root) {
         this.root = new TreeNode(root);
 
@@ -59,11 +66,20 @@ public class LinkedTree<E> implements Tree<E> {
         return list;
     }
 
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     @Override
     public boolean isExternal(Position<E> v) throws InvalidPositionException {
         TreeNode aux = checkPosition(v);
         return aux.children.isEmpty();
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     }
 
     @Override
@@ -92,6 +108,11 @@ public class LinkedTree<E> implements Tree<E> {
 
     }
 
+<<<<<<< HEAD
+=======
+     
+    
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     @Override
     public E remove(Position<E> position) throws InvalidPositionException, NonEmptyTreeException {
         TreeNode aux = checkPosition(position);
@@ -101,6 +122,11 @@ public class LinkedTree<E> implements Tree<E> {
         return elem;
     }
 
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     private TreeNode checkPosition(Position<E> v)
             throws InvalidPositionException {
         if (v == null) {
@@ -159,6 +185,7 @@ public class LinkedTree<E> implements Tree<E> {
     }
 
     private int size(TreeNode treeRoot) {
+<<<<<<< HEAD
 
         if (treeRoot == null) {
             return 0;
@@ -181,6 +208,28 @@ public class LinkedTree<E> implements Tree<E> {
     }
 
     public Iterable<E> depthOrder() {
+=======
+        
+        if (treeRoot == null) return 0;
+        
+        int treeSize = 1;
+        
+        for(TreeNode child : treeRoot.children)
+            treeSize += size(child);
+        
+        return treeSize;
+    }
+    
+    @Override
+    public boolean isInternal(Position<E> v) throws InvalidPositionException {
+        TreeNode node = checkPosition(v);
+        
+        return (node != this.root && !node.children.isEmpty());
+    }
+
+   
+     public Iterable<E> depthOrder() {
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
         List<TreeNode> nodeStack = new LinkedList<>();
         List<E> elements = new LinkedList<>();
         if (isEmpty()) {
@@ -199,6 +248,7 @@ public class LinkedTree<E> implements Tree<E> {
 
     @Override
     public Iterable<E> breathOrder() {
+<<<<<<< HEAD
         Queue<TreeNode> nodeQueue = new LinkedList<>();
         Queue<E> elements = new LinkedList<>();
 
@@ -221,6 +271,12 @@ public class LinkedTree<E> implements Tree<E> {
 
     }
 
+=======
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
     private class TreeNode implements Position<E> {
 
         private E element;  // element stored at this node
@@ -254,7 +310,11 @@ public class LinkedTree<E> implements Tree<E> {
 
         void removeChild(TreeNode node) {
             //if( node.children.isEmpty()) 
+<<<<<<< HEAD
             //  throw new NonEmptyTreeException("Sub Tree is not empty");
+=======
+              //  throw new NonEmptyTreeException("Sub Tree is not empty");
+>>>>>>> f448cd011c849705ccd3c5ee7062fe1ed478708b
             if (!children.remove(node)) {
                 throw new InvalidPositionException();
             }

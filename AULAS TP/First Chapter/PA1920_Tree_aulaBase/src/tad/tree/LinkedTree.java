@@ -21,7 +21,6 @@ public class LinkedTree<E> implements Tree<E> {
 
     public LinkedTree(E root) {
         this.root = new TreeNode(root);
-
     }
 
     @Override
@@ -37,14 +36,12 @@ public class LinkedTree<E> implements Tree<E> {
     @Override
     public Position<E> root() throws EmptyTreeException {
         return root;
-
     }
 
     @Override
     public Position<E> parent(Position<E> v) throws InvalidPositionException, BoundaryViolationException {
         TreeNode node = checkPosition(v);
         return node.parent;
-
     }
 
     @Override
@@ -220,7 +217,7 @@ public class LinkedTree<E> implements Tree<E> {
         return elements;
 
     }
-
+    
     private class TreeNode implements Position<E> {
 
         private E element;  // element stored at this node
@@ -256,12 +253,11 @@ public class LinkedTree<E> implements Tree<E> {
         void removeChild(TreeNode node) {
             //if( node.children.isEmpty()) 
             //  throw new NonEmptyTreeException("Sub Tree is not empty");
-            //  throw new NonEmptyTreeException("Sub Tree is not empty");
             if (!children.remove(node)) {
                 throw new InvalidPositionException();
             }
         }
 
     }
-
+    
 }

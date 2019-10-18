@@ -32,9 +32,11 @@ public class TADTree {
         System.out.println("Cao é externo? " + myTree.isExternal(posCao));
         System.out.println("Cao é interno? " + myTree.isInternal(posCao));
         
-        for (String elem : myTree.breathOrder())
+        for (String elem : myTree.depthOrder())
             System.out.print(elem + " \n");
         System.out.println("\nFIM");
+        
+        System.out.println(myTree);
         
         System.out.println("Size of tree " + myTree.size());
     }

@@ -1,17 +1,14 @@
 package tad.tree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
 
 /**
  *
- * @author Utilizador
- * @param <E>
- * @param
+ * @author BRKsCosta
+ * @param <E> Aceira qualquer tipo de dados genéricos
  */
 public class LinkedTree<E> implements Tree<E> {
 
@@ -180,6 +177,7 @@ public class LinkedTree<E> implements Tree<E> {
         return (node != this.root && !node.children.isEmpty());
     }
 
+    @Override
     public Iterable<E> depthOrder() {
 
         List<TreeNode> nodeStack = new LinkedList<>();
@@ -241,6 +239,7 @@ public class LinkedTree<E> implements Tree<E> {
             this.children = new ArrayList<>();
         }
 
+        @Override
         public E element() {
             if (element == null) {
                 throw new InvalidPositionException();

@@ -16,6 +16,7 @@ public class TADTree {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         LinkedTree<String> myTree = new LinkedTree("Animal");
         Position<String> root = myTree.root();
         Position<String> posMamifero = myTree.insert(root, "Mamifero");
@@ -31,8 +32,11 @@ public class TADTree {
         
         System.out.println("Cao é externo? " + myTree.isExternal(posCao));
         System.out.println("Cao é interno? " + myTree.isInternal(posCao));
+        System.out.println("Gato é interno " + myTree.isInternal(posGato));
+        System.out.println("Ave é externo? " + myTree.isInternal(posAve));
+        System.out.println("Águia real é externo? " + myTree.isExternal(posAguia));
         
-        for (String elem : myTree.depthOrder())
+        for (String elem : myTree.elements())
             System.out.print(elem + " \n");
         System.out.println("\nFIM");
         

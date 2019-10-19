@@ -1,30 +1,26 @@
 package tad.tree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
 
 /**
  *
- * @author Utilizador
- * @param <E>
- * @param
+ * @author BRKsCosta
+ * @param <E> Aceira qualquer tipo de dados genéricos
  */
 public class LinkedTree<E> implements Tree<E> {
 
     private TreeNode root;
 
     public LinkedTree() {
-     this.root=null;
+
+        this.root = null;
     }
 
-   
     public LinkedTree(E root) {
         this.root = new TreeNode(root);
-
     }
 
     @Override
@@ -40,14 +36,12 @@ public class LinkedTree<E> implements Tree<E> {
     @Override
     public Position<E> root() throws EmptyTreeException {
         return root;
-
     }
 
     @Override
     public Position<E> parent(Position<E> v) throws InvalidPositionException, BoundaryViolationException {
         TreeNode node = checkPosition(v);
         return node.parent;
-
     }
 
     @Override
@@ -60,13 +54,10 @@ public class LinkedTree<E> implements Tree<E> {
         return list;
     }
 
-    
-
     @Override
     public boolean isExternal(Position<E> v) throws InvalidPositionException {
         TreeNode aux = checkPosition(v);
         return aux.children.isEmpty();
-      
     }
 
     @Override
@@ -95,8 +86,6 @@ public class LinkedTree<E> implements Tree<E> {
 
     }
 
-     
-    
     @Override
     public E remove(Position<E> position) throws InvalidPositionException, NonEmptyTreeException {
         TreeNode aux = checkPosition(position);
@@ -105,8 +94,6 @@ public class LinkedTree<E> implements Tree<E> {
 
         return elem;
     }
-
-    
 
     private TreeNode checkPosition(Position<E> v)
             throws InvalidPositionException {
@@ -166,26 +153,30 @@ public class LinkedTree<E> implements Tree<E> {
     }
 
     private int size(TreeNode treeRoot) {
-        
-        if (treeRoot == null) return 0;
-        
+
+        if (treeRoot == null) {
+            return 0;
+        }
+
         int treeSize = 1;
-        
-        for(TreeNode child : treeRoot.children)
+
+        for (TreeNode child : treeRoot.children) {
             treeSize += size(child);
-        
+        }
+
         return treeSize;
     }
-    
+
     @Override
     public boolean isInternal(Position<E> v) throws InvalidPositionException {
         TreeNode node = checkPosition(v);
-        
+
         return (node != this.root && !node.children.isEmpty());
     }
 
-   
-     public Iterable<E> depthOrder() {
+    @Override
+    public Iterable<E> depthOrder() {
+
         List<TreeNode> nodeStack = new LinkedList<>();
         List<E> elements = new LinkedList<>();
         if (isEmpty()) {
@@ -204,10 +195,56 @@ public class LinkedTree<E> implements Tree<E> {
 
     @Override
     public Iterable<E> breathOrder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Queue<TreeNode> nodeQueue = new LinkedList<>();
+        Queue<E> elements = new LinkedList<>();
+
+        if (isEmpty()) {
+            return elements;
+        }
+
+        nodeQueue.offer(root);
+        while (!nodeQueue.isEmpty()) {
+
+            TreeNode node = nodeQueue.poll();
+            elements.offer(node.element());
+
+            for (TreeNode child : node.children) {
+                nodeQueue.offer(child);
+            }
+
+        }
+
+        return elements;
+
+    }
+    
+    
+    @Override
+    public String toString() {
+        if (isEmpty()) {
+            return "Empty tree.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        inOrderPrettyString(root, new StringBuilder(), true, sb);
+        return sb.toString();
     }
 
-   
+    private void inOrderPrettyString(TreeNode treeRoot,
+            StringBuilder prefix, boolean isTail, StringBuilder sb) {
+
+        if (treeRoot.children.get(0) != null) {
+            inOrderPrettyString(treeRoot.element , new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb);
+        }
+
+        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(treeRoot.element).append("\n");
+
+        if (treeRoot.children.get(1) != null) {
+            inOrderPrettyString(treeRoot.element, new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb);
+        }
+
+    }
+    
     private class TreeNode implements Position<E> {
 
         private E element;  // element stored at this node
@@ -226,6 +263,7 @@ public class LinkedTree<E> implements Tree<E> {
             this.children = new ArrayList<>();
         }
 
+        @Override
         public E element() {
             if (element == null) {
                 throw new InvalidPositionException();
@@ -241,12 +279,12 @@ public class LinkedTree<E> implements Tree<E> {
 
         void removeChild(TreeNode node) {
             //if( node.children.isEmpty()) 
-              //  throw new NonEmptyTreeException("Sub Tree is not empty");
+            //  throw new NonEmptyTreeException("Sub Tree is not empty");
             if (!children.remove(node)) {
                 throw new InvalidPositionException();
             }
         }
 
     }
-
+    
 }

@@ -40,6 +40,8 @@ public class TADTree {
             System.out.print(elem + " \n");
         System.out.println("\nFIM");
         
+        System.out.println(myTree);
+        
         System.out.println("Size of tree " + myTree.size());
     }
 }

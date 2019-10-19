@@ -237,7 +237,8 @@ public class BSTLinked<E extends Comparable> implements BinarySearchTree<E> {
     public Iterable<E> preOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    @Override
     public String toString() {
         if (isEmpty()) {
             return "Empty tree.";

@@ -218,33 +218,6 @@ public class LinkedTree<E> implements Tree<E> {
 
     }
     
-    
-    @Override
-    public String toString() {
-        if (isEmpty()) {
-            return "Empty tree.";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        inOrderPrettyString(root, new StringBuilder(), true, sb);
-        return sb.toString();
-    }
-
-    private void inOrderPrettyString(TreeNode treeRoot,
-            StringBuilder prefix, boolean isTail, StringBuilder sb) {
-
-        if (treeRoot.children.get(0) != null) {
-            inOrderPrettyString(treeRoot.element , new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb);
-        }
-
-        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(treeRoot.element).append("\n");
-
-        if (treeRoot.children.get(1) != null) {
-            inOrderPrettyString(treeRoot.element, new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb);
-        }
-
-    }
-    
     private class TreeNode implements Position<E> {
 
         private E element;  // element stored at this node

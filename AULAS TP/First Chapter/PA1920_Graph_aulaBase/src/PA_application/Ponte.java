@@ -27,6 +27,6 @@ public class Ponte {
 
     @Override
     public String toString() {
-        return "Ponte{" + "nome=" + nome + ", cost=" + cost + '}';
+        return "Ponte{" + "nome = " + nome + ", cost = " + cost + '}' + "\n";
     }
 }

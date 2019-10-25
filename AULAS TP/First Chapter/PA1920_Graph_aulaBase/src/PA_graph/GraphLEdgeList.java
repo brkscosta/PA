@@ -7,7 +7,6 @@ package PA_graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -106,44 +105,89 @@ public class GraphLEdgeList<V, E> implements Graph<V, E> {
 
     @Override
     public Vertex<V> insertVertex(V elem) throws InvalidVertexException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-       
+        if (listVertices.containsKey(elem)) {
+            throw new InvalidVertexException("Vertex" + elem + " alredy exists!");
+        }
 
+        MyVertex newVertex = new MyVertex(elem);
+        listVertices.put(elem, newVertex);
+
+        return newVertex;
     }
 
-  
     @Override
     public boolean areAdjacent(Vertex<V> u, Vertex<V> v) throws InvalidVertexException {
-       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MyVertex myU = checkVertex(u);
+        MyVertex myV = checkVertex(v);
 
+        for (Edge<E, V> edge : listEdges.values()) {
+            Vertex<V>[] vertices = edge.vertices();
+
+            if (vertices[0] == u && vertices[1] == v || vertices[1] == u && vertices[0] == v) {
+                return true;
+            }
+        }
+        return true;
     }
 
-  
     @Override
     public Edge<E, V> insertEdge(V elem1, V elem2, E elemEdge) throws InvalidVertexException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
+        Vertex<V> firstVertex = listVertices.get(elem1);
+
+        Vertex<V> lastVertex = listVertices.get(elem2);
+
+        if (lastVertex == null || firstVertex == null) {
+            throw new InvalidVertexException("Vertex doesnt exists");
+        }
+
+        return insertEdge(firstVertex, lastVertex, elemEdge);
 
     }
-
-   
 
     @Override
     public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E elemEdge) throws InvalidVertexException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
+        if (elemEdge == null) {
+            throw new InvalidEdgeException("Values of edge is null");
+        }
+
+        MyVertex myU = checkVertex(v);
+        MyVertex myV = checkVertex(v);
+
+        MyEdge edge = new MyEdge(elemEdge, myU, myV);
+        listEdges.put(elemEdge, edge);
+        return edge;
     }
 
     @Override
     public E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
-   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        checkEdge(e);
+
+        for(Edge<E, V> edges : listEdges.values()) {
+
+            this.listEdges.remove(edges.element());
+
+        }
+
+        this.listEdges.remove(e.element());
+        return e.element();
 
     }
 
     @Override
     public V removeVertex(Vertex<V> v) throws InvalidVertexException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkVertex(v);
+
+        for (Edge<E, V> vertex : incidentEdges(v)) {
+            this.listEdges.remove(vertex.element());
+        }
+
+        this.listVertices.remove(v.element());
+        return v.element();
+
     }
 
     private class MyVertex implements Vertex<V> {

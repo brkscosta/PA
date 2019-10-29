@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - WebCrawler",
+            "request": "launch",
+            "mainClass": "main.WebCrawler",
+            "projectName": "WebCrawler_491847bb"
+        }
+    ]
+}

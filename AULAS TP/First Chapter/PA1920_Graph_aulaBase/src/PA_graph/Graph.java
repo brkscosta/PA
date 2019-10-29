@@ -69,5 +69,8 @@ public interface Graph<V, E> {
      */
     public E removeEdge(Edge<E, V> e) throws InvalidEdgeException;
     
- 
+    /*
+    * Get the max degree of an vertex in a graph
+    */
+    public Vertex<V> getMaxDegreeVertex() throws InvalidVertexException;
 }

@@ -22,6 +22,43 @@ public class GraphLEdgeList<V, E> implements Graph<V, E> {
         listEdges = new HashMap<>();
     }
 
+    public boolean isIsolated(Vertex<V> v) {
+        checkVertex(v);
+
+        for (Edge<E, V> e : listEdges.values()) {
+            Vertex<V>[] vertices = e.vertices();
+            if (vertices[0] == v || vertices[1] == v) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    @Override
+    public Vertex<V> getMaxDegreeVertex() {
+        Vertex<V> maxDegreeVerex = null;
+        
+        int maxDegreeCount = -1;
+        
+        for(Vertex<V> v : listVertices.values()) {
+            Iterable<Edge<E, V>> incidentEdges = incidentEdges(v);
+            
+            int count = 0;
+            for(Edge<E, V> e : incidentEdges) {
+                System.out.println("Aaaaa "+ e);
+                count++;
+            }
+            if(count > maxDegreeCount) {
+                maxDegreeCount = count;
+                maxDegreeVerex = v;
+            }
+
+            
+        }
+        
+        return maxDegreeVerex;
+    }
+    
     private MyVertex checkVertex(Vertex<V> p) throws InvalidVertexException {
         if (p == null) {
             throw new InvalidVertexException("WRONG vertex");
@@ -166,7 +203,7 @@ public class GraphLEdgeList<V, E> implements Graph<V, E> {
 
         checkEdge(e);
 
-        for(Edge<E, V> edges : listEdges.values()) {
+        for (Edge<E, V> edges : listEdges.values()) {
 
             this.listEdges.remove(edges.element());
 

@@ -5,12 +5,17 @@
  */
 package Controller;
 
+import Model.Bot;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 
 /**
@@ -20,19 +25,32 @@ import javafx.stage.Stage;
 public class InputDialogController {
     
     @FXML
-    private MenuItem mItemAddUrl;
+    private Button btnOk, btnCancel;
+    
+    @FXML
+    private TextField inputTextURL;
+          
+    @FXML
+    private void okButton(ActionEvent event) throws IOException {
+        
+        String start_url = this.inputTextURL.getText();
+        Bot bot = new Bot(start_url);
+        bot.start();
+        
+        //Closing panel
+        Stage stage = (Stage) btnOk.getScene().getWindow();
+        stage.close();
+        
+        WebEngine engine = new WebEngine();
+        engine.load(start_url);
+    }
 
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/InputDialog.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root1));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void closeWindow(ActionEvent event) {
+        // get a handle to the stage
+        Stage stage = (Stage) btnCancel.getScene().getWindow();
+        // do what you have to do
+        stage.close();
     }
-    
+
 }

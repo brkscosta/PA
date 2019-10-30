@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane id="AnchorPane" prefHeight="452.0" prefWidth="677.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="Controller.MainController">
+<AnchorPane id="AnchorPane" prefHeight="587.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainController">
     <children>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="677.0">
+      <MenuBar prefHeight="34.0" prefWidth="905.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -21,7 +21,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-                  <MenuItem fx:id="mItemAddUrl" mnemonicParsing="false" onAction="handleButtonAction" text="Add Url" />
+                  <MenuItem fx:id="mItemAddUrl" mnemonicParsing="false" onAction="#handleButtnAddURl" text="Add Url" />
               <MenuItem mnemonicParsing="false" text="Undo" />
             </items>
           </Menu>
@@ -32,6 +32,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <WebView layoutX="-1.0" layoutY="26.0" prefHeight="425.0" prefWidth="677.0" />
+      <WebView fx:id="webView" layoutY="34.0" prefHeight="553.0" prefWidth="905.0" />
     </children>
 </AnchorPane>

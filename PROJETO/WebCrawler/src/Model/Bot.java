@@ -7,8 +7,11 @@ package Model;
 
 import java.net.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,36 +25,44 @@ public class Bot {
         this.start_url = string;
     }
 
-    public void start() {
+    public String start() throws MalformedURLException, IOException {
 
         String html = getHTML(this.start_url);
         System.out.println(html);
+        return html;
     }
 
-    private String getHTML(String start_url) {
+    private String getHTML(String start_url) throws MalformedURLException, IOException {
+        URL obj = new URL(start_url);
+        HttpURLConnection httpConnection = (HttpURLConnection) obj.openConnection();
 
-        String html = "";
-        String line = "";
+        httpConnection.setRequestMethod("GET");
 
+        httpConnection.setRequestProperty("User-Agent", "Bot/1.0");
+
+        int responseCode = 0;
         try {
-            URL url = new URL(start_url);
-            URLConnection connection = url.openConnection();
-            connection.setRequestProperty("User-Agent", "Bot/1.0");
-            connection.setRequestProperty("Accpet-Charset", "UTF-8");
+            responseCode = httpConnection.getResponseCode();
+        } catch (IOException ex) {
+            Logger.getLogger(Bot.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (responseCode == 200) {
 
-            InputStream is = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-            while ((line = reader.readLine()) != null) {
-                html += line + "\n";
+            StringBuffer response;
+            try (BufferedReader responseReader = new BufferedReader(new InputStreamReader(
+                    httpConnection.getInputStream()))) {
+                String responseLine;
+                response = new StringBuffer();
+                while ((responseLine = responseReader.readLine()) != null) {
+                    response.append(responseLine).append("\n");
+                }
             }
-            html = html.trim();
-            return html;
-        } catch (Exception e) {
-            e.printStackTrace();
 
+            // print result
+            return response.toString();
         }
         return null;
+
     }
 
 }

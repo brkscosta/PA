@@ -12,6 +12,8 @@ import java.util.HashSet;
 /**
  *
  * @author patricia.macedo
+ * @param <V> Represents Vertex in context
+ * @param <E> Represents edge
  */
 public abstract class DiGraphEdgeVertex<V, E> implements Graph<V, E> {
 

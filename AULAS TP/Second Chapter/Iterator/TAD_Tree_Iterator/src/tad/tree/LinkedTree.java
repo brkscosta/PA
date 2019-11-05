@@ -292,7 +292,34 @@ public class LinkedTree<E> implements Tree<E> {
         return str + "-";
     }
 
-  
+    @Override
+    public Iterator<E> iterator() {
+        return new LinkedTreeIterator();
+    }
+
+    private class LinkedTreeIterator implements Iterator<E> {
+        
+        private TreeNode node;
+        
+        public LinkedTreeIterator() {
+            this.node = root;
+        }
+        
+        
+        @Override
+        public boolean hasNext() {
+            return root.parent;
+        }
+
+        @Override
+        public E next() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        
+        
+        
+    }
   
 
     private class TreeNode implements Position<E> {

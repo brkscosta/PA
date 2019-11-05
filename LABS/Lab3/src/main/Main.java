@@ -48,8 +48,6 @@ public class Main {
         network.addGroupRelationShip("Colegas de Grupo PA-1", 131, 235);
         
         System.out.println(network.toStrinTeacherStudents());
-        System.out.println(network.getNumberOfStudents(new Person(35, "Pedro", Person.PersonRole.TEACHER)));
-        System.out.println(network.getNumberOfStudents(new Person(31, "Ana", Person.PersonRole.TEACHER)));
         
         
     }

@@ -94,19 +94,4 @@ public class UniversityNetwork {
         return teacher;
     }
 
-    public int getNumberOfStudents(Person p) {
-
-        Vertex<Person> person = findPerson(p.getId());
-        int count = 0;
-        for (Vertex<Person> teacher : network.vertices()) {
-            if (teacher.element().isRole(Person.PersonRole.TEACHER) ) {
-                for (Object object : person.element().getId()) {
-                    
-                }
-            }
-
-        }
-        return count;
-    }
-
 }

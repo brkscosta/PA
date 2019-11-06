@@ -43,8 +43,10 @@ public class InputDialogController {
 
     @FXML
     private void closeWindow(ActionEvent event) {
+        
         // get a handle to the stage
         Stage stage = (Stage) btnCancel.getScene().getWindow();
+        
         // do what you have to do
         stage.close();
     }

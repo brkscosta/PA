@@ -1,0 +1,229 @@
+** NIVEL I **
+
+Flights between LAX / ORD: [United 5269 {1743 miles, 235 minutes, 80 €}, Virgin 7356 {1743 miles, 235 minutes, 78 €}]
+Flights between LAX / PVD: []
+
+** NIVEL II **
+
+FLIGHT PLANER (8 airports | 18 flights)
+	San Francisco(SFO) TO Providence(PVD)
+		(no flights)
+
+	San Francisco(SFO) TO Chicago(ORD)
+		Alaska 1390 {1843 miles, 235 minutes, 241 €}
+		United 1099 {1843 miles, 240 minutes, 239 €}
+
+	San Francisco(SFO) TO Los Angeles(LAX)
+		American 9431 {337 miles, 85 minutes, 83 €}
+		United 5454 {337 miles, 90 minutes, 68 €}
+
+	San Francisco(SFO) TO Honolulu(HNL)
+		(no flights)
+
+	San Francisco(SFO) TO New York(LGA)
+		(no flights)
+
+	San Francisco(SFO) TO Dallas(DFW)
+		(no flights)
+
+	San Francisco(SFO) TO Miami(MIA)
+		(no flights)
+
+	Providence(PVD) TO San Francisco(SFO)
+		(no flights)
+
+	Providence(PVD) TO Chicago(ORD)
+		American 5284 {849 miles, 170 minutes, 220 €}
+		United 8530 {849 miles, 175 minutes, 166 €}
+
+	Providence(PVD) TO Los Angeles(LAX)
+		(no flights)
+
+	Providence(PVD) TO Honolulu(HNL)
+		(no flights)
+
+	Providence(PVD) TO New York(LGA)
+		(no flights)
+
+	Providence(PVD) TO Dallas(DFW)
+		(no flights)
+
+	Providence(PVD) TO Miami(MIA)
+		American 6870 {1120 miles, 160 minutes, 176 €}
+
+	Chicago(ORD) TO San Francisco(SFO)
+		Alaska 1390 {1843 miles, 235 minutes, 241 €}
+		United 1099 {1843 miles, 240 minutes, 239 €}
+
+	Chicago(ORD) TO Providence(PVD)
+		American 5284 {849 miles, 170 minutes, 220 €}
+		United 8530 {849 miles, 175 minutes, 166 €}
+
+	Chicago(ORD) TO Los Angeles(LAX)
+		United 5269 {1743 miles, 235 minutes, 80 €}
+		Virgin 7356 {1743 miles, 235 minutes, 78 €}
+
+	Chicago(ORD) TO Honolulu(HNL)
+		(no flights)
+
+	Chicago(ORD) TO New York(LGA)
+		(no flights)
+
+	Chicago(ORD) TO Dallas(DFW)
+		United 4385 {802 miles, 155 minutes, 70 €}
+
+	Chicago(ORD) TO Miami(MIA)
+		(no flights)
+
+	Los Angeles(LAX) TO San Francisco(SFO)
+		American 9431 {337 miles, 85 minutes, 83 €}
+		United 5454 {337 miles, 90 minutes, 68 €}
+
+	Los Angeles(LAX) TO Providence(PVD)
+		(no flights)
+
+	Los Angeles(LAX) TO Chicago(ORD)
+		United 5269 {1743 miles, 235 minutes, 80 €}
+		Virgin 7356 {1743 miles, 235 minutes, 78 €}
+
+	Los Angeles(LAX) TO Honolulu(HNL)
+		Delta 6662 {2555 miles, 315 minutes, 430 €}
+		United 4665 {2555 miles, 310 minutes, 430 €}
+
+	Los Angeles(LAX) TO New York(LGA)
+		(no flights)
+
+	Los Angeles(LAX) TO Dallas(DFW)
+		American 8057 {1233 miles, 195 minutes, 187 €}
+		Spirit 8003 {1233 miles, 170 minutes, 215 €}
+
+	Los Angeles(LAX) TO Miami(MIA)
+		(no flights)
+
+	Honolulu(HNL) TO San Francisco(SFO)
+		(no flights)
+
+	Honolulu(HNL) TO Providence(PVD)
+		(no flights)
+
+	Honolulu(HNL) TO Chicago(ORD)
+		(no flights)
+
+	Honolulu(HNL) TO Los Angeles(LAX)
+		Delta 6662 {2555 miles, 315 minutes, 430 €}
+		United 4665 {2555 miles, 310 minutes, 430 €}
+
+	Honolulu(HNL) TO New York(LGA)
+		(no flights)
+
+	Honolulu(HNL) TO Dallas(DFW)
+		(no flights)
+
+	Honolulu(HNL) TO Miami(MIA)
+		(no flights)
+
+	New York(LGA) TO San Francisco(SFO)
+		(no flights)
+
+	New York(LGA) TO Providence(PVD)
+		(no flights)
+
+	New York(LGA) TO Chicago(ORD)
+		(no flights)
+
+	New York(LGA) TO Los Angeles(LAX)
+		(no flights)
+
+	New York(LGA) TO Honolulu(HNL)
+		(no flights)
+
+	New York(LGA) TO Dallas(DFW)
+		Spirit 6905 {1387 miles, 245 minutes, 118 €}
+
+	New York(LGA) TO Miami(MIA)
+		American 5316 {1099 miles, 190 minutes, 167 €}
+		Frontier 5720 {1099 miles, 200 minutes, 74 €}
+
+	Dallas(DFW) TO San Francisco(SFO)
+		(no flights)
+
+	Dallas(DFW) TO Providence(PVD)
+		(no flights)
+
+	Dallas(DFW) TO Chicago(ORD)
+		United 4385 {802 miles, 155 minutes, 70 €}
+
+	Dallas(DFW) TO Los Angeles(LAX)
+		American 8057 {1233 miles, 195 minutes, 187 €}
+		Spirit 8003 {1233 miles, 170 minutes, 215 €}
+
+	Dallas(DFW) TO Honolulu(HNL)
+		(no flights)
+
+	Dallas(DFW) TO New York(LGA)
+		Spirit 6905 {1387 miles, 245 minutes, 118 €}
+
+	Dallas(DFW) TO Miami(MIA)
+		American 6870 {1120 miles, 160 minutes, 176 €}
+
+	Miami(MIA) TO San Francisco(SFO)
+		(no flights)
+
+	Miami(MIA) TO Providence(PVD)
+		American 6870 {1120 miles, 160 minutes, 176 €}
+
+	Miami(MIA) TO Chicago(ORD)
+		(no flights)
+
+	Miami(MIA) TO Los Angeles(LAX)
+		(no flights)
+
+	Miami(MIA) TO Honolulu(HNL)
+		(no flights)
+
+	Miami(MIA) TO New York(LGA)
+		American 5316 {1099 miles, 190 minutes, 167 €}
+		Frontier 5720 {1099 miles, 200 minutes, 74 €}
+
+	Miami(MIA) TO Dallas(DFW)
+		American 6870 {1120 miles, 160 minutes, 176 €}
+
+
+** NIVEL 4 **
+
+Best (TIME) route between Honolulu(HNL) and Providence(PVD)
+Total cost (Minutes) = 715
+Airports: [Honolulu(HNL), Los Angeles(LAX), Chicago(ORD), Providence(PVD)]
+
+Best (DISTANCE) route between Los Angeles(LAX) and New York(LGA)
+Total cost (Miles) = 2620
+Airports: [Los Angeles(LAX), Dallas(DFW), New York(LGA)]
+
+Best (COST) route between San Francisco(SFO) and New York(LGA)
+Total cost (€) = 334
+Airports: [San Francisco(SFO), Los Angeles(LAX), Chicago(ORD), Dallas(DFW), New York(LGA)]
+
+Best (TIME) route between San Francisco(SFO) and New York(LGA)
+Total cost (Minutes) = 500
+Airports: [San Francisco(SFO), Los Angeles(LAX), Dallas(DFW), New York(LGA)]
+
+** NIVEL 5 **
+Best (TIME) route between Honolulu(HNL) and Providence(PVD)
+Total cost (Minutes) = 715
+Airports: [Honolulu(HNL), Los Angeles(LAX), Chicago(ORD), Providence(PVD)]
+Flights: [United 4665 {2555 miles, 310 minutes, 430 €}, United 5269 {1743 miles, 235 minutes, 80 €}, American 5284 {849 miles, 170 minutes, 220 €}]
+
+Best (DISTANCE) route between Los Angeles(LAX) and New York(LGA)
+Total cost (Miles) = 2620
+Airports: [Los Angeles(LAX), Dallas(DFW), New York(LGA)]
+Flights: [Spirit 8003 {1233 miles, 170 minutes, 215 €}, Spirit 6905 {1387 miles, 245 minutes, 118 €}]
+
+Best (COST) route between San Francisco(SFO) and New York(LGA)
+Total cost (€) = 334
+Airports: [San Francisco(SFO), Los Angeles(LAX), Chicago(ORD), Dallas(DFW), New York(LGA)]
+Flights: [United 5454 {337 miles, 90 minutes, 68 €}, Virgin 7356 {1743 miles, 235 minutes, 78 €}, United 4385 {802 miles, 155 minutes, 70 €}, Spirit 6905 {1387 miles, 245 minutes, 118 €}]
+
+Best (TIME) route between San Francisco(SFO) and New York(LGA)
+Total cost (Minutes) = 500
+Airports: [San Francisco(SFO), Los Angeles(LAX), Dallas(DFW), New York(LGA)]
+Flights: [American 9431 {337 miles, 85 minutes, 83 €}, Spirit 8003 {1233 miles, 170 minutes, 215 €}, Spirit 6905 {1387 miles, 245 minutes, 118 €}]

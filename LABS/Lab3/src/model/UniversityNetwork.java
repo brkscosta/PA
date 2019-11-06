@@ -93,7 +93,7 @@ public class UniversityNetwork {
         return teacher;
     }
 
-<<<<<<< HEAD
+
     public int getNumberOfStudents(Person p) {
 
         Vertex<Person> person = findPerson(p.getId());
@@ -159,6 +159,5 @@ public class UniversityNetwork {
         }
     }
 
-=======
->>>>>>> 2b8fd75af3bb552ad54e42a344a2534302385413
+
 }

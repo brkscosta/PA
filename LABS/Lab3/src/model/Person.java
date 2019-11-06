@@ -38,7 +38,7 @@ public class Person {
 
     @Override
     public String toString() {
-        String r = "Professor";
+        String r = "DOCENTE";
         if (isRole(PersonRole.STUDENT)) {
             r = "Aluno";
         }

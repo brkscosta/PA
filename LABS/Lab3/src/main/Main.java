@@ -48,9 +48,17 @@ public class Main {
         network.addGroupRelationShip("Colegas de Grupo PA-1", 131, 235);
         
         System.out.println(network.toStrinTeacherStudents());
+<<<<<<< HEAD
         System.out.println(network.getNumberOfStudents(new Person(35, "Pedro", Person.PersonRole.TEACHER)));
         System.out.println(network.getNumberOfStudents(new Person(31, "Ana", Person.PersonRole.TEACHER)));
+        System.out.println("Mais ligações: " + network.getMostPopular(31, 231) + "\n\n");
+         int p1 = 135, p2 = 35;
+        network.removeRelation(p1, p2);
+        System.out.println(String.format("----- Relação removida %d and %d ------\n", p1, p2));
+        //System.out.println(network.toStrinTeacherStudents());
+=======
         
+>>>>>>> 2b8fd75af3bb552ad54e42a344a2534302385413
         
     }
     

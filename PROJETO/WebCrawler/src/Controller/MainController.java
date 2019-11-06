@@ -5,7 +5,6 @@
  */
 package Controller;
 
-import Model.Bot;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,8 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 /**
@@ -42,7 +39,7 @@ public class MainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
     }
 
 }

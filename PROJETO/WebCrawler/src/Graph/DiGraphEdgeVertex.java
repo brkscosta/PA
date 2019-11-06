@@ -163,7 +163,7 @@ public abstract class DiGraphEdgeVertex<V, E> implements Graph<V, E> {
         for (Edge<E, V> edge : listEdges.values()) {
             Vertex<V>[] vertices = edge.vertices();
 
-            if (vertices[0] == u && vertices[1] == v || vertices[1] == u && vertices[0] == v) {
+            if (vertices[0] == myU && vertices[1] == myV || vertices[1] == myU && vertices[0] == myV) {
                 return true;
             }
         }

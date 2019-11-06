@@ -9,11 +9,7 @@ import Model.Bot;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
@@ -39,6 +35,7 @@ public class InputDialogController {
         
         //Closing panel
         Stage stage = (Stage) btnOk.getScene().getWindow();
+        System.out.println("Carreguei no botão");
         stage.close();
         
         WebEngine engine = new WebEngine();

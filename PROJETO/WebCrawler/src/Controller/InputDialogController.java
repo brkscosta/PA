@@ -35,7 +35,6 @@ public class InputDialogController {
         
         //Closing panel
         Stage stage = (Stage) btnOk.getScene().getWindow();
-        System.out.println("Carreguei no botão");
         stage.close();
         
         WebEngine engine = new WebEngine();

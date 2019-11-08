@@ -5,7 +5,7 @@
  */
 package Controller;
 
-import Model.Bot;
+import Model.WebCrawler;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,8 +30,8 @@ public class InputDialogController {
     private void okButton(ActionEvent event) throws IOException {
         
         String start_url = this.inputTextURL.getText();
-        Bot bot = new Bot(start_url);
-        bot.start();
+        WebCrawler bot = new WebCrawler(start_url);
+        ///bot.start();
         
         //Closing panel
         Stage stage = (Stage) btnOk.getScene().getWindow();

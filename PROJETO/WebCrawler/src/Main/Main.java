@@ -20,9 +20,9 @@ public class Main {
         
         String moodle = "https://moodle.ips.pt/1920/";
         String si = "https://www.si.ips.pt/ests_si/web_page.Inicial";
-        WebCrawler crawler = new WebCrawler(si);        
-        //crawler.checkPageResponse(g2a);
-        crawler.start(si);
+        WebCrawler crawler = new WebCrawler(moodle);        
+        //crawler.checkPageResponse(moodle);
+        crawler.start(moodle);
     }
     
 }

@@ -63,8 +63,8 @@ public class WebCrawler {
 
         for (Element link : links) {
             String href = link.attr("href");
-            href += " | " + link.text();
             href = processLink(href, url);
+            href += " | " + link.text();
             System.out.println(href);
         }
         //System.out.println(processLink("../", url));

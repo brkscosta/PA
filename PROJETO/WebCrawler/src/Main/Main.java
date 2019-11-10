@@ -7,13 +7,12 @@ package Main;
 
 import Model.WebCrawler;
 import java.io.IOException;
-import javafx.application.Application;
-import javafx.stage.Stage;
+
 /**
  *
  * @author BRKsCosta
  */
-public class Main extends Application {
+public class Main {
 
     /**
      * @param args the command line arguments
@@ -23,14 +22,11 @@ public class Main extends Application {
         
         String moodle = "https://moodle.ips.pt/1920/";
         String si = "https://www.si.ips.pt/ests_si/web_page.Inicial";
-        WebCrawler crawler = new WebCrawler(moodle);        
-        //crawler.checkPageResponse(moodle);
-        crawler.start(moodle);
+        WebCrawler crawler = new WebCrawler(moodle, 0);        
+        
+        System.out.println("Num Links " + crawler.countLinks());
+        System.out.println("Num Titles " + crawler.countTitles());
+        crawler.toString();
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        
-    }
-    
 }

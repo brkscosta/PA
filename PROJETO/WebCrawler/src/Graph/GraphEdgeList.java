@@ -7,6 +7,7 @@ package Graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,18 +64,19 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
 
     @Override
     public Iterable<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidEdgeException {
-        
+
         checkVertex(v);
-        
-        List<Edge<E,V>> incidentEdges = new ArrayList<>();
+
+        List<Edge<E, V>> incidentEdges = new ArrayList<>();
         for (Edge<E, V> edge : edges.values()) {
-            
-            if( ((MyEdge)edge).contains(v) ) { /* edge.vertices()[0] == v || edge.vertices()[1] == v */
+
+            if (((MyEdge) edge).contains(v)) {
+                /* edge.vertices()[0] == v || edge.vertices()[1] == v */
                 incidentEdges.add(edge);
             }
-            
+
         }
-    
+
         return incidentEdges;
     }
 
@@ -82,12 +84,17 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         checkVertex(v);
         MyEdge edge = checkEdge(e);
-        
-        if( !edge.contains(v) ) return null; /* this edge does not connect vertex v */
-        
-        if(edge.vertices()[0] == v) return edge.vertices()[1];
-        else return edge.vertices()[0];
-        
+
+        if (!edge.contains(v)) {
+            return null; /* this edge does not connect vertex v */
+        }
+
+        if (edge.vertices()[0] == v) {
+            return edge.vertices()[1];
+        } else {
+            return edge.vertices()[0];
+        }
+
     }
 
     @Override
@@ -95,11 +102,12 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
         //we allow loops, so we do not check if u == v
         checkVertex(v);
         checkVertex(u);
-        
+
         /* find and edge that contains both u and v */
         for (Edge<E, V> edge : edges.values()) {
-            if( ((MyEdge)edge).contains(v) && ((MyEdge)edge).contains(v)) 
+            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
                 return true;
+            }
         }
         return false;
     }
@@ -164,16 +172,16 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
         checkVertex(v);
 
         V element = v.element();
-        
+
         //remove incident edges
         Iterable<Edge<E, V>> incidentEdges = incidentEdges(v);
         for (Edge<E, V> edge : incidentEdges) {
             edges.remove(edge.element());
         }
-        
+
         vertices.remove(v.element());
-        
-        return element; 
+
+        return element;
     }
 
     @Override
@@ -233,22 +241,20 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder( 
+        StringBuilder sb = new StringBuilder(
                 String.format("Graph with %d vertices and %d edges:\n", numVertices(), numEdges())
         );
-        
-        sb.append( "--- Vertices: \n" );
+
+        sb.append("--- Vertices: \n");
         for (Vertex<V> v : vertices.values()) {
-            sb.append("\t").append( v.toString() ).append("\n");
+            sb.append("\t").append(v.toString()).append("\n");
         }
-        sb.append( "\n--- Edges: \n");
+        sb.append("\n--- Edges: \n");
         for (Edge<E, V> e : edges.values()) {
-            sb.append("\t").append( e.toString() ).append("\n");
+            sb.append("\t").append(e.toString()).append("\n");
         }
         return sb.toString();
     }
-    
-    
 
     class MyVertex implements Vertex<V> {
 
@@ -292,9 +298,9 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
 
         @Override
         public Vertex<V>[] vertices() {
-            Vertex[] vertices=new Vertex[2];
-            vertices[0]=vertexOutbound;
-            vertices[1]=vertexInbound;
+            Vertex[] vertices = new Vertex[2];
+            vertices[0] = vertexOutbound;
+            vertices[1] = vertexInbound;
             return vertices;
         }
 

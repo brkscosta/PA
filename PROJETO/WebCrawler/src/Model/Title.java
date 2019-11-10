@@ -13,18 +13,26 @@ public class Title {
     
     private String titleName = "";
 
-    public Title() {
+    public Title(String name) {
+        
+        if ("".equals(name) || name == null)
+            this.titleName = "Título não encontrado";
+        
+        this.titleName = name;
     }
 
     public String getTitleName() {
         return titleName;
+        
     }
 
     public void setTitleName(String titleName) {
         this.titleName = titleName;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Title Name: " + this.titleName + "\n";
+    }
     
 }

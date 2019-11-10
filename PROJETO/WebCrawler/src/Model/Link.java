@@ -5,6 +5,8 @@
  */
 package Model;
 
+import java.util.Iterator;
+
 /**
  *
  * @author BRKsCosta
@@ -13,7 +15,8 @@ public class Link {
     
     private String linkName = "";
 
-    public Link() {
+    public Link(String name) {
+        this.linkName = name;
     }
     
     public String getLinkName() {
@@ -23,5 +26,11 @@ public class Link {
     public void setLinkName(String linkName) {
         this.linkName = linkName;
     }
+
+    @Override
+    public String toString() {
+        return "Link Name: " + linkName + "\n";
+    }
+
     
 }

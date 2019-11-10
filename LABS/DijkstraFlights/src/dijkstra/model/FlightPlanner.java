@@ -160,26 +160,26 @@ public class FlightPlanner {
         HashMap<Vertex<Airport>, Vertex<Airport>> parents = new HashMap();
         HashMap<Vertex<Airport>, Double> distances = new HashMap();
         HashMap< Vertex<Airport>, Edge<Flight, Airport>> newFlights = new HashMap();
-                
+
         Vertex<Airport> origVer = checkAirport(orig);
         airports.clear();
         dijkstra(criteria, origVer, distances, parents, newFlights);
         Vertex<Airport> v = checkAirport(dst);
         double cost = distances.get(v);
         airports.add(0, orig);
-        
+
         do {
             airports.add(1, v.element());
             v = parents.get(v);
         } while (v != origVer);
-        
+
         for (Airport a : airports) {
             Vertex<Airport> newAirport = checkAirport(a);
-            if(newFlights.get(newAirport) != null) {
-                        pathFlights.add(newFlights.get(newAirport).element());
+            if (newFlights.get(newAirport) != null) {
+                pathFlights.add(newFlights.get(newAirport).element());
             }
         }
-        
+
         return (int) cost;
     }
 

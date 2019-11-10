@@ -6,6 +6,7 @@
 package Main;
 
 import Model.WebCrawler;
+import Model.WebCrawlerException;
 import java.io.IOException;
 
 /**
@@ -19,14 +20,18 @@ public class Main {
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-        
-        String moodle = "https://moodle.ips.pt/1920/";
-        String si = "https://www.si.ips.pt/ests_si/web_page.Inicial";
-        WebCrawler crawler = new WebCrawler(moodle, 0);        
-        
-        System.out.println("Num Links " + crawler.countLinks());
-        System.out.println("Num Titles " + crawler.countTitles());
-        crawler.toString();
+        try {
+            String moodle = "https://moodle.ips.pt/1920/";
+            WebCrawler crawler = new WebCrawler(moodle, 0);
+            crawler.start(moodle, 0);
+            System.out.println("Num Links " + crawler.countLinks());
+            System.out.println("Num Titles " + crawler.countTitles());
+            //System.out.println(crawler);
+
+        } catch (WebCrawlerException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
 }

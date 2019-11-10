@@ -5,7 +5,6 @@
  */
 package Model;
 
-import Graph.Edge;
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,9 +12,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import Graph.Graph;
 import Graph.GraphEdgeList;
-import Graph.Vertex;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.jsoup.Connection.Response;
 
 /**
@@ -23,53 +24,115 @@ import org.jsoup.Connection.Response;
  * @author BRKsCosta
  */
 public class WebCrawler {
-
+    
+    public enum PageHttpResponse {
+                
+    };
+    
     private String start_url = "";
     private int numPages = 0;
     private Graph<Title, Link> graph;
 
-    public WebCrawler(String string) {
+    public WebCrawler(String string, int numPages) {
         this.start_url = string;
         this.graph = new GraphEdgeList();
+        this.numPages = numPages;
     }
 
-    public Response checkPageResponse(String url) throws IOException {
+    private int getStatusCode(String url) throws IOException {
         Response response = Jsoup.connect(url).execute();
-        return response;
+        int statusCode = response.statusCode();
+        return statusCode;
     }
 
-    public void addPage(Title title, Link link) throws WebCrawlerException {
+    public void start(String start_url, int numPages) throws IOException, WebCrawlerException {
+        enterLinks(start_url, numPages);
+    }
 
-        if (title == null || link == null) {
-            throw new WebCrawlerException("Title or link is empty");
+    private List<Title> addTitle(String baseURL) throws IOException, WebCrawlerException {
+        
+        if("".equals(baseURL)) throw new WebCrawlerException("URL não pode ser vazio");
+
+        Document doc = Jsoup.connect(baseURL).get();
+        Elements links = doc.select("a[href]");
+
+        List<Title> titles = new ArrayList<>();
+
+        for (Element link : links) {
+            Title newTitle = new Title(link.text());
+            graph.insertVertex(newTitle);
+            titles.add(newTitle);
         }
 
-        graph.insertVertex(title);
-        graph.insertEdge(title, title, link);
-
+        return titles;
     }
 
-    public void start(String start_url) throws IOException {
-        crawller(start_url);
-    }
-
-    private void crawller(String url) throws IOException {
-        Document doc = Jsoup.connect(url).get();
-        String title = doc.title();
-        title += "\n";
-        System.out.println(title);
+    private void enterLinks(String baseURL, int numTimes) throws WebCrawlerException, IOException {
         
+        if("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) 
+            throw new WebCrawlerException("URL cannot be empty or null");
+        if (numTimes == 0)
+            throw new WebCrawlerException("Num times variable is null");
+            
+        List<Link> linksStoreds = getLinks(baseURL);
+        
+        
+        
+    }    
+    
+    private void addLinks(String url) throws IOException, WebCrawlerException{
+        
+        if("".equals(url) || url.isEmpty()) 
+            throw new WebCrawlerException("URL cannot be empty or null");
+        
+        Document doc = Jsoup.connect(url).get();
+        Title mainTitle = new Title(doc.title());
+        graph.insertVertex(mainTitle);
+
+        List<Title> addTitleList = addTitle(url);
+        List<Link> listOfLinks = getLinks(url);
+        Iterator<Link> iterator = listOfLinks.iterator();
+
+        while (iterator.hasNext()) {
+            addTitleList.forEach((subTitle) -> {
+                graph.insertEdge(mainTitle, subTitle, iterator.next());
+            });
+        }
+
+    }
+
+    private List<Link> getLinks(String baseURL) throws IOException, WebCrawlerException {
+        
+        if("".equals(baseURL)) throw new WebCrawlerException("URL não pode ser vazio");
+        
+        Document doc = Jsoup.connect(baseURL).get();
         Elements links = doc.select("a[href]");
+        List<Link> list = new ArrayList<>();
 
         for (Element link : links) {
             String href = link.attr("href");
-            href = processLink(href, url);
-            href += " | " + link.text();
-            System.out.println(href);
+            href = processLink(href, baseURL);
+            list.add(new Link(href));
         }
-        //System.out.println(processLink("../", url));
+
+        return list;
     }
 
+    public int countLinks() {
+        return graph.numEdges();
+    }
+
+    public int countTitles() {
+        return graph.numVertices();
+    }
+    
+    @Override
+    public String toString() {
+        
+        return " ";
+        
+    }
+    
     private String processLink(String link, String start_url) {
         try {
             URL u = new URL(start_url);

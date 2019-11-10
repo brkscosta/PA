@@ -308,7 +308,8 @@ public class LinkedTree<E> implements Tree<E> {
         
         @Override
         public boolean hasNext() {
-            return root.parent;
+            //TODO
+            return true;
         }
 
         @Override

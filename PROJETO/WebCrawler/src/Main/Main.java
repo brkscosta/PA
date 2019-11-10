@@ -3,14 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package Main;
+
 import Model.WebCrawler;
 import java.io.IOException;
+import javafx.application.Application;
+import javafx.stage.Stage;
 /**
  *
  * @author BRKsCosta
  */
-public class Main {
+public class Main extends Application {
 
     /**
      * @param args the command line arguments
@@ -23,6 +26,11 @@ public class Main {
         WebCrawler crawler = new WebCrawler(moodle);        
         //crawler.checkPageResponse(moodle);
         crawler.start(moodle);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        
     }
     
 }

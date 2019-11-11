@@ -6,8 +6,8 @@
 package Graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author brunomnsilva
  */
-public class GraphEdgeList<V, E> implements Graph<V, E> {
+public class GraphEdgeList<V, E> implements Digraph<V, E> {
 
     /* inner classes are defined at the end of the class, so are the auxiliary methods 
      */
@@ -45,7 +45,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public Iterable<Vertex<V>> vertices() {
+    public Collection<Vertex<V>> vertices() {
         List<Vertex<V>> list = new ArrayList<>();
         for (Vertex<V> v : vertices.values()) {
             list.add(v);
@@ -54,7 +54,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public Iterable<Edge<E, V>> edges() {
+    public Collection<Edge<E, V>> edges() {
         List<Edge<E, V>> list = new ArrayList<>();
         for (Edge<E, V> e : edges.values()) {
             list.add(e);
@@ -63,7 +63,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public Iterable<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidEdgeException {
+    public Collection<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidEdgeException {
 
         checkVertex(v);
 
@@ -254,6 +254,11 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
             sb.append("\t").append(e.toString()).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class MyVertex implements Vertex<V> {

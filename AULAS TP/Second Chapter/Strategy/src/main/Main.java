@@ -7,6 +7,7 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -19,23 +20,24 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
+
         List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(3);
-        list.add(2);
-        list.add(4);
-        list.add(10);
+        Scanner keyReader = new Scanner(System.in);
+       
+        System.out.printf("Enter aleatory numbers: ");
+        for (int i = 0; i < 4; i++) 
+            list.add(keyReader.nextInt());
         
+
         System.out.println("Before unsorted: " + list);
-        
+
         ListSorted sorter = new ListSorted(list);
         System.out.println("Buble Sort: " + sorter.sort());
-        
+
         sorter.setAlgorithm(new SelectionSort());
 
         System.out.println("Selection Sort: " + sorter.sort());
-        
+
     }
-    
+
 }

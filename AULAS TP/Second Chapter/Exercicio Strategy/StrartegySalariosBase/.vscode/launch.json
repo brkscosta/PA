@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TesteCalculoSalario",
+            "request": "launch",
+            "mainClass": "startegyexample.sol3.TesteCalculoSalario",
+            "projectName": "StrartegySalariosBase_20256e15"
+        }
+    ]
+}

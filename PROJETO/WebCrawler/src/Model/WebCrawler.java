@@ -16,7 +16,6 @@ import Graph.GraphEdgeList;
 import Graph.Vertex;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class WebCrawler {
 
     private String start_url = "";
     private int numPages = 0;
-    private Graph<Title, Link> graph;
+    private final Graph<Title, Link> graph;
     
     public enum Criteria {
         MAX_PAGES;
@@ -102,13 +101,16 @@ public class WebCrawler {
         return titles;
     }
 
+    @SuppressWarnings("null")
     private void enterLinks(String baseURL, int numTimes) throws WebCrawlerException, IOException {
 
         if ("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) {
             throw new WebCrawlerException("URL cannot be empty or null");
         }
-
+        
+        // TODO
         List<Link> linksStoreds = getLinks(baseURL);
+        
 
     }
 

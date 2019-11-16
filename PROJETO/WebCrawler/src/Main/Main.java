@@ -20,6 +20,7 @@ public class Main {
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
+        
         try {
             String moodle = "https://moodle.ips.pt/1920/";
             WebCrawler crawler = new WebCrawler(moodle, 0);

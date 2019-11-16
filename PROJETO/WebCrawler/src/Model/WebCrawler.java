@@ -33,6 +33,18 @@ public class WebCrawler {
     private String start_url = "";
     private int numPages = 0;
     private Graph<Title, Link> graph;
+    
+    public enum Criteria {
+        MAX_PAGES;
+        
+        public int getUnit(int maxPages) {
+            switch (this) {
+                case MAX_PAGES:
+                    return maxPages;
+            }
+            return 0;
+        }
+    };
 
     public WebCrawler(String string, int numPages) {
         this.start_url = string;
@@ -216,7 +228,6 @@ public class WebCrawler {
                     output += "\t" + mainTitle.getTitleName() + " | "
                             + vertex.element() + "\n";
                     output += "\t\t " + edge.element().getLinkName() + "\n";
-
                 }
             }
         } catch (WebCrawlerException | IOException ex) {

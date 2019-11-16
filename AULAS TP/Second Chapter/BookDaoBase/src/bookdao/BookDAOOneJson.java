@@ -98,7 +98,6 @@ public class BookDAOOneJson implements BookDAO {
         this.saveFile();
     }
 
-    @Override
     public Book loadBook(Book b) {
 
         for (Book book : inMemory) {
@@ -115,12 +114,12 @@ public class BookDAOOneJson implements BookDAO {
     }
 
     @Override
-    public boolean delete(Book b) {
+    public boolean delete(String b) {
 
         int index = -1;
 
         for (int i = 0; i < inMemory.size(); i++) {
-            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
+            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b) == 0) {
                 index = i;
             }
         }

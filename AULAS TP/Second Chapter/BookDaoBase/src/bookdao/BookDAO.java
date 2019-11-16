@@ -9,33 +9,38 @@ import java.util.List;
 
 /**
  *
- * @author patricia.macedo
+ * @author brunomnsilva
  */
 public interface BookDAO {
-    @SuppressWarnings("NonPublicExported")
-    
+
     /**
-     * Guarda o livro num formato de ficheiro específico
-     * @param b Objeto livro
+     * Saves the book in the current persistence storage.
+     *
+     * @param b
      */
     public void save(Book b);
 
     /**
-     * Lê um livro a partir de um ficheiro já carregado
-     * @param isbn Identificador do livro
-     * @return retorna um objeto do tipo livro
+     * Retrieves from the current storage the book with given isbn.
+     *
+     * @param isbn
+     * @return
      */
-    public Book loadBook(Book isbn);
+    public Book read(String isbn);
+
+    /**
+     * Removes a book from the current storage persistence.
+     * 
+     * @param isbn
+     * @return 
+     */
+    public boolean delete(String isbn);
     
     /**
-     * Lê todos os livros a partir de um ficheiro já carregado
-     * @return Retona uma lista com todos os livros
+     * Retrieves all books from current storage persistence.
+     * 
+     * @return 
      */
-    
     public List<Book> readAll();
 
-    public boolean delete(Book isbn);
-    
-    public Book read(String isbn);
-    
 }

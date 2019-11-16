@@ -13,10 +13,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author BRKsCosta
+ * @author brunomnsilva
  */
 public class BookDAOSerialization implements BookDAO {
 
@@ -26,12 +28,15 @@ public class BookDAOSerialization implements BookDAO {
 
     public BookDAOSerialization() {
         this.inMemory = new ArrayList<>();
+        loadFile();
     }
 
+    /*
+    Save imMemory list to file
+     */
     private void saveFile() {
         try {
-            FileOutputStream fileOut
-                    = new FileOutputStream(FILENAME);
+            FileOutputStream fileOut = new FileOutputStream(FILENAME);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
             out.writeObject(inMemory);
@@ -39,64 +44,55 @@ public class BookDAOSerialization implements BookDAO {
 
             fileOut.close();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            Logger.getLogger(BookDAOSerialization.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
-    private void loadFile() {
+    private void loadFile()  {
         try {
-
             File f = new File(FILENAME);
-            if (!f.exists()) {
+            if(!f.exists()) {
                 inMemory = new ArrayList<>();
                 return;
             }
-
-            FileInputStream fileIn
-                    = new FileInputStream(FILENAME);
+            
+            FileInputStream fileIn = new FileInputStream(FILENAME);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-
             inMemory = (List<Book>) in.readObject();
             in.close();
-
             fileIn.close();
-
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            Logger.getLogger(BookDAOSerialization.class.getName()).log(Level.SEVERE, null, e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(BookDAOSerialization.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void save(Book b) {
-        //TODO
-        /*
-        Verificar se liro ja existe
-         */
         int index = -1;
-
         for (int i = 0; i < inMemory.size(); i++) {
-            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
+            if( inMemory.get(i).getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
                 index = i;
             }
         }
-
-        if (index != -1) {
+        
+        if(index != -1) {
             inMemory.set(index, b);
         } else {
             inMemory.add(b);
-        }
-
-        this.saveFile();
+        }        
+        
+        saveFile();
     }
 
     @Override
-    public Book loadBook(Book b) {
-
+    public Book read(String isbn) {
         for (Book book : inMemory) {
-            if (book.getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
+            if(book.getIsbn().compareToIgnoreCase(isbn) == 0) 
                 return book;
-            }
         }
+        
         return null;
     }
 
@@ -106,28 +102,23 @@ public class BookDAOSerialization implements BookDAO {
     }
 
     @Override
-    public boolean delete(Book b) {
-
+    public boolean delete(String isbn) {
+    
         int index = -1;
-
         for (int i = 0; i < inMemory.size(); i++) {
-            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
+            if( inMemory.get(i).getIsbn().compareToIgnoreCase(isbn) == 0) {
                 index = i;
             }
         }
-
-        if (index != -1) {
+        
+        if(index != -1) {
             inMemory.remove(index);
             saveFile();
             return true;
         } else {
             return false;
         }
-    }
-
-    @Override
-    public Book read(String isbn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
 }

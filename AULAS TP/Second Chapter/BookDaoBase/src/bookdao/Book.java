@@ -6,24 +6,23 @@
 package bookdao;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  *
- * @author patricia.macedo
+ * @author brunomnsilva
  */
 public class Book implements Serializable {
+    
     private String isbn;
     private String title;
     private String author;
+    private int year;
 
-    public Book() {
-    }
-    
-    public Book(String isbn, String title, String author) {
+    public Book(String isbn, String title, String author, int year) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
+        this.year = year;
     }
 
     public String getIsbn() {
@@ -50,33 +49,19 @@ public class Book implements Serializable {
         this.author = author;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
     @Override
     public String toString() {
-        return "Book{" + "isbn=" + isbn + ", title=" + title + ", author=" + author + '}';
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 61 * hash + Objects.hashCode(this.isbn);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Book other = (Book) obj;
-        if (!Objects.equals(this.isbn, other.isbn)) {
-            return false;
-        }
-        return true;
+        return "Book{" + "isbn=" + isbn + ", title=" + title + ", author=" + author + ", year=" + year + '}';
     }
     
-
+    
     
 }

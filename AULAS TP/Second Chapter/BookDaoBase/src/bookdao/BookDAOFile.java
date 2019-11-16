@@ -7,17 +7,13 @@ package bookdao;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -94,28 +90,17 @@ public class BookDAOFile implements BookDAO {
     }
 
     @Override
-    public Book loadBook(Book b) {
-
-        for (Book book : inMemory) {
-            if (book.getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
-                return book;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public List<Book> readAll() {
         return inMemory;
     }
 
     @Override
-    public boolean delete(Book b) {
+    public boolean delete(String b) {
 
         int index = -1;
 
         for (int i = 0; i < inMemory.size(); i++) {
-            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b.getIsbn()) == 0) {
+            if (inMemory.get(i).getIsbn().compareToIgnoreCase(b) == 0) {
                 index = i;
             }
         }
@@ -131,7 +116,11 @@ public class BookDAOFile implements BookDAO {
 
     @Override
     public Book read(String isbn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Book book : inMemory) {
+            if(book.getIsbn().compareToIgnoreCase(isbn) == 0) 
+                return book;
+        }
+        return null;
     }
    
 }

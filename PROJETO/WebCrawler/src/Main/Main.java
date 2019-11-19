@@ -22,6 +22,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         
         try {
+            
             String moodle = "https://moodle.ips.pt/1920/";
             WebCrawler crawler = new WebCrawler(moodle, 0);
             crawler.start(moodle, 0);

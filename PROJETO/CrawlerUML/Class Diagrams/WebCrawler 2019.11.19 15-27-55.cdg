@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="WebCrawler">
+  <ClassDiagramComponents>
+    <Class name="GraphEdgeList" package="Graph" visibility="public" xPosition="113.0" yPosition="9.0">
+      <Fields>
+        <Field name="vertices" type="Map&lt;V, Vertex&lt;V&gt;&gt;" visibility="private"/>
+        <Field name="edges" type="Map&lt;E, Edge&lt;E, V&gt;&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="numVertices" returnType="int" visibility="public"/>
+        <Method name="numEdges" returnType="int" visibility="public"/>
+        <Method name="vertices" returnType="Collection&lt;Vertex&lt;V&gt;&gt;" visibility="public"/>
+        <Method name="edges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public"/>
+        <Method name="incidentEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="opposite" returnType="Vertex&lt;V&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="areAdjacent" returnType="boolean" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="u"/>
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="insertVertex" returnType="Vertex&lt;V&gt;" visibility="public">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="u"/>
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="V" name="vElement1"/>
+          <Argument type="V" name="vElement2"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="removeVertex" returnType="V" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="removeEdge" returnType="E" visibility="public">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="replace" returnType="V" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="V" name="newElement"/>
+        </Method>
+        <Method name="replace" returnType="E" visibility="public">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+          <Argument type="E" name="newElement"/>
+        </Method>
+        <Method name="vertexOf" returnType="MyVertex" visibility="private">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="existsVertexWith" returnType="boolean" visibility="private">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="existsEdgeWith" returnType="boolean" visibility="private">
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="outboundEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+        </Method>
+        <Method name="checkVertex" returnType="MyVertex" visibility="private">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="checkEdge" returnType="MyEdge" visibility="private">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="InvalidEdgeException" package="Graph" visibility="public" xPosition="1118.0" yPosition="1140.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="string"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Class name="InvalidVertexException" package="Graph" visibility="public" xPosition="1140.0" yPosition="977.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="string"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Class name="Main" package="Main" visibility="public" xPosition="889.0" yPosition="1149.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Link" package="Model" visibility="public" xPosition="47.0" yPosition="837.0">
+      <Fields>
+        <Field name="linkName" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getLinkName" returnType="String" visibility="public"/>
+        <Method name="setLinkName" returnType="void" visibility="public">
+          <Argument type="String" name="linkName"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Title" package="Model" visibility="public" xPosition="889.0" yPosition="920.0">
+      <Fields>
+        <Field name="titleName" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getTitleName" returnType="String" visibility="public"/>
+        <Method name="setTitleName" returnType="void" visibility="public">
+          <Argument type="String" name="titleName"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="WebCrawler" package="Model" visibility="public" xPosition="438.0" yPosition="785.0">
+      <Fields>
+        <Field name="start_url" type="String" visibility="private"/>
+        <Field name="numPages" type="int" visibility="private"/>
+        <Field name="graph" type="Graph&lt;Title, Link&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="string"/>
+          <Argument type="int" name="numPages"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="chekTitle" returnType="Title" visibility="private">
+          <Argument type="Title" name="title"/>
+        </Method>
+        <Method name="getStatusCode" returnType="int" visibility="private">
+          <Argument type="String" name="url"/>
+        </Method>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="String" name="startURL"/>
+          <Argument type="int" name="numPages"/>
+        </Method>
+        <Method name="addTitle" returnType="List&lt;Title&gt;" visibility="private">
+          <Argument type="String" name="baseURL"/>
+        </Method>
+        <Method name="enterLinks" returnType="void" visibility="private">
+          <Argument type="String" name="baseURL"/>
+          <Argument type="int" name="numTimes"/>
+        </Method>
+        <Method name="addLinks" returnType="void" visibility="private">
+          <Argument type="String" name="url"/>
+        </Method>
+        <Method name="getLinks" returnType="List&lt;Link&gt;" visibility="private">
+          <Argument type="String" name="baseURL"/>
+        </Method>
+        <Method name="countLinks" returnType="int" visibility="public"/>
+        <Method name="countTitles" returnType="int" visibility="public"/>
+        <Method name="getLinkBetween" returnType="List&lt;Link&gt;" visibility="private">
+          <Argument type="Title" name="title"/>
+          <Argument type="Title" name="title2"/>
+        </Method>
+        <Method name="processLink" returnType="String" visibility="private">
+          <Argument type="String" name="link"/>
+          <Argument type="String" name="start_url"/>
+        </Method>
+        <Method name="stripFilename" returnType="String" visibility="private">
+          <Argument type="String" name="path"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="WebCrawlerException" package="Model" visibility="public" xPosition="82.0" yPosition="1098.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="title_or_link_is_empty"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Interface name="Digraph" package="Graph" visibility="public" xPosition="203.0" yPosition="593.0">
+      <Methods>
+        <Method name="incidentEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+        </Method>
+        <Method name="outboundEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+        </Method>
+        <Method name="areAdjacent" returnType="boolean" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="V" name="outboundElement"/>
+          <Argument type="V" name="inboundElement"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Interface name="Edge" package="Graph" visibility="public" xPosition="760.0" yPosition="298.0">
+      <Methods>
+        <Method name="element" returnType="E" visibility="public"/>
+        <Method name="vertices" returnType="Vertex&lt;V&gt;[]" visibility="public"/>
+      </Methods>
+    </Interface>
+    <Interface name="Graph" package="Graph" visibility="public" xPosition="760.0" yPosition="519.0">
+      <Methods>
+        <Method name="numVertices" returnType="int" visibility="public"/>
+        <Method name="numEdges" returnType="int" visibility="public"/>
+        <Method name="vertices" returnType="Collection&lt;Vertex&lt;V&gt;&gt;" visibility="public"/>
+        <Method name="edges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public"/>
+        <Method name="incidentEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="opposite" returnType="Vertex&lt;V&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="areAdjacent" returnType="boolean" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="u"/>
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="insertVertex" returnType="Vertex&lt;V&gt;" visibility="public">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="u"/>
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public">
+          <Argument type="V" name="vElement1"/>
+          <Argument type="V" name="vElement2"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="removeVertex" returnType="V" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="removeEdge" returnType="E" visibility="public">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="replace" returnType="V" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="V" name="newElement"/>
+        </Method>
+        <Method name="replace" returnType="E" visibility="public">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+          <Argument type="E" name="newElement"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Interface name="Vertex" package="Graph" visibility="public" xPosition="760.0" yPosition="110.0">
+      <Methods>
+        <Method name="element" returnType="V" visibility="public"/>
+      </Methods>
+    </Interface>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <IsRelation name="is" source="Graph.Digraph" target="Graph.Graph"/>
+    <UseRelation source="Graph.Graph" target="Graph.Vertex" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Graph.Graph" target="Graph.Edge" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Graph.GraphEdgeList" target="Graph.Digraph"/>
+    <UseRelation source="Graph.Edge" target="Graph.Vertex" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Graph.GraphEdgeList" target="Graph.Vertex" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Graph.Digraph" target="Graph.Vertex" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Model.WebCrawler" target="Model.Title" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Graph.GraphEdgeList" target="Graph.Edge" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Graph.Digraph" target="Graph.Edge" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Model.WebCrawler" target="Model.Link" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="graph" source="Model.WebCrawler" target="Model.Title" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

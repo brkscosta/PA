@@ -51,6 +51,13 @@ public class WebCrawler {
         this.numPages = numPages;
     }
 
+    /**
+     * Check a title if exists on graph
+     *
+     * @param title title to be searched
+     * @return Element of type <code>Link></code>
+     * @throws WebCrawlerException Launch exception case some parameters are bad
+     */
     private Title chekTitle(Title title) throws WebCrawlerException {
         if (title == null) {
             throw new WebCrawlerException("Title cannot be null");
@@ -71,6 +78,7 @@ public class WebCrawler {
     }
 
     /**
+<<<<<<< HEAD
      * Return the status code from a URL
      *
      * @param url Site URL
@@ -78,17 +86,39 @@ public class WebCrawler {
      * @return Page status code in integer.
      */
 
+=======
+     * Return the status code from a page
+     *
+     * @param url Site URL
+     * @exception Input Output exception
+     */
+>>>>>>> master
     private int getStatusCode(String url) throws IOException {
         Response response = Jsoup.connect(url).execute();
         int statusCode = response.statusCode();
         return statusCode;
     }
 
-    public void start(String start_url, int numPages) throws IOException, WebCrawlerException {
-        addLinks(start_url);
-        enterLinks(start_url, numPages);
+    /**
+     * This method start the crow of a website
+     *
+     * @param startURL The base URL to be searched
+     * @param numPages Number of pages (links) to be returned
+     * @throws java.io.IOException Bad Input Outputs
+     * @throws Model.WebCrawlerException To validate some bad inputs outputs
+     */
+    public void start(String startURL, int numPages) throws IOException, WebCrawlerException {
+        addLinks(startURL);
+        breathFirst(startURL, numPages);
     }
 
+    /**
+     * Return a list of titles
+     *
+     * @param baseURL The base URL to be searched
+     * @exception IOException Input Output exception
+     * @exception WebCrawlerException Some exception from inputs
+     */
     private List<Title> addTitle(String baseURL) throws IOException, WebCrawlerException {
 
         if ("".equals(baseURL)) {
@@ -109,8 +139,17 @@ public class WebCrawler {
         return titles;
     }
 
+    /**
+     * Enter in link and process all links associated
+     *
+     * @param baseURL The base URL to be searched
+     * @param numTimes The max of links to be searched
+     * @exception IOException Input Output exception
+     * @exception WebCrawlerException Some exception from inputs
+     * @return <code>void</code>
+     */
     @SuppressWarnings("null")
-    private void enterLinks(String baseURL, int numTimes) throws WebCrawlerException, IOException {
+    private void breathFirst(String baseURL, int numTimes) throws WebCrawlerException, IOException {
 
         if ("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) {
             throw new WebCrawlerException("URL cannot be empty or null");
@@ -122,6 +161,13 @@ public class WebCrawler {
 
     }
 
+    /**
+     * For every link found it retrives a title associated
+     *
+     * @param url Base site URL
+     * @exception IOException Input Output exception
+     * @exception WebCrawlerException Some exception from inputs
+     */
     private void addLinks(String url) throws IOException, WebCrawlerException {
 
         if ("".equals(url) || url.isEmpty()) {
@@ -144,6 +190,14 @@ public class WebCrawler {
 
     }
 
+    /**
+     * Return all links in a specific website
+     *
+     * @param baseURL Base site URL
+     * @exception IOException Input Output exception
+     * @exception WebCrawlerException Some exception from inputs
+     * @return Return a list of links in a specific website
+     */
     private List<Link> getLinks(String baseURL) throws IOException, WebCrawlerException {
 
         if ("".equals(baseURL)) {
@@ -163,14 +217,31 @@ public class WebCrawler {
         return list;
     }
 
+    /**
+     * Counter of links
+     *
+     * @return Number of links (Edges)
+     */
     public int countLinks() {
         return graph.numEdges();
     }
 
+    /**
+     * Count titles from a specifc website
+     *
+     * @return Number of titles (Vertex)
+     */
     public int countTitles() {
         return graph.numVertices();
     }
 
+    /**
+     * Get a link between two a given titles
+     *
+     * @param title Fisrt title
+     * @param title2 Second title
+     * @return list of links between two titles
+     */
     private List<Link> getLinkBetween(Title title, Title title2)
             throws WebCrawlerException {
 
@@ -197,6 +268,13 @@ public class WebCrawler {
 
     }
 
+    /**
+     * Process diferent types of url's
+     *
+     * @param link The specific link
+     * @param start_url The base site URL
+     * @return return a processed link in <code>string</code>
+     */
     private String processLink(String link, String start_url) {
         try {
             URL u = new URL(start_url);
@@ -216,12 +294,21 @@ public class WebCrawler {
             return null;
         }
     }
-
+    /**
+     * Just strip filename on link
+     * 
+     * @param path The URL of a website
+     * @return Position of filename
+     */
     private String stripFilename(String path) {
         int pos = path.lastIndexOf("/");
         return pos <= -1 ? path : path.substring(0, pos + 1);
     }
-
+    
+    /**
+     * 
+     * @return To format list of links associated of an Title
+     */
     @Override
     public String toString() {
         //Falta acertar toString

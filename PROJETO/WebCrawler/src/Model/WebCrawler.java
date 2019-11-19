@@ -129,7 +129,6 @@ public class WebCrawler {
         return titles;
     }
 
-<<<<<<< HEAD
     /**
      * Enter in link and process all links associated
      *
@@ -141,10 +140,6 @@ public class WebCrawler {
      */
     @SuppressWarnings("null")
     private void breathFirst(String baseURL, int numTimes) throws WebCrawlerException, IOException {
-=======
-    @SuppressWarnings("null")
-    private void enterLinks(String baseURL, int numTimes) throws WebCrawlerException, IOException {
->>>>>>> brkscosta
 
         if ("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) {
             throw new WebCrawlerException("URL cannot be empty or null");

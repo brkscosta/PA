@@ -31,7 +31,19 @@ public class WebCrawler {
 
     private String start_url = "";
     private int numPages = 0;
-    private Graph<Title, Link> graph;
+    private final Graph<Title, Link> graph;
+    
+    public enum Criteria {
+        MAX_PAGES;
+        
+        public int getUnit(int maxPages) {
+            switch (this) {
+                case MAX_PAGES:
+                    return maxPages;
+            }
+            return 0;
+        }
+    };
 
     public WebCrawler(String string, int numPages) {
         this.start_url = string;
@@ -117,6 +129,7 @@ public class WebCrawler {
         return titles;
     }
 
+<<<<<<< HEAD
     /**
      * Enter in link and process all links associated
      *
@@ -128,12 +141,18 @@ public class WebCrawler {
      */
     @SuppressWarnings("null")
     private void breathFirst(String baseURL, int numTimes) throws WebCrawlerException, IOException {
+=======
+    @SuppressWarnings("null")
+    private void enterLinks(String baseURL, int numTimes) throws WebCrawlerException, IOException {
+>>>>>>> brkscosta
 
         if ("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) {
             throw new WebCrawlerException("URL cannot be empty or null");
         }
-
+        
+        // TODO
         List<Link> linksStoreds = getLinks(baseURL);
+        
 
     }
 
@@ -301,7 +320,6 @@ public class WebCrawler {
                     output += "\t" + mainTitle.getTitleName() + " | "
                             + vertex.element() + "\n";
                     output += "\t\t " + edge.element().getLinkName() + "\n";
-
                 }
             }
         } catch (WebCrawlerException | IOException ex) {

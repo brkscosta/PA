@@ -70,6 +70,14 @@ public class WebCrawler {
         return find;
     }
 
+    /**
+     * Return the status code from a URL
+     *
+     * @param url Site URL
+     * @exception Input Output exception
+     * @return Page status code in integer.
+     */
+
     private int getStatusCode(String url) throws IOException {
         Response response = Jsoup.connect(url).execute();
         int statusCode = response.statusCode();

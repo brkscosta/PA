@@ -27,7 +27,7 @@ public class Main {
             crawler.start(moodle, 0);
             System.out.println("Num Links " + crawler.countLinks());
             System.out.println("Num Titles " + crawler.countTitles());
-            //System.out.println(crawler);
+            System.out.println(crawler);
 
         } catch (WebCrawlerException e) {
             System.out.println(e.getMessage());

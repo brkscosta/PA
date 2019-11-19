@@ -44,7 +44,13 @@ public class WebCrawler {
             return 0;
         }
     };
-
+    
+    /**
+     * 
+     * Create a object of <i><p>Webcrawler</p></i> type with a DiGraph instance
+     * @param string Base URL
+     * @param numPages Max links on pages
+     */
     public WebCrawler(String string, int numPages) {
         this.start_url = string;
         this.graph = new GraphEdgeList();

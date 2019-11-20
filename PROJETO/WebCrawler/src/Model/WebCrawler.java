@@ -351,7 +351,11 @@ public class WebCrawler {
             return null;
         }
     }
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
     /**
      * Just strip filename on link
      *

@@ -23,19 +23,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.Connection.Response;
 
+@SuppressWarnings("null")
 /**
- *
+ * Model to be created to build de graph
+ * 
  * @author BRKsCosta
  */
 public class WebCrawler {
 
     private String start_url = "";
-    private int numPages = 0;
     private final Graph<Title, Link> graph;
-    
+
     public enum Criteria {
         MAX_PAGES;
-        
+
         public int getUnit(int maxPages) {
             switch (this) {
                 case MAX_PAGES:
@@ -45,10 +46,16 @@ public class WebCrawler {
         }
     };
 
-    public WebCrawler(String string, int numPages) {
+    /**
+     *
+     * Create a object of <i><p>
+     * Web Crawler</p></i> type with a DiGraph instance
+     *
+     * @param string Base URL
+     */
+    public WebCrawler(String string) {
         this.start_url = string;
         this.graph = new GraphEdgeList();
-        this.numPages = numPages;
     }
 
     /**
@@ -78,6 +85,24 @@ public class WebCrawler {
     }
 
     /**
+     * Check if exists a link on graph
+     *
+     * @param link The link (URL)
+     * @return True if exists false otherwise
+     * @throws WebCrawlerException
+     */
+    private boolean isExistsLink(Link link) throws WebCrawlerException {
+        if (link == null) {
+            throw new WebCrawlerException("Object null");
+        }
+
+        Link find = null;
+        //equals was overriden in Airport!!
+        //find = v.element();
+        return graph.edges().stream().anyMatch((v) -> (v.element().equals(link)));
+    }
+
+    /**
      * Return the status code from a URL
      *
      * @param url Site URL
@@ -100,7 +125,6 @@ public class WebCrawler {
      */
     public void start(String startURL, int numPages) throws IOException, WebCrawlerException {
         addLinks(startURL);
-        breathFirst(startURL, numPages);
     }
 
     /**
@@ -134,26 +158,61 @@ public class WebCrawler {
      * Enter in link and process all links associated
      *
      * @param baseURL The base URL to be searched
-     * @param numTimes The max of links to be searched
+     * @param maxNumLinks The max of links to be searched
      * @exception IOException Input Output exception
      * @exception WebCrawlerException Some exception from inputs
      * @return <code>void</code>
      */
-    @SuppressWarnings("null")
-    private void breathFirst(String baseURL, int numTimes) throws WebCrawlerException, IOException {
+    @SuppressWarnings("UnnecessaryReturnStatement")
+    public void breadthOrder(String baseURL, int maxNumLinks) throws WebCrawlerException, IOException {
 
         if ("".equals(baseURL) || baseURL.isEmpty() || baseURL == null) {
             throw new WebCrawlerException("URL cannot be empty or null");
         }
-        
-        // TODO
-        List<Link> linksStoreds = getLinks(baseURL);
-        
 
+        int countMaxLinks = 0;
+
+        // Cria arrays de links armazenados e um array de links a ser processado
+        ArrayList<Link> linksProcessed = new ArrayList<>();
+        List<Link> linksStoreds = getLinks(baseURL);
+
+        // Começa contar número máximo de links pedidos pelo utilizador
+        countMaxLinks += linksStoreds.size();
+
+        if (countMaxLinks >= maxNumLinks) {
+            return;
+        } else {
+
+            Iterator<Link> iteratorLinksStoreds = linksStoreds.iterator();
+            ArrayList<Link> repeatedLinks = new ArrayList<>();
+            List<Link> childLinks = new ArrayList<>();
+            Link inProcess = null;
+
+            while (iteratorLinksStoreds.hasNext()) {
+
+                //Pega no próximo link entra e retorna lista de links remove quando acaba
+                //Concertar pois não está retornando os links filhos direito
+
+                inProcess = iteratorLinksStoreds.next();
+                childLinks.addAll(getLinks(inProcess.getLinkName()));
+                iteratorLinksStoreds.remove();
+                System.out.println(childLinks);
+                countMaxLinks += childLinks.size();
+
+                if (countMaxLinks >= maxNumLinks /*&& !isExistsLink(inProcess)*/) {
+                    return;
+                }
+
+                addLinks(inProcess.getLinkName());
+                linksProcessed.add(inProcess);
+
+            }
+
+        }
     }
 
     /**
-     * For every link found it retrives a title associated
+     * Add links to your titles
      *
      * @param url Base site URL
      * @exception IOException Input Output exception
@@ -172,12 +231,14 @@ public class WebCrawler {
         List<Title> addTitleList = addTitle(url);
         List<Link> listOfLinks = getLinks(url);
         Iterator<Link> iterator = listOfLinks.iterator();
-
+        
+        
         while (iterator.hasNext()) {
             addTitleList.forEach((subTitle) -> {
                 graph.insertEdge(mainTitle, subTitle, iterator.next());
             });
         }
+        
 
     }
 
@@ -286,9 +347,14 @@ public class WebCrawler {
             return null;
         }
     }
+<<<<<<< Updated upstream
+
+=======
+    
+>>>>>>> Stashed changes
     /**
      * Just strip filename on link
-     * 
+     *
      * @param path The URL of a website
      * @return Position of filename
      */
@@ -296,9 +362,9 @@ public class WebCrawler {
         int pos = path.lastIndexOf("/");
         return pos <= -1 ? path : path.substring(0, pos + 1);
     }
-    
+
     /**
-     * 
+     *
      * @return To format list of links associated of an Title
      */
     @Override

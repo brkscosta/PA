@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class GestorRelatorio extends GestorDocumento {
 
+<<<<<<< HEAD
     private String titulo;
 
     public GestorRelatorio(int id, Date data, String texto, String autor, String titulo) {
@@ -32,4 +33,17 @@ public class GestorRelatorio extends GestorDocumento {
 
     
 
+=======
+       
+    private String titulo;
+    
+    public GestorRelatorio(int id, Date data, String texto, String autor,String  titulo) {
+        super(id, data, texto, autor);
+        this.titulo=titulo;
+    }
+ public String imprimeFormatado() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+   
+>>>>>>> 2380f3999bd41e4d52f5b880fbb8f36d20dd0500
 }

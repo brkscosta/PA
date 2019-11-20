@@ -11,7 +11,11 @@ import java.util.Date;
  *
  * @author Utilizador
  */
+<<<<<<< HEAD
 public abstract class GestorDocumento {
+=======
+public class GestorDocumento {
+>>>>>>> 2380f3999bd41e4d52f5b880fbb8f36d20dd0500
     private int id;
     private Date data;
     private String texto;
@@ -40,6 +44,7 @@ public abstract class GestorDocumento {
         return autor;
     }
     
+<<<<<<< HEAD
     public void templateMethod() {
         
         escreverCabecalho();
@@ -56,4 +61,7 @@ public abstract class GestorDocumento {
     
     public abstract String escreverRodape();
     
+=======
+       
+>>>>>>> 2380f3999bd41e4d52f5b880fbb8f36d20dd0500
 }

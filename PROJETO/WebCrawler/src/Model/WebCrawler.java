@@ -214,6 +214,7 @@ public class WebCrawler {
      * @return Number of links (Edges)
      */
     public int countLinks() {
+        // TESTING
         return graph.numEdges();
     }
 

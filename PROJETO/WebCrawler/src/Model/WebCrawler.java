@@ -175,11 +175,6 @@ public class WebCrawler {
         // Cria arrays de links armazenados e um array de links a ser processado
         ArrayList<Link> linksProcessed = new ArrayList<>();
         List<Link> linksStoreds = getLinks(baseURL);
-<<<<<<< HEAD
-        
-        
-        
-=======
 
         // Começa contar número máximo de links pedidos pelo utilizador
         countMaxLinks += linksStoreds.size();
@@ -194,9 +189,10 @@ public class WebCrawler {
             Link inProcess = null;
 
             while (iteratorLinksStoreds.hasNext()) {
+
                 //Pega no próximo link entra e retorna lista de links remove quando acaba
-                
                 //Concertar pois não está retornando os links filhos direito
+
                 inProcess = iteratorLinksStoreds.next();
                 childLinks.addAll(getLinks(inProcess.getLinkName()));
                 iteratorLinksStoreds.remove();
@@ -213,7 +209,6 @@ public class WebCrawler {
             }
 
         }
->>>>>>> 2380f3999bd41e4d52f5b880fbb8f36d20dd0500
     }
 
     /**

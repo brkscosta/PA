@@ -25,7 +25,7 @@ public class Main {
             
             String moodle = "https://moodle.ips.pt/1920/";
             WebCrawler crawler = new WebCrawler(moodle);
-            crawler.start(moodle, 500);
+            crawler.start(moodle, 50);
             System.out.println("Num Links " + crawler.countLinks());
             System.out.println("Num Titles " + crawler.countTitles());
             crawler.breadthOrder("https://moodle.ips.pt/1920/course/index.php?categoryid=7#maincontent", 50);

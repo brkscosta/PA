@@ -8,8 +8,14 @@ package Model;
 import java.util.Iterator;
 
 /**
+<<<<<<< Updated upstream
  *
  * @author BRKsCosta
+=======
+ * Class that represents de Edge {@link Graph.Edge} on graph.
+ * 
+ * @author BRKsCosta 
+>>>>>>> Stashed changes
  */
 public class Link {
     

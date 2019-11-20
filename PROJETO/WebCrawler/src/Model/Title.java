@@ -6,7 +6,12 @@
 package Model;
 
 /**
+<<<<<<< Updated upstream
  *
+=======
+ * Class that represents the Vertex {@link Graph.Vertex} on graph.
+ * 
+>>>>>>> Stashed changes
  * @author BRKsCosta
  */
 public class Title {

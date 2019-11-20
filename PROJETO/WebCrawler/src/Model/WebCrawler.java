@@ -24,7 +24,8 @@ import java.util.logging.Logger;
 import org.jsoup.Connection.Response;
 
 /**
- *
+ * Model to be created to build de graph
+ * 
  * @author BRKsCosta
  */
 public class WebCrawler {
@@ -111,7 +112,8 @@ public class WebCrawler {
         // TODO
         List<Link> linksStoreds = getLinks(baseURL);
         
-
+        
+        
     }
 
     private void addLinks(String url) throws IOException, WebCrawlerException {

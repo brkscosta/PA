@@ -24,11 +24,12 @@ public class Main {
         try {
             
             String moodle = "https://moodle.ips.pt/1920/";
-            WebCrawler crawler = new WebCrawler(moodle, 0);
-            crawler.start(moodle, 0);
+            WebCrawler crawler = new WebCrawler(moodle);
+            crawler.start(moodle, 500);
             System.out.println("Num Links " + crawler.countLinks());
             System.out.println("Num Titles " + crawler.countTitles());
-            System.out.println(crawler);
+            crawler.breadthOrder("https://moodle.ips.pt/1920/course/index.php?categoryid=7#maincontent", 50);
+            //System.out.println(crawler);
 
         } catch (WebCrawlerException e) {
             System.out.println(e.getMessage());

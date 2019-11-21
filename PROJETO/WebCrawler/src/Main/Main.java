@@ -26,7 +26,7 @@ public class Main {
         WebCrawler crawler = new WebCrawler(gTranslate, 700);
         crawler.start();
         System.out.println("Num Links " + crawler.countLinks());
-        System.out.println("Num WebPages " + crawler.countTitles());
+        System.out.println("Num WebPages " + crawler.countWebPages());
         //System.out.println(crawler);
 
     }

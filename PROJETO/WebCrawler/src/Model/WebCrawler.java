@@ -185,7 +185,7 @@ public class WebCrawler {
      *
      * @return Number of titles (Vertex)
      */
-    public int countTitles() {
+    public int countWebPages() {
         return webCrawler.numVertices();
     }
 

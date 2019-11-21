@@ -1,9 +1,11 @@
 package Model;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -12,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +36,7 @@ public class WebPage {
      *
      * @param url Base URL to search
      */
-    public WebPage(String url) {
+    public WebPage(String url) throws IOException {
 
         // Instantiate the personalUrl
         this.personalURL = url;
@@ -42,16 +45,11 @@ public class WebPage {
         Connection connection = Jsoup.connect(this.personalURL);
 
         // Get the status code
-        this.statusCode = connection.response().statusCode();
-
-        // Check status code 
-        if (statusCode == 400) // Set page title how not found
-        {
-            this.titleName = EStatusCode.NOTFOUND.name();
-        } else {
-            this.titleName = EStatusCode.OK.name();
-        }
-
+        this.statusCode = this.getStatusCode();
+        
+        if(statusCode != 404)
+            this.titleName = connection.get().title();  
+        this.titleName = "Page not found";
     }
 
     /**
@@ -62,13 +60,35 @@ public class WebPage {
     public String getTitleName() {
         return titleName;
     }
-
+    
+    /**
+     * Set personal page URL
+     * @param personalURL The URL to search
+     */
     public void setPersonalURL(String personalURL) {
         this.personalURL = personalURL;
     }
-
+    
+    /**
+     * Get WebPage personal URL
+     * @return 
+     */
     public String getPersonalURL() {
         return personalURL;
+    }
+    
+    /**
+     * Get status code from WebPage
+     * @return Return the status code in a integer
+     * @throws MalformedURLException
+     * @throws IOException 
+     */
+    public int getStatusCode() throws MalformedURLException, IOException {
+        URL url = new URL(this.personalURL);
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+        int statusCode = http.getResponseCode();
+        
+        return statusCode;
     }
 
     /**
@@ -104,8 +124,13 @@ public class WebPage {
             String newHref = processLink(href, personalLink);
             Link newObjLink = new Link(newHref);
             listIncidentsWebPages.offer(newObjLink);
-        }
 
+        }
+        
+        Set<Link> set = new HashSet(listIncidentsWebPages);
+        listIncidentsWebPages.clear();
+        listIncidentsWebPages.addAll(set);
+        
         return listIncidentsWebPages;
     }
 
@@ -157,42 +182,14 @@ public class WebPage {
         try {
             return "WebPage { " + "personalURL=" + personalURL
                     + ", incidentWebPages="
-                    + getAllIncidentWebPages(this.personalURL).size() + ", statusCode=" + statusCode + '}' + "\n";
+                    + getAllIncidentWebPages(this.personalURL).size()
+                    + ", statusCode=" + statusCode + '}' + "\n";
         } catch (WebCrawlerException ex) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
-    }
-
-    // StatusCode ENUM
-    public static enum EStatusCode {
-
-        OK, NOTFOUND;
-
-        public String getStatusTitleName(int code) {
-            switch (code) {
-                case 200:
-                    return this.getTitleName(this.OK);
-                case 404:
-                    return this.getTitleName(this.NOTFOUND);
-            }
-
-            return "";
-        }
-
-        private String getTitleName(EStatusCode statusString) {
-            switch (statusString) {
-                case OK:
-                    return "Page OK";
-                case NOTFOUND:
-                    return "Page not found";
-            }
-
-            return "";
-        }
-
     }
 
 }

@@ -22,13 +22,9 @@ public class Main {
     public static void main(String[] args) throws WebCrawlerException, IOException {
 
         String moodle = "https://moodle.ips.pt/1920/";
-        String gTranslate = "https://translate.google.pt/";
-        WebCrawler crawler = new WebCrawler(gTranslate, 700);
+        String stackOverFlow = "https://stackoverflow.com/";
+        WebCrawler crawler = new WebCrawler(stackOverFlow, 15);
         crawler.start();
-        System.out.println("Num Links " + crawler.countLinks());
-        System.out.println("Num WebPages " + crawler.countWebPages());
-        //System.out.println(crawler);
-
     }
 
 }

@@ -1,61 +1,44 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Model;
 
 import Graph.Edge;
 import java.io.IOException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import Graph.Graph;
 import Graph.GraphEdgeList;
 import Graph.Vertex;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jsoup.Connection.Response;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 @SuppressWarnings("null")
 /**
- * Model to be created to build de graph
- * 
+ * Model to be created to build de graph <code>Vertex</code>
+ * {@link Graph.Vertex} is the type WebPage and <code>Edge</code>
+ * {@link Graph.Edge} is the type of Link
+ *
  * @author BRKsCosta
  */
 public class WebCrawler {
 
-    private String start_url = "";
-    private final Graph<WebPage, Link> graph;
-
-    public enum Criteria {
-        MAX_PAGES;
-
-        public int getUnit(int maxPages) {
-            switch (this) {
-                case MAX_PAGES:
-                    return maxPages;
-            }
-            return 0;
-        }
-    };
+    private String startURL = "";
+    private final Graph<WebPage, Link> webCrawler;
+    private WebPage webPage;
+    private int numLinks = 0;
 
     /**
      *
-     * Create a object of <i><p>
-     * Web Crawler</p></i> type with a DiGraph instance
-     *
+     * Create a object of <i><p> Web Crawler </p></i> type with a DiGraph instance
+     *s
      * @param string Base URL
+     * @param numberOfLinks Max number of link requested by user
      */
-    public WebCrawler(String string) {
-        this.start_url = string;
-        this.graph = new GraphEdgeList();
+    public WebCrawler(String string, int numberOfLinks) {
+        this.startURL = string;
+        this.webCrawler = new GraphEdgeList();
+        this.webPage = new WebPage(string);
+        this.numLinks = numberOfLinks;
     }
 
     /**
@@ -65,20 +48,21 @@ public class WebCrawler {
      * @return Element of type <code>Link></code>
      * @throws WebCrawlerException Launch exception case some parameters are bad
      */
-    private WebPage checkTitle(WebPage title) throws WebCrawlerException {
-        if (title == null) {
+    private WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
+        if (webpage == null) {
             throw new WebCrawlerException("Title cannot be null");
         }
 
         WebPage find = null;
-        for (Vertex<WebPage> v : graph.vertices()) {
-            if (v.element().equals(title)) { //equals was overriden in Airport!!
+        for (Vertex<WebPage> v : webCrawler.vertices()) {
+            if (v.element().equals(webpage)) { //equals was overriden in Airport!!
                 find = v.element();
             }
         }
 
         if (find == null) {
-            throw new WebCrawlerException("Title with code (" + title.getTitleName() + ") does not exist");
+            throw new WebCrawlerException("WebPage with code ("
+                    + webpage.getTitleName() + ") does not exist");
         }
 
         return find;
@@ -99,36 +83,112 @@ public class WebCrawler {
         Link find = null;
         //equals was overriden in Airport!!
         //find = v.element();
-        return graph.edges().stream().anyMatch((v) -> (v.element().equals(link)));
+        return webCrawler.edges().stream().anyMatch((v) -> (v.element().equals(link)));
     }
 
-   
     /**
      * This method start the crow of a website
      *
-     * @param startURL The base URL to be searched
-     * @param numPages Number of pages (links) to be returned
-     * @throws java.io.IOException Bad Input Outputs
      * @throws Model.WebCrawlerException To validate some bad inputs outputs
+     * @throws java.io.IOException
      */
-    public void start(String startURL, int numPages) throws IOException, WebCrawlerException {
-        breadthOrder(startURL, numPages);
+    public void start() throws WebCrawlerException, IOException {
+        System.out.println("Print método start: \n\n" + this.BFS(webPage));
     }
-
+    
+    private static void print(String msg, Object... args) {
+        System.out.println(String.format(msg, args));
+    }
+    
     /**
      * Enter in link and process all links associated
      *
-     * @param baseURL The base URL to be searched
-     * @param maxNumLinks The max of links to be searched
+     * @param webPage WebPage object
      * @exception IOException Input Output exception
      * @exception WebCrawlerException Some exception from inputs
      * @return <code>void</code>
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
-    public void breadthOrder(String baseURL, int maxNumLinks) throws WebCrawlerException, IOException {
+    public Iterable<WebPage> BFS(WebPage webPage)
+            throws WebCrawlerException, IOException {
+
+        //Contar máximo de links
+        int countMaxLinks = 0;
+
+        //Insere página no grafo
+        this.insertWebPage(webPage);
+
+        List<WebPage> output = new ArrayList<>();
+
+        Set<WebPage> visited = new HashSet<>();
+        Queue<WebPage> queue = new LinkedList<>();
+
+        // Get all links
+        Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(this.startURL);
+        countMaxLinks = allIncidentWebPages.size();
         
-        // TODO
-    
+        output.add(webPage);
+        visited.add(webPage);
+        queue.add(webPage);
+
+        if (countMaxLinks >= this.numLinks) {
+            return output;
+        }
+
+        // Array para adicionar a uma lista de links já visitados
+        List<Link> visitedIncidentLinks = new ArrayList();
+
+        while (!allIncidentWebPages.isEmpty()) {
+
+            //Entra nos links associados a essa página
+            Link removedLinkToEnter = allIncidentWebPages.remove();
+            System.out.println("Link da próxima página a retirar: " + removedLinkToEnter.getLinkName());
+
+            // Adiciona a lista de links já visitados
+            visitedIncidentLinks.add(removedLinkToEnter);
+
+            // Cria um novo Vertex
+            WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
+            insertWebPage(newGeneretedVertex);
+            //output.add(newGeneretedVertex);
+            
+            // Faz ligação entre as WebPages
+            webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
+            
+            // Começa novo processo de geração de novas páginas
+            Queue<Link> processedLink = newGeneretedVertex.getAllIncidentWebPages(newGeneretedVertex.getPersonalURL());
+            countMaxLinks += processedLink.size();
+            print("Links dessa Página: %d "
+                    + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
+            
+            if(countMaxLinks >= this.numLinks)
+                return output;
+            
+            // Adiciona nova WebPage gerada a fila
+            queue.offer(newGeneretedVertex);
+            
+            //Adicionar a lista de outputs
+            output.add(newGeneretedVertex);
+            
+            // Remove o objeto WebPage da fila
+            queue.poll();
+            
+        }
+
+        return output;
+    }
+
+    private void insertWebPage(WebPage webPage) throws WebCrawlerException {
+
+        if (webPage == null) {
+            throw new WebCrawlerException("Cannot be null");
+        }
+
+//        if (findWebPage(webPage) != null) {
+//            throw new WebCrawlerException("Page alredy exists!");
+//        }
+        webCrawler.insertVertex(webPage);
+
     }
 
     /**
@@ -138,7 +198,7 @@ public class WebCrawler {
      */
     public int countLinks() {
         // TESTING
-        return graph.numEdges();
+        return webCrawler.numEdges();
     }
 
     /**
@@ -147,13 +207,13 @@ public class WebCrawler {
      * @return Number of titles (Vertex)
      */
     public int countTitles() {
-        return graph.numVertices();
+        return webCrawler.numVertices();
     }
 
     /**
      * Get a link between two a given titles
      *
-     * @param title Fisrt title
+     * @param title First title
      * @param title2 Second title
      * @return list of links between two titles
      */
@@ -164,13 +224,13 @@ public class WebCrawler {
             throw new WebCrawlerException("Title cannot be null");
         }
 
-        WebPage a1 = checkTitle(title);
-        WebPage a2 = checkTitle(title2);
+        WebPage a1 = findWebPage(title);
+        WebPage a2 = findWebPage(title2);
 
         List<Link> links = new ArrayList<>();
 
         try {
-            for (Edge<Link, WebPage> edge : graph.edges()) {
+            for (Edge<Link, WebPage> edge : webCrawler.edges()) {
                 if (title == a1 && title2 == a2) {
                     Link element = edge.element();
                     links.add(element);
@@ -182,19 +242,5 @@ public class WebCrawler {
         }
 
     }
-
-    /**
-     *
-     * @return To format list of links associated of an Title
-     */
-    @Override
-    public String toString() {
-        
-        
-        String output = "";
-        
-        return output;
-
-    }
-
+  
 }

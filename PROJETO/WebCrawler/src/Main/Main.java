@@ -19,21 +19,15 @@ public class Main {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
-        
-        try {
-            
-            String moodle = "https://moodle.ips.pt/1920/";
-            WebCrawler crawler = new WebCrawler(moodle);
-            crawler.start(moodle, 50);
-            System.out.println("Num Links " + crawler.countLinks());
-            System.out.println("Num Titles " + crawler.countTitles());
-            crawler.breadthOrder("https://moodle.ips.pt/1920/course/index.php?categoryid=7#maincontent", 50);
-            //System.out.println(crawler);
+    public static void main(String[] args) throws WebCrawlerException, IOException {
 
-        } catch (WebCrawlerException e) {
-            System.out.println(e.getMessage());
-        }
+        String moodle = "https://moodle.ips.pt/1920/";
+        String gTranslate = "https://translate.google.pt/";
+        WebCrawler crawler = new WebCrawler(gTranslate, 700);
+        crawler.start();
+        System.out.println("Num Links " + crawler.countLinks());
+        System.out.println("Num WebPages " + crawler.countTitles());
+        //System.out.println(crawler);
 
     }
 

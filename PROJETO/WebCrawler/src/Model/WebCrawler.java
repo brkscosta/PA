@@ -3,7 +3,7 @@ package Model;
 import Graph.Edge;
 import java.io.IOException;
 import Graph.Graph;
-import Graph.GraphEdgeList;
+import Graph.MyDiGraph;
 import Graph.Vertex;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class WebCrawler {
      */
     public WebCrawler(String string, int numberOfLinks) {
         this.startURL = string;
-        this.webCrawler = new GraphEdgeList();
+        this.webCrawler = new MyDiGraph();
         this.webPage = new WebPage(string);
         this.numLinks = numberOfLinks;
     }
@@ -69,31 +69,14 @@ public class WebCrawler {
     }
 
     /**
-     * Check if exists a link on graph
-     *
-     * @param link The link (URL)
-     * @return True if exists false otherwise
-     * @throws WebCrawlerException
-     */
-    private boolean isExistsLink(Link link) throws WebCrawlerException {
-        if (link == null) {
-            throw new WebCrawlerException("Object null");
-        }
-
-        Link find = null;
-        //equals was overriden in Airport!!
-        //find = v.element();
-        return webCrawler.edges().stream().anyMatch((v) -> (v.element().equals(link)));
-    }
-
-    /**
      * This method start the crow of a website
      *
      * @throws Model.WebCrawlerException To validate some bad inputs outputs
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
-        System.out.println("Print método start: \n\n" + this.BFS(webPage));
+        //System.out.println("Print método start: \n\n" + this.BFS(webPage));
+        this.BFS(webPage);
     }
     
     private static void print(String msg, Object... args) {
@@ -150,7 +133,6 @@ public class WebCrawler {
             // Cria um novo Vertex
             WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
             insertWebPage(newGeneretedVertex);
-            //output.add(newGeneretedVertex);
             
             // Faz ligação entre as WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
@@ -184,9 +166,6 @@ public class WebCrawler {
             throw new WebCrawlerException("Cannot be null");
         }
 
-//        if (findWebPage(webPage) != null) {
-//            throw new WebCrawlerException("Page alredy exists!");
-//        }
         webCrawler.insertVertex(webPage);
 
     }

@@ -10,6 +10,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that represents the <code>Vertex</code> on graph.
@@ -22,15 +26,14 @@ public class WebPage {
     private String titleName = "";
     private String personalURL = "";
     private final List<WebPage> incidentWebPages = new ArrayList<>();
-    private int statusCode;
+    private final int statusCode;
 
     /**
      * Build a new object of this type
      *
      * @param url Base URL to search
-     * @throws IOException
      */
-    public WebPage(String url) throws IOException {
+    public WebPage(String url) {
 
         // Instantiate the personalUrl
         this.personalURL = url;
@@ -42,12 +45,12 @@ public class WebPage {
         this.statusCode = connection.response().statusCode();
 
         // Check status code 
-        EStatusCode e = null;
-
-        String statusTitlePageName = e.getStatusTitleName(statusCode);
-
-        // Set page title
-        this.setTitleName(statusTitlePageName);
+        if (statusCode == 400) // Set page title how not found
+        {
+            this.titleName = EStatusCode.NOTFOUND.name();
+        } else {
+            this.titleName = EStatusCode.OK.name();
+        }
 
     }
 
@@ -58,7 +61,6 @@ public class WebPage {
      */
     public String getTitleName() {
         return titleName;
-
     }
 
     public void setPersonalURL(String personalURL) {
@@ -79,53 +81,49 @@ public class WebPage {
     }
 
     /**
-     * Return the status code from a URL
+     * Find all links on WebPage
      *
-     * @param url Site URL
-     * @exception Input Output exception
-     * @return Page status code in integer.
+     * @param personalLink Personal WebPage link
+     * @return List of all links found
+     * @throws WebCrawlerException
+     * @throws IOException
      */
-    private int getStatusCode(String url) throws IOException {
-        Connection.Response response = Jsoup.connect(url).execute();
-        int statusCode = response.statusCode();
-        return statusCode;
-    }
-
-    private List<Link> getIncidentWebPages() throws WebCrawlerException, IOException {
+    public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
 
         //Check if page is not found
-        if ("".equals(this.personalURL)) {
+        if ("".equals(personalLink)) {
             throw new WebCrawlerException("URL não pode ser vazio");
         }
 
-        Document doc = Jsoup.connect(this.personalURL).get();
+        Document doc = Jsoup.connect(personalLink).get();
         Elements links = doc.select("a[href]");
-        List<Link> listIncidentsWebPages = new ArrayList<>();
+        Queue<Link> listIncidentsWebPages = new LinkedList();
 
         for (Element link : links) {
-            String href = link.attr("href");
-            href = processLink(href, this.personalURL);
-            listIncidentsWebPages.add(new Link(href));
+            String href = link.attr("abs:href");
+            String newHref = processLink(href, personalLink);
+            Link newObjLink = new Link(newHref);
+            listIncidentsWebPages.offer(newObjLink);
         }
 
         return listIncidentsWebPages;
     }
 
     /**
-     * Process diferent types of url's
+     * Process different types of URL
      *
      * @param link The specific link
-     * @param start_url The base site URL
+     * @param startURL The base site URL
      * @return return a processed link in <code>string</code>
      */
-    private String processLink(String link, String start_url) {
+    private String processLink(String link, String startURL) {
         try {
-            URL u = new URL(start_url);
+            URL u = new URL(startURL);
             if (link.startsWith("./")) {
                 link = link.substring(2, link.length());
                 link = u.getProtocol() + "://" + u.getAuthority() + stripFilename(u.getPath()) + link;
             } else if (link.startsWith("#")) {
-                link = start_url + link;
+                link = startURL + link;
             } else if (link.startsWith("javascript:")) {
                 link = null;
             } else if (link.startsWith("../") || (!link.startsWith("http://") && !link.startsWith("https://"))) {
@@ -150,21 +148,23 @@ public class WebPage {
     }
 
     /**
-     * To print title name
+     * To print WebPage object
      *
-     * @return Formated title name
+     * @return Formatted title name
      */
     @Override
     public String toString() {
-        return "WebPage{" + "personalURL=" + personalURL + ", incidentWebPages=" + incidentWebPages + ", statusCode=" + statusCode + '}';
+        try {
+            return "WebPage { " + "personalURL=" + personalURL
+                    + ", incidentWebPages="
+                    + getAllIncidentWebPages(this.personalURL).size() + ", statusCode=" + statusCode + '}' + "\n";
+        } catch (WebCrawlerException ex) {
+            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
-
-    /**
-     * To print title name
-     *
-     * @return Formated title name
-     */
-    
 
     // StatusCode ENUM
     public static enum EStatusCode {

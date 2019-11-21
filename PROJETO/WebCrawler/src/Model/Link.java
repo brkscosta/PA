@@ -1,19 +1,12 @@
 package Model;
 
 /**
-<<<<<<< HEAD
-<<<<<<< Updated upstream
- *
-=======
  * Class that represents de <code>Edge<V, E></code> on graph.
  * 
->>>>>>> 2380f3999bd41e4d52f5b880fbb8f36d20dd0500
  * @author BRKsCosta
-=======
  * Class that represents de Edge {@link Graph.Edge} on graph.
  * 
  * @author BRKsCosta 
->>>>>>> Stashed changes
  */
 public class Link {
     

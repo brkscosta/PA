@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author brunomnsilva
  */
-public class GraphEdgeList<V, E> implements Digraph<V, E> {
+public class MyDiGraph<V, E> implements Digraph<V, E> {
 
     /* inner classes are defined at the end of the class, so are the auxiliary methods 
      */
@@ -29,7 +29,7 @@ public class GraphEdgeList<V, E> implements Digraph<V, E> {
     /**
      * Creates a empty graph.
      */
-    public GraphEdgeList() {
+    public MyDiGraph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
     }

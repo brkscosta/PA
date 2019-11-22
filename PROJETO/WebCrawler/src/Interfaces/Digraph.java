@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package Graph;
+package Interfaces;
 
 import java.util.Collection;
+import Exceptions.*;
 
 /**
  * A directed graph (or digraph) is a graph that is made up of a set of vertices 

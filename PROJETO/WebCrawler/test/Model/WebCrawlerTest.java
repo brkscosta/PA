@@ -5,11 +5,14 @@
  */
 package Model;
 
-import Graph.MyDiGraph;
 import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+// My packages
+import Interfaces.*;
+import Exceptions.*;
 
 /**
  *

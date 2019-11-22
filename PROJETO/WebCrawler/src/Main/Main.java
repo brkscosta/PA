@@ -6,7 +6,7 @@
 package Main;
 
 import Model.WebCrawler;
-import Model.WebCrawlerException;
+import Exceptions.WebCrawlerException;
 import java.io.IOException;
 
 /**
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author BRKsCosta
  */
 public class Main {
-
+   
     /**
      * @param args the command line arguments
      * @throws java.io.IOException

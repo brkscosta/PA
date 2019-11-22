@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package Model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// My packages
+import Interfaces.*;
+import Exceptions.*;
 
 /**
  * ADT Graph implementation that stores a collection of edges (and vertices) and

@@ -1,10 +1,6 @@
 package Model;
 
-import Graph.Edge;
 import java.io.IOException;
-import Graph.Graph;
-import Graph.MyDiGraph;
-import Graph.Vertex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
@@ -12,19 +8,23 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+// My packages
+import Interfaces.*;
+import Exceptions.*;
+
 @SuppressWarnings("null")
 /**
  * Model to be created to build de graph <code>Vertex</code>
  * {@link Graph.Vertex} is the type WebPage and <code>Edge</code>
  * {@link Graph.Edge} is the type of Link
  *
- * @author BRKsCosta
+ * @author BRKsCosta and Daniel Cordeiro
  */
 public class WebCrawler {
 
     private String startURL = "";
     private final Graph<WebPage, Link> webCrawler;
-    private WebPage webPage;
+    private WebPage initialWebPage;
     private int numPages = 0;
 
     /**
@@ -38,7 +38,7 @@ public class WebCrawler {
     public WebCrawler(String string, int numberOfLinks) throws IOException {
         this.startURL = string;
         this.webCrawler = new MyDiGraph();
-        this.webPage = new WebPage(string);
+        this.initialWebPage = new WebPage(string);
         this.numPages = numberOfLinks;
     }
 
@@ -76,7 +76,7 @@ public class WebCrawler {
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
-        Iterable<WebPage> BFS = this.BFS(webPage);
+        Iterable<WebPage> BFS = this.BFS(initialWebPage);
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));

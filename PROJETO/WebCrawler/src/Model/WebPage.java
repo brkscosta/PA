@@ -18,6 +18,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// My Packages
+import Exceptions.WebCrawlerException;
+
 /**
  * Class that represents the <code>Vertex</code> on graph.
  *

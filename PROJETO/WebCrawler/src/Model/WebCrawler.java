@@ -54,19 +54,19 @@ public class WebCrawler {
             throw new WebCrawlerException("Title cannot be null");
         }
 
-        WebPage find = null;
+        WebPage webPageFound = null;
         for (Vertex<WebPage> v : webCrawler.vertices()) {
-            if (v.element().equals(webpage)) { //equals was overriden in Airport!!
-                find = v.element();
+            if (v.element().equals(webpage)) {
+                webPageFound = v.element();
             }
         }
 
-        if (find == null) {
+        if (webPageFound == null) {
             throw new WebCrawlerException("WebPage with code ("
                     + webpage.getTitleName() + ") does not exist");
         }
 
-        return find;
+        return webPageFound;
     }
 
     /**
@@ -124,60 +124,61 @@ public class WebCrawler {
         //Insere página no grafo
         this.insertWebPage(webPage);
 
-        List<WebPage> output = new ArrayList<>();
+        List<WebPage> listOfWebPages = new ArrayList<>();
 
         Set<WebPage> visited = new HashSet<>();
         Queue<WebPage> queue = new LinkedList<>();
 
         // Get all links
         Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
+        
         System.out.println("Links da página root: " + webPage.getPersonalURL()
                 + " \n" + allIncidentWebPages);
-        output.add(webPage);
+        
+        listOfWebPages.add(webPage);
         visited.add(webPage);
         queue.add(webPage);
 
-        // Array para adicionar a uma lista de links já visitados
+        // List to add the visited links
         List<Link> visitedIncidentLinks = new ArrayList();
 
         while (!allIncidentWebPages.isEmpty()) {
 
-            //Entra nos links associados a essa página
+            // Goes inside the links associate to the page
             Link removedLinkToEnter = allIncidentWebPages.poll();
             System.out.println("Link da próxima página a retirar: " + removedLinkToEnter.getLinkName());
 
-            // Adiciona a lista de links já visitados
+            // Add to the visited list
             visitedIncidentLinks.add(removedLinkToEnter);
 
-            // Cria um novo Vertex
+            // Create a new WebPage
             WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
             insertWebPage(newGeneretedVertex);
 
-            // Faz ligação entre as WebPages
+            // Add the Edge between the WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
 
-            // Começa novo processo de geração de novas páginas
+            // It Starts the new process of generating pages
             Queue<Link> processedLink = newGeneretedVertex.getAllIncidentWebPages(newGeneretedVertex.getPersonalURL());
             print("Links dessa Página: %d "
                     + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
 
-            // Adiciona nova WebPage gerada a fila
+            // Add the new page to the queue
             queue.offer(newGeneretedVertex);
 
-            //Adicionar a lista de outputs
-            output.add(newGeneretedVertex);
-            countMaxVisitedPage = output.size();
+            // Add to the BFS List -> listOfWebPages variable
+            listOfWebPages.add(newGeneretedVertex);
+            countMaxVisitedPage = listOfWebPages.size();
 
             if (countMaxVisitedPage > this.numPages) {
-                return output;
+                return listOfWebPages;
             }
 
-            // Remove o objeto WebPage da fila
+            // Removes the WebPage from the queue
             queue.poll();
-
         }
 
-        return output;
+        return listOfWebPages;
     }
     
     /**

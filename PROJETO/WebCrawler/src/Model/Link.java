@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author BRKsCosta
  */
-public final class Link {
+public class Link{
 
     private String linkName = "";
     private List<String> array = new ArrayList();

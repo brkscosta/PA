@@ -1,10 +1,6 @@
 package Model;
 
-import Graph.Edge;
 import java.io.IOException;
-import Graph.Graph;
-import Graph.MyDiGraph;
-import Graph.Vertex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
@@ -14,19 +10,23 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// My packages
+import Interfaces.*;
+import Exceptions.*;
+
 @SuppressWarnings("null")
 /**
  * Model to be created to build de graph <code>Vertex</code>
  * {@link Graph.Vertex} is the type WebPage and <code>Edge</code>
  * {@link Graph.Edge} is the type of Link
  *
- * @author BRKsCosta
+ * @author BRKsCosta and Daniel Cordeiro
  */
 public class WebCrawler {
 
     private String startURL = "";
     private final Graph<WebPage, Link> webCrawler;
-    private WebPage webPage;
+    private WebPage initialWebPage;
     private int numPages = 0;
 
     /**
@@ -40,7 +40,7 @@ public class WebCrawler {
     public WebCrawler(String string, int numberOfLinks) throws IOException {
         this.startURL = string;
         this.webCrawler = new MyDiGraph();
-        this.webPage = new WebPage(string);
+        this.initialWebPage = new WebPage(string);
         this.numPages = numberOfLinks;
     }
 
@@ -51,24 +51,24 @@ public class WebCrawler {
      * @return Element of type <code>Link></code>
      * @throws WebCrawlerException Launch exception case some parameters are bad
      */
-    private WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
+    public WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
         if (webpage == null) {
             throw new WebCrawlerException("Title cannot be null");
         }
 
-        WebPage find = null;
+        WebPage webPageFound = null;
         for (Vertex<WebPage> v : webCrawler.vertices()) {
-            if (v.element().equals(webpage)) { //equals was overriden in Airport!!
-                find = v.element();
+            if (v.element().equals(webpage)) {
+                webPageFound = v.element();
             }
         }
 
-        if (find == null) {
+        if (webPageFound == null) {
             throw new WebCrawlerException("WebPage with code ("
                     + webpage.getTitleName() + ") does not exist");
         }
 
-        return find;
+        return webPageFound;
     }
 
     /**
@@ -78,7 +78,7 @@ public class WebCrawler {
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
-        Iterable<WebPage> BFS = this.BFS(webPage);
+        Iterable<WebPage> BFS = this.BFS(initialWebPage);
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));
@@ -127,60 +127,61 @@ public class WebCrawler {
         //Insere página no grafo
         this.insertWebPage(webPage);
 
-        List<WebPage> output = new ArrayList<>();
+        List<WebPage> listOfWebPages = new ArrayList<>();
 
         Set<WebPage> visited = new HashSet<>();
         Queue<WebPage> queue = new LinkedList<>();
 
         // Get all links
         Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
+        
         System.out.println("Links da página root: " + webPage.getPersonalURL()
                 + " \n" + allIncidentWebPages);
-        output.add(webPage);
+        
+        listOfWebPages.add(webPage);
         visited.add(webPage);
         queue.add(webPage);
 
-        // Array para adicionar a uma lista de links já visitados
+        // List to add the visited links
         List<Link> visitedIncidentLinks = new ArrayList();
 
         while (!allIncidentWebPages.isEmpty()) {
 
-            //Entra nos links associados a essa página
+            // Goes inside the links associate to the page
             Link removedLinkToEnter = allIncidentWebPages.poll();
             System.out.println("Link da próxima página a retirar: " + removedLinkToEnter.getLinkName());
 
-            // Adiciona a lista de links já visitados
+            // Add to the visited list
             visitedIncidentLinks.add(removedLinkToEnter);
 
-            // Cria um novo Vertex
+            // Create a new WebPage
             WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
             insertWebPage(newGeneretedVertex);
 
-            // Faz ligação entre as WebPages
+            // Add the Edge between the WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
 
-            // Começa novo processo de geração de novas páginas
+            // It Starts the new process of generating pages
             Queue<Link> processedLink = newGeneretedVertex.getAllIncidentWebPages(newGeneretedVertex.getPersonalURL());
             print("Links dessa Página: %d "
                     + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
 
-            // Adiciona nova WebPage gerada a fila
+            // Add the new page to the queue
             queue.offer(newGeneretedVertex);
 
-            //Adicionar a lista de outputs
-            output.add(newGeneretedVertex);
-            countMaxVisitedPage = output.size();
+            // Add to the BFS List -> listOfWebPages variable
+            listOfWebPages.add(newGeneretedVertex);
+            countMaxVisitedPage = listOfWebPages.size();
 
             if (countMaxVisitedPage > this.numPages) {
-                return output;
+                return listOfWebPages;
             }
 
-            // Remove o objeto WebPage da fila
+            // Removes the WebPage from the queue
             queue.poll();
-
         }
 
-        return output;
+        return listOfWebPages;
     }
 
     /**

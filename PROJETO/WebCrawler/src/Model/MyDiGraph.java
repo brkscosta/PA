@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package Model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// My packages
+import Interfaces.*;
+import Exceptions.*;
 
 /**
  * ADT Graph implementation that stores a collection of edges (and vertices) and
@@ -23,8 +27,8 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
     /* inner classes are defined at the end of the class, so are the auxiliary methods 
      */
-    private Map<V, Vertex<V>> vertices;
-    private Map<E, Edge<E, V>> edges;
+    private HashMap<V, Vertex<V>> vertices; // list of webPages
+    private HashMap<E, Edge<E, V>> edges; // list of edges between webPages by a link
 
     /**
      * Creates a empty graph.
@@ -261,7 +265,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    class MyVertex implements Vertex<V> {
+    private class MyVertex implements Vertex<V> {
 
         V element;
 
@@ -270,7 +274,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public V element() {
+        public V element(){
             return this.element;
         }
 
@@ -280,7 +284,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
     }
 
-    class MyEdge implements Edge<E, V> {
+    private class MyEdge implements Edge<E, V> {
 
         E element;
         Vertex<V> vertexOutbound;
@@ -293,7 +297,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public E element() {
+        public E element(){
             return this.element;
         }
 

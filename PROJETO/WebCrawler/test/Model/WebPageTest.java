@@ -22,13 +22,9 @@ public class WebPageTest {
     private WebPage wepageInstance;
     String moodle = "https://moodle.ips.pt/1920/";
 
-    public WebPageTest() throws IOException {
-        this.wepageInstance = new WebPage(this.moodle);
-    }
-
     @Before
     public void setUp() throws IOException {
-        this.wepageInstance = new WebPage(moodle);
+        this.wepageInstance = new WebPage(this.moodle);
     }
 
     /**
@@ -47,7 +43,7 @@ public class WebPageTest {
      */
     @Test
     public void testSetPersonalURL() {
-        System.out.println("setPersonalURL");
+        System.out.printsln("setPersonalURL");
         String expResult = this.moodle;
         wepageInstance.setPersonalURL(this.moodle);
         assertEquals(expResult, this.moodle);

@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Graph;
+package Exceptions;
+
 /**
  *
  * @author brunomnsilva
  */
-public class InvalidEdgeException extends RuntimeException {
+public class InvalidVertexException extends RuntimeException {
 
-    public InvalidEdgeException() {
-        super("The edge is invalid or does not belong to this graph.");
+    public InvalidVertexException() {
+        super("The vertex is invalid or does not belong to this graph.");
     }
 
-    public InvalidEdgeException(String string) {
+    public InvalidVertexException(String string) {
         super(string);
     }
     

@@ -6,7 +6,7 @@
 package Main;
 
 import Model.WebCrawler;
-import Model.WebCrawlerException;
+import Exceptions.WebCrawlerException;
 import java.io.IOException;
 
 /**
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author BRKsCosta
  */
 public class Main {
-
+   
     /**
      * @param args the command line arguments
      * @throws java.io.IOException
@@ -22,8 +22,8 @@ public class Main {
     public static void main(String[] args) throws WebCrawlerException, IOException {
 
         String moodle = "https://moodle.ips.pt/1920/";
-        String stackOverFlow = "https://stackoverflow.com/";
-        WebCrawler crawler = new WebCrawler(stackOverFlow, 15);
+        String stackOverflow = "https://stackoverflow.com/";
+        WebCrawler crawler = new WebCrawler(stackOverflow, 15);
         crawler.start();
     }
 

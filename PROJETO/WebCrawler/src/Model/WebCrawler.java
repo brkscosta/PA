@@ -83,7 +83,7 @@ public class WebCrawler {
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
-        
+
     }
 
     private static void print(String msg, Object... args) {
@@ -130,17 +130,17 @@ public class WebCrawler {
         List<WebPage> listOfWebPages = new ArrayList<>();
 
         Set<WebPage> visited = new HashSet<>();
-        Queue<WebPage> queue = new LinkedList<>();
+        //Queue<WebPage> queue = new LinkedList<>();
 
         // Get all links
         Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
-        
+
         System.out.println("Links da página root: " + webPage.getPersonalURL()
                 + " \n" + allIncidentWebPages);
-        
+
         listOfWebPages.add(webPage);
-        visited.add(webPage);
-        queue.add(webPage);
+        //visited.add(webPage);
+        //queue.add(webPage);
 
         // List to add the visited links
         List<Link> visitedIncidentLinks = new ArrayList();
@@ -156,8 +156,9 @@ public class WebCrawler {
 
             // Create a new WebPage
             WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
-            insertWebPage(newGeneretedVertex);
-
+            //insertWebPage(newGeneretedVertex);
+            webCrawler.insertVertex(newGeneretedVertex);
+            
             // Add the Edge between the WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
 
@@ -166,8 +167,21 @@ public class WebCrawler {
             print("Links dessa Página: %d "
                     + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
 
+//            while (!processedLink.isEmpty()) {
+//
+//                Link poll = processedLink.poll();
+//
+//                // Create a new WebPage
+//                WebPage newGeneretedChildVertex = new WebPage(removedLinkToEnter.getLinkName());
+//                insertWebPage(newGeneretedVertex);
+//
+//                // Add the Edge between the WebPages
+//                webCrawler.insertEdge(webPage, newGeneretedChildVertex, removedLinkToEnter);
+//
+//            }
+
             // Add the new page to the queue
-            queue.offer(newGeneretedVertex);
+            //queue.offer(newGeneretedVertex);
 
             // Add to the BFS List -> listOfWebPages variable
             listOfWebPages.add(newGeneretedVertex);
@@ -178,7 +192,7 @@ public class WebCrawler {
             }
 
             // Removes the WebPage from the queue
-            queue.poll();
+            //queue.poll();
         }
 
         return listOfWebPages;

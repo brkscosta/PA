@@ -43,7 +43,7 @@ public class WebPageTest {
      */
     @Test
     public void testSetPersonalURL() {
-        System.out.printsln("setPersonalURL");
+        System.out.println("setPersonalURL");
         String expResult = this.moodle;
         wepageInstance.setPersonalURL(this.moodle);
         assertEquals(expResult, this.moodle);

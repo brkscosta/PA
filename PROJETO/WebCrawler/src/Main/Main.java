@@ -23,7 +23,7 @@ public class Main {
 
         String moodle = "https://moodle.ips.pt/1920/";
         String stackOverflow = "https://stackoverflow.com/";
-        WebCrawler crawler = new WebCrawler(stackOverflow, 15);
+        WebCrawler crawler = new WebCrawler(stackOverflow, 4);
         crawler.start();
     }
 

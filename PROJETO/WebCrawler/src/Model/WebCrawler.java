@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("null")
 /**
@@ -81,7 +83,7 @@ public class WebCrawler {
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
-        //this.BFS(webPage);
+        
     }
 
     private static void print(String msg, Object... args) {
@@ -100,8 +102,9 @@ public class WebCrawler {
         int count = 0;
 
         for (Vertex<WebPage> page : webCrawler.vertices()) {
-            if (page.element().getStatusCode() == 404)
+            if (page.element().getStatusCode() == 404) {
                 count++;
+            }
         }
         return count;
     }
@@ -179,11 +182,12 @@ public class WebCrawler {
 
         return output;
     }
-    
+
     /**
      * Just insert a WebPage on the graph
+     *
      * @param webPage
-     * @throws WebCrawlerException 
+     * @throws WebCrawlerException
      */
     public void insertWebPage(WebPage webPage) throws WebCrawlerException {
 

@@ -59,7 +59,7 @@ public final class Link {
     /**
      * Format the URL
      *
-     * @return URL formated
+     * @return URL formatted
      */
     @Override
     public String toString() {

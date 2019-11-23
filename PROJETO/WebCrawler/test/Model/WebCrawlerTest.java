@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 // My packages
 import Interfaces.*;
 import Exceptions.*;
+import org.junit.Before;
 
 /**
  *
@@ -23,8 +24,10 @@ public class WebCrawlerTest {
     private WebCrawler webCrawlerInstance;
     private MyDiGraph graphInstance;
     String moodle = "https://moodle.ips.pt/1920/";
+    String stackOverflow = "https://stackoverflow.com/";
 
-    public WebCrawlerTest() throws IOException, WebCrawlerException {
+    @Before
+    public void setUp() throws IOException, WebCrawlerException{
         this.webCrawlerInstance = new WebCrawler(this.moodle, 2);
         this.graphInstance = new MyDiGraph<WebPage, Link>();
         webCrawlerInstance.start();
@@ -61,6 +64,41 @@ public class WebCrawlerTest {
         assertEquals(expResult, result);
     }
     
+    
+    // POR TESTAR
+    @Test 
+    public void insertWebPage_true_insertingNewPageUrl(){
+        
+        try {
+                // Testing a new WebCrawler without the start
+                WebCrawler myNewWebCrawler = new WebCrawler(stackOverflow, 15);
+
+                // Insert a new Vertex - WebPage
+                myNewWebCrawler.insertWebPage(new WebPage("https://stackoverflow.com/jobs"));
+
+                // Get the count of webPages
+                int result = myNewWebCrawler.countWebPages();
+                
+                // Check if the new webCrawler has the inserted webPage
+                assertEquals(1, result);
+        }catch(Exception e){
+            
+        }
+    }
+    
+    // POR TESTAR
+    @Test
+    public void findWebPage_true_searchingWebPage(){
+        try{
+            WebPage expectedWebPage = new WebPage("https://stackoverflow.com/jobs");   
+            
+            WebPage webPageFound = webCrawlerInstance.findWebPage(expectedWebPage);
+            
+            assertEquals(webPageFound, webPageFound.getPersonalURL());
+        }catch (Exception e){
+            
+        }
+    }
     
     
 }

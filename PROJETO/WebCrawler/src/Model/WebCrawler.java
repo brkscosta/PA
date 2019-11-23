@@ -49,7 +49,7 @@ public class WebCrawler {
      * @return Element of type <code>Link></code>
      * @throws WebCrawlerException Launch exception case some parameters are bad
      */
-    private WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
+    public WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
         if (webpage == null) {
             throw new WebCrawlerException("Title cannot be null");
         }

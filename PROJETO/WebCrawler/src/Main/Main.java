@@ -22,8 +22,8 @@ public class Main {
     public static void main(String[] args) throws WebCrawlerException, IOException {
 
         String moodle = "https://moodle.ips.pt/1920/";
-        String stackOverFlow = "https://stackoverflow.com/";
-        WebCrawler crawler = new WebCrawler(stackOverFlow, 15);
+        String stackOverflow = "https://stackoverflow.com/";
+        WebCrawler crawler = new WebCrawler(stackOverflow, 15);
         crawler.start();
     }
 

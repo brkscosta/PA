@@ -25,7 +25,7 @@ import Exceptions.*;
 public class WebCrawler {
 
     private String startURL = "";
-    private final Graph<WebPage, Link> webCrawler;
+    private final Digraph<WebPage, Link> webCrawler;
     private WebPage initialWebPage;
     private int numPages = 0;
 
@@ -159,7 +159,8 @@ public class WebCrawler {
 
             // Add the Edge between the WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
-
+            //webCrawler.outboundEdges((Vertex<WebPage>)webPage);
+            
             // It Starts the new process of generating pages
             Queue<Link> processedLink = newGeneretedVertex.getAllIncidentWebPages(newGeneretedVertex.getPersonalURL());
             print("Links dessa Página: %d "
@@ -171,7 +172,7 @@ public class WebCrawler {
             countMaxVisitedPage = listOfWebPages.size();
 
             if (countMaxVisitedPage > this.numPages) {
-
+    
                 while (!processedLink.isEmpty()) {
 
                     Link poll = processedLink.poll();

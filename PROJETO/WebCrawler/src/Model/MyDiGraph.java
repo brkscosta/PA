@@ -90,7 +90,8 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         MyEdge edge = checkEdge(e);
 
         if (!edge.contains(v)) {
-            return null; /* this edge does not connect vertex v */
+            return null;
+            /* this edge does not connect vertex v */
         }
 
         if (edge.vertices()[0] == v) {
@@ -262,7 +263,19 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
     @Override
     public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkVertex(outbound);
+
+        List<Edge<E, V>> outBoundEdges = new ArrayList<>();
+        for (Edge<E, V> edge : edges.values()) {
+
+            if (edge.vertices()[1] == outbound) {
+                /* edge.vertices()[0] == v || edge.vertices()[1] == v */
+                outBoundEdges.add(edge);
+            }
+
+        }
+
+        return outBoundEdges;
     }
 
     private class MyVertex implements Vertex<V> {
@@ -274,7 +287,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public V element(){
+        public V element() {
             return this.element;
         }
 
@@ -297,7 +310,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public E element(){
+        public E element() {
             return this.element;
         }
 

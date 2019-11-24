@@ -173,7 +173,14 @@ public class WebCrawler {
 
         return BFSList;
     }
-
+    
+    /**
+     * This method goes 
+     * @param webPage
+     * @return
+     * @throws WebCrawlerException
+     * @throws IOException 
+     */
     public Iterable<WebPage> BFSByDepth(WebPage webPage)
             throws WebCrawlerException, IOException {
 

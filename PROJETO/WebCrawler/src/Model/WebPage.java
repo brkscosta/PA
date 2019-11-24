@@ -54,14 +54,18 @@ public class WebPage {
         this.statusCode = this.getStatusCode();
 
         try {
-            if (statusCode == 404) {
-                this.statusCode = 404;
-                this.titleName = "404 - Page not found";
-            } else if (statusCode == 200) {
-                this.titleName = connection.get().title();
-                this.statusCode = 200;
-            } else {
-                this.titleName = Integer.toString(getStatusCode());
+            switch (statusCode) {
+                case 404:
+                    this.statusCode = 404;
+                    this.titleName = "404 - Page not found";
+                    break;
+                case 200:
+                    this.titleName = connection.get().title();
+                    this.statusCode = 200;
+                    break;
+                default:
+                    this.titleName = Integer.toString(getStatusCode());
+                    break;
             }
         } catch (IOException e) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);

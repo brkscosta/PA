@@ -120,7 +120,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     @Override
     public Vertex<V> insertVertex(V vElement) {
         if (existsVertexWith(vElement)) {
-            throw new IllegalArgumentException("There's already a vertex with this element.");
+            throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
         MyVertex newVertex = new MyVertex(vElement);

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 // My packages
 import Interfaces.*;
 import Exceptions.*;
+import Main.Main;
 
 @SuppressWarnings("null")
 /**
@@ -24,61 +25,58 @@ import Exceptions.*;
  */
 public class WebCrawler {
 
+    // Default attributes
     private String startURL = "";
-    private final Digraph<WebPage, Link> webCrawler;
-    private WebPage initialWebPage;
-    private int numPages = 0;
+    public final Digraph<WebPage, Link> webCrawler;
+    private WebPage rootWebPage;
+
+    // StopCriteria
+    private int numStopCriteria = 0;
+    private StopCriteria stopCriteriaChoosed;
+
+    public enum StopCriteria {
+        PAGES, DEPTH
+    }
 
     /**
      *
      * Create a object of <i><p>
      * Web Crawler </p></i> type with a DiGraph instance s
      *
-     * @param string Base URL
-     * @param numberOfLinks Max number of link requested by user
+     * @param baseUrl the root url
+     * @param criteriaNumber number of stop criteria
+     * @param stopCriteria type of stop criteria
      */
-    public WebCrawler(String string, int numberOfLinks) throws IOException {
-        this.startURL = string;
-        this.webCrawler = new MyDiGraph();
-        this.initialWebPage = new WebPage(string);
-        this.numPages = numberOfLinks;
-    }
+    public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
 
-    /**
-     * Check a title if exists on graph
-     *
-     * @param title title to be searched
-     * @return Element of type <code>Link></code>
-     * @throws WebCrawlerException Launch exception case some parameters are bad
-     */
-    public WebPage findWebPage(WebPage webpage) throws WebCrawlerException {
-        if (webpage == null) {
-            throw new WebCrawlerException("Title cannot be null");
-        }
+        // Assigned values given
+        this.startURL = baseUrl;
+        this.numStopCriteria = criteriaNumber;
+        this.stopCriteriaChoosed = stopCriteria;
 
-        WebPage webPageFound = null;
-        for (Vertex<WebPage> v : webCrawler.vertices()) {
-            if (v.element().equals(webpage)) {
-                webPageFound = v.element();
-            }
-        }
-
-        if (webPageFound == null) {
-            throw new WebCrawlerException("WebPage with code ("
-                    + webpage.getTitleName() + ") does not exist");
-        }
-
-        return webPageFound;
+        // Instanciate new values
+        this.webCrawler = new MyDiGraph<>();
+        this.rootWebPage = new WebPage(baseUrl);
     }
 
     /**
      * This method start the crow of a website
      *
-     * @throws Model.WebCrawlerException To validate some bad inputs outputs
+     * @throws Exceptions.WebCrawlerException
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
-        Iterable<WebPage> BFS = this.BFS(initialWebPage);
+        // Use different ways gettins BFS order
+        Iterable<WebPage> BFS;
+        if (stopCriteriaChoosed == StopCriteria.PAGES) {
+            Vertex<WebPage> root = webCrawler.insertVertex((new WebPage(rootWebPage.getPersonalURL())));
+            //BFS = bredthFirstTranversalVersion2(root);
+            //System.out.println(bredthFirstTranversalVersion2(root));
+            BFS = this.BFSByPages(rootWebPage);
+        } else {
+            BFS = this.BFSByDepth(rootWebPage);
+        }
+
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));
@@ -96,6 +94,7 @@ public class WebCrawler {
      * @param myWebPage
      * @return Counter of pages
      * @throws IOException
+     * @throws Exceptions.WebCrawlerException
      */
     public int getPagesNotFound(WebPage myWebPage) throws IOException, WebCrawlerException {
 
@@ -118,99 +117,128 @@ public class WebCrawler {
      * @return <code>void</code>
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
-    public Iterable<WebPage> BFS(WebPage webPage)
+    public Iterable<WebPage> BFSByPages(WebPage webPage)
             throws WebCrawlerException, IOException {
 
-        //Contar máximo de WebPages
+        // Variables
+        // Contar numero de WebPages contadas
         int countMaxVisitedPage = 0;
+        List<WebPage> BFSList = new ArrayList<>();
+        Queue<WebPage> webPagesToVisit = new LinkedList<>();
 
-        //Insere página no grafo
-        this.insertWebPage(webPage);
+        if (this.numStopCriteria == 0) {
+            System.out.println("Web Crawler não tem nenhuma Web Page");
+            return BFSList;
+        } else if (this.numStopCriteria >= 1) {
 
-        List<WebPage> listOfWebPages = new ArrayList<>();
+            webPagesToVisit.add(webPage);
 
-        Set<WebPage> visited = new HashSet<>();
-        //Queue<WebPage> queue = new LinkedList<>();
+            // Insert the webPage in the webCrawler
+            webCrawler.insertVertex(webPage);
+            BFSList.add(webPage);
 
-        // Get all links
-        Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
+            // Increment countMaxVisitedPage by 1
+            countMaxVisitedPage++;
+        }
 
-        System.out.println("Links da página root: " + webPage.getPersonalURL()
-                + " \n" + allIncidentWebPages);
+        while (!webPagesToVisit.isEmpty()) {
+            WebPage visitedWebPage = webPagesToVisit.poll();
+            System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
 
-        listOfWebPages.add(webPage);
+            // PRINT SOMETHING
+            // Get all incident links for 
+            Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
 
-        // List to add the visited links
-        List<Link> visitedIncidentLinks = new ArrayList();
+            for (Link link : allIncidentWebLinks) {
 
-        while (!allIncidentWebPages.isEmpty()) {
-
-            // Goes inside the links associate to the page
-            Link removedLinkToEnter = allIncidentWebPages.poll();
-            System.out.println("Link da próxima página a retirar: " + removedLinkToEnter.getLinkName());
-
-            // Add to the visited list
-            visitedIncidentLinks.add(removedLinkToEnter);
-
-            // Create a new WebPage
-            WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
-            //insertWebPage(newGeneretedVertex);
-            webCrawler.insertVertex(newGeneretedVertex);
-
-            // Add the Edge between the WebPages
-            webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
-            //webCrawler.outboundEdges((Vertex<WebPage>)webPage);
-            
-            // It Starts the new process of generating pages
-            Queue<Link> processedLink = newGeneretedVertex.getAllIncidentWebPages(newGeneretedVertex.getPersonalURL());
-            print("Links dessa Página: %d "
-                    + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
-
-            // Add to the BFS List -> listOfWebPages variable
-            listOfWebPages.add(newGeneretedVertex);
-
-            countMaxVisitedPage = listOfWebPages.size();
-
-            if (countMaxVisitedPage > this.numPages) {
-    
-                while (!processedLink.isEmpty()) {
-
-                    Link poll = processedLink.poll();
-
-                    WebPage childLinks = new WebPage(poll.getLinkName());
-                    listOfWebPages.add(childLinks);
-                    countMaxVisitedPage = listOfWebPages.size();
-                    System.out.println("Gerando fillhos: " + childLinks);
-
-                    insertWebPage(childLinks);
-                    webCrawler.insertEdge(newGeneretedVertex, childLinks, poll);
-
-                    if (countMaxVisitedPage > this.numPages) {
-                        return listOfWebPages;
-                    }
-
+                if (countMaxVisitedPage == this.numStopCriteria) {
+                    return BFSList;
                 }
 
+                // Insert a new WebPage in the webCrawler
+                WebPage webPageInserting = new WebPage(link.getLinkName());
+                webCrawler.insertVertex(webPageInserting);
+                BFSList.add(webPageInserting);
+                webPagesToVisit.add(webPageInserting);
+                System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
+
+                // Insert a new Link between WebPages
+                webCrawler.insertEdge(visitedWebPage, webPageInserting, link);
+
+                // Increment countMaxVisitedPage by 1
+                countMaxVisitedPage++;
+            }
+            System.out.println("]\n");
+        }
+
+        return BFSList;
+    }
+
+    public Iterable<WebPage> BFSByDepth(WebPage webPage)
+            throws WebCrawlerException, IOException {
+
+        // Variables
+        // Contar numero de links incidentes percorridos desde a root
+        int countLevelOfWebCrawler = 0;
+        List<WebPage> BFSList = new ArrayList<>();
+        Queue<WebPage> WebPagesToVisit = new LinkedList<>();
+
+        if (this.numStopCriteria == 0) {
+            System.out.println("Web Crawler contém como root no nivel 0: " + webPage.getPersonalURL());
+            // Insert the webPage in the webCrawler
+            webCrawler.insertVertex(webPage);
+            BFSList.add(webPage);
+            return BFSList;
+        } else {
+            WebPagesToVisit.add(webPage);
+        }
+
+        List<WebPage> incidentsToVisit = new ArrayList<>(); // This variable will save the incidents of one level
+        incidentsToVisit.add(webPage);
+
+        WebPage lastWebPageOfALevel = new WebPage(webPage.getPersonalURL());
+
+        while (!WebPagesToVisit.isEmpty()) {
+            WebPage visitedWebPage = WebPagesToVisit.poll();
+            webCrawler.insertVertex(visitedWebPage);
+
+            System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
+
+            if (incidentsToVisit.contains(visitedWebPage)) {
+                countLevelOfWebCrawler++;
             }
 
+            // PRINT SOMETHING
+            // Get all incident links for 
+            Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+
+            // I will create this variable to make sure it saves the last incidentWebLink
+            WebPage webPageInserting = null;
+            for (Link link : allIncidentWebLinks) {
+
+                // Insert a new WebPage in the webCrawler
+                webPageInserting = new WebPage(link.getLinkName());
+                webCrawler.insertVertex(webPageInserting);
+
+                WebPagesToVisit.add(webPageInserting);
+                System.out.println("Link da página: " + webPageInserting.getPersonalURL());
+
+                // Insert a new Link between WebPages
+                webCrawler.insertEdge(visitedWebPage, webPageInserting, link);
+
+            }
+            lastWebPageOfALevel = webPageInserting;
+
+            System.out.println("]\n");
+
+            if (countLevelOfWebCrawler == this.numStopCriteria) {
+                return BFSList;
+            }
         }
 
-        return listOfWebPages;
+        return BFSList;
     }
-
-    /**
-     * Just insert a WebPage on the graph
-     *
-     * @param webPage
-     * @throws WebCrawlerException
-     */
-    public void insertWebPage(WebPage webPage) throws WebCrawlerException {
-
-        if (webPage == null) {
-            throw new WebCrawlerException("Cannot be null");
-        }
-        webCrawler.insertVertex(webPage);
-    }
+    
 
     /**
      * Counter of links

@@ -265,17 +265,17 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
         checkVertex(outbound);
 
-        List<Edge<E, V>> outBoundEdges = new ArrayList<>();
+        List<Edge<E, V>> outboundEdges = new ArrayList<>();
         for (Edge<E, V> edge : edges.values()) {
 
-            if (edge.vertices()[1] == outbound) {
+            if (edge.vertices()[0] == outbound) {
                 /* edge.vertices()[0] == v || edge.vertices()[1] == v */
-                outBoundEdges.add(edge);
+                outboundEdges.add(edge);
             }
 
         }
 
-        return outBoundEdges;
+        return outboundEdges;
     }
 
     private class MyVertex implements Vertex<V> {

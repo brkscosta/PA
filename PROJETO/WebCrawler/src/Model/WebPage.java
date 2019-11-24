@@ -32,12 +32,13 @@ public class WebPage {
     private String titleName = "";
     private String personalURL = "";
     private final List<WebPage> incidentWebPages = new ArrayList<>();
-    private final int statusCode;
+    private int statusCode;
 
     /**
      * Build a new object of this type
      *
      * @param url Base URL to search
+     * @throws java.io.IOException
      */
     public WebPage(String url) throws IOException {
 
@@ -45,19 +46,31 @@ public class WebPage {
         this.personalURL = url;
 
         // Create a connection to the url
-        Connection connection = Jsoup.connect(this.personalURL);
+        Connection connection = Jsoup.connect(this.personalURL).
+                userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21").
+                timeout(10000);
 
         // Get the status code
         this.statusCode = this.getStatusCode();
+
         try {
-            if(statusCode == 404)
-                this.titleName = "404 - Page not found";  
-            this.titleName = connection.get().title();
+            if (statusCode == 404) {
+                this.statusCode = 404;
+                this.titleName = "404 - Page not found";
+            } else if (statusCode == 200) {
+                this.titleName = connection.get().title();
+                this.statusCode = 200;
+            } else {
+                this.titleName = Integer.toString(getStatusCode());
+            }
         } catch (IOException e) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);
-            return;
         }
-        
+
+    }
+
+    public void setStatusCode(int status) {
+        this.statusCode = status;
     }
 
     /**
@@ -68,35 +81,39 @@ public class WebPage {
     public String getTitleName() {
         return titleName;
     }
-    
+
     /**
      * Set personal page URL
+     *
      * @param personalURL The URL to search
      */
     public void setPersonalURL(String personalURL) {
         this.personalURL = personalURL;
     }
-    
+
     /**
      * Get WebPage personal URL
-     * @return 
+     *
+     * @return
      */
     public String getPersonalURL() {
         return personalURL;
     }
-    
+
     /**
      * Get status code from WebPage
+     *
      * @return Return the status code in a integer
      * @throws MalformedURLException
-     * @throws IOException 
+     * @throws IOException
      */
-    public int getStatusCode() throws MalformedURLException, IOException {
+    public final int getStatusCode() throws MalformedURLException, IOException {
         URL url = new URL(this.personalURL);
-        HttpURLConnection http = (HttpURLConnection) url.openConnection();
-        int statusCode = http.getResponseCode();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
         
-        return statusCode;
+        return connection.getResponseCode();
     }
 
     /**
@@ -134,11 +151,11 @@ public class WebPage {
             listIncidentsWebPages.offer(newObjLink);
 
         }
-        
+
         Set<Link> set = new HashSet(listIncidentsWebPages);
         listIncidentsWebPages.clear();
         listIncidentsWebPages.addAll(set);
-        
+
         return listIncidentsWebPages;
     }
 
@@ -189,9 +206,9 @@ public class WebPage {
     public String toString() {
         try {
             return "WebPage { " + "personalURL=" + personalURL
-                    + ", incidentWebPages="
+                    + ", incidentWebPages = "
                     + getAllIncidentWebPages(this.personalURL).size()
-                    + ", statusCode=" + statusCode + '}' + "\n";
+                    + ", statusCode = " + this.statusCode + '}' + "\n";
         } catch (WebCrawlerException ex) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

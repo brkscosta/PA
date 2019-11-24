@@ -10,13 +10,12 @@ import Interfaces.Digraph;
 import Interfaces.Edge;
 import Interfaces.Vertex;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
 /**
  *
  * @author BRKsCosta
@@ -46,6 +45,7 @@ public class MyDiGraphTest {
         vertex.add(facebook);
         vertex.add(instagram);
         vertex.add(santander);
+        vertex.add(moodle);
 
         String linkFacebook = "facebook.com";
         String linkMoodle = "moodle.com";
@@ -54,9 +54,12 @@ public class MyDiGraphTest {
 
         Edge<String, String> e1 = digraph.insertEdge(google, facebook, linkFacebook);
         edges.add(e1);
-        edges.add(digraph.insertEdge(google, moodle, linkMoodle));
-        edges.add(digraph.insertEdge(facebook, instagram, linkInstagram));
-        edges.add(digraph.insertEdge(facebook, santander, linkSantander));
+        Edge<String, String> e2 = digraph.insertEdge(google, moodle, linkMoodle);
+        edges.add(e2);
+        Edge<String, String> e3 = digraph.insertEdge(facebook, instagram, linkInstagram);
+        edges.add(e3);
+        Edge<String, String> e4 = digraph.insertEdge(facebook, santander, linkSantander);
+        edges.add(e4);
 
     }
 
@@ -87,7 +90,7 @@ public class MyDiGraphTest {
 //
 //        assertEquals(expVertex, resVertex);
     }
-    
+
     /**
      * Test of incidentEdges method, of class MyDiGraph.
      */
@@ -101,6 +104,9 @@ public class MyDiGraphTest {
      */
     @Test
     public void testOpposite() {
+        Vertex<String> opposite = digraph.opposite(vertex.get(4), edges.get(1));
+        String element = opposite.element();
+        assertEquals("Google", element);
     }
 
     /**
@@ -108,6 +114,7 @@ public class MyDiGraphTest {
      */
     @Test
     public void testAreAdjacent() {
+        assertEquals(true, digraph.areAdjacent(vertex.get(0), vertex.get(4)));
     }
 
     /**
@@ -161,7 +168,6 @@ public class MyDiGraphTest {
     public void testRemoveEdge() {
 
         for (Edge<String, String> edge : edges) {
-
             if (edge.element().contains("facebook.com")) {
                 assertEquals("facebook.com", digraph.removeEdge(edge));
             }
@@ -210,10 +216,10 @@ public class MyDiGraphTest {
 
         List<String> arr = new ArrayList<>();
         List<String> arrAux = new ArrayList<>();
-        
+
         arrAux.add("facebook.com");
         arrAux.add("moodle.com");
-        
+
         for (Edge<String, String> outboundEdge : outboundEdges) {
             if (outboundEdge.vertices()[0] == vertex.get(0)) {
                 arr.add(outboundEdge.element());
@@ -221,7 +227,7 @@ public class MyDiGraphTest {
         }
         System.out.println(" " + arr.contains("facebook.com") + " " + arrAux.contains("moodle.com"));
         System.out.println(" " + arr.contains("moodle.com") + " " + arrAux.contains("facebook.com"));
-        
+
     }
 
 }

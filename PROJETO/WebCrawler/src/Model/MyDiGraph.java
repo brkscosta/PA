@@ -110,9 +110,13 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
         /* find and edge that contains both u and v */
         for (Edge<E, V> edge : edges.values()) {
-            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
+//            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
+//                return true;
+//            }
+            if(edge.vertices()[0] == u && edge.vertices()[1] == v || 
+                    edge.vertices()[0] == v && edge.vertices()[1] == v)
                 return true;
-            }
+
         }
         return false;
     }

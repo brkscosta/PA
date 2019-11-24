@@ -49,10 +49,15 @@ public class WebPage {
 
         // Get the status code
         this.statusCode = this.getStatusCode();
+        try {
+            if(statusCode == 404)
+                this.titleName = "404 - Page not found";  
+            this.titleName = connection.get().title();
+        } catch (IOException e) {
+            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);
+            return;
+        }
         
-        if(statusCode != 404)
-            this.titleName = connection.get().title();  
-        this.titleName = "Page not found";
     }
 
     /**

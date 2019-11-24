@@ -23,7 +23,9 @@ public class Main {
 
         String moodle = "https://moodle.ips.pt/1920/";
         String stackOverflow = "https://stackoverflow.com/";
-        WebCrawler crawler = new WebCrawler(stackOverflow, 4);
+        String google = "https://www.google.com/";
+        String youTube = "https://www.youtube.com/watch?v=yF3JWJksP9I";
+        WebCrawler crawler = new WebCrawler(google, 50);
         crawler.start();
     }
 

@@ -139,8 +139,6 @@ public class WebCrawler {
                 + " \n" + allIncidentWebPages);
 
         listOfWebPages.add(webPage);
-        //visited.add(webPage);
-        //queue.add(webPage);
 
         // List to add the visited links
         List<Link> visitedIncidentLinks = new ArrayList();
@@ -158,7 +156,7 @@ public class WebCrawler {
             WebPage newGeneretedVertex = new WebPage(removedLinkToEnter.getLinkName());
             //insertWebPage(newGeneretedVertex);
             webCrawler.insertVertex(newGeneretedVertex);
-            
+
             // Add the Edge between the WebPages
             webCrawler.insertEdge(webPage, newGeneretedVertex, removedLinkToEnter);
 
@@ -167,32 +165,33 @@ public class WebCrawler {
             print("Links dessa Página: %d "
                     + "\n Geração de links novo vertice: %s", processedLink.size(), processedLink);
 
-//            while (!processedLink.isEmpty()) {
-//
-//                Link poll = processedLink.poll();
-//
-//                // Create a new WebPage
-//                WebPage newGeneretedChildVertex = new WebPage(removedLinkToEnter.getLinkName());
-//                insertWebPage(newGeneretedVertex);
-//
-//                // Add the Edge between the WebPages
-//                webCrawler.insertEdge(webPage, newGeneretedChildVertex, removedLinkToEnter);
-//
-//            }
-
-            // Add the new page to the queue
-            //queue.offer(newGeneretedVertex);
-
             // Add to the BFS List -> listOfWebPages variable
             listOfWebPages.add(newGeneretedVertex);
+
             countMaxVisitedPage = listOfWebPages.size();
 
             if (countMaxVisitedPage > this.numPages) {
-                return listOfWebPages;
+
+                while (!processedLink.isEmpty()) {
+
+                    Link poll = processedLink.poll();
+
+                    WebPage childLinks = new WebPage(poll.getLinkName());
+                    listOfWebPages.add(childLinks);
+                    countMaxVisitedPage = listOfWebPages.size();
+                    System.out.println("Gerando fillhos: " + childLinks);
+
+                    insertWebPage(childLinks);
+                    webCrawler.insertEdge(newGeneretedVertex, childLinks, poll);
+
+                    if (countMaxVisitedPage > this.numPages) {
+                        return listOfWebPages;
+                    }
+
+                }
+
             }
 
-            // Removes the WebPage from the queue
-            //queue.poll();
         }
 
         return listOfWebPages;

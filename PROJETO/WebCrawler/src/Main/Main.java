@@ -25,7 +25,7 @@ public class Main {
         String stackOverflow = "https://stackoverflow.com/";
         String google = "https://www.google.com/";
         String youTube = "https://www.youtube.com/watch?v=yF3JWJksP9I";
-        WebCrawler crawler = new WebCrawler(google, 50);
+        WebCrawler crawler = new WebCrawler(google, 50, WebCrawler.StopCriteria.PAGES);
         crawler.start();
     }
 

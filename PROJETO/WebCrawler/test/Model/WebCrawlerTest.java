@@ -28,7 +28,7 @@ public class WebCrawlerTest {
 
     @Before
     public void setUp() throws IOException, WebCrawlerException{
-        this.webCrawlerInstance = new WebCrawler(this.moodle, 2);
+        this.webCrawlerInstance = new WebCrawler(this.moodle, 2, WebCrawler.StopCriteria.PAGES);
         this.graphInstance = new MyDiGraph<WebPage, Link>();
         webCrawlerInstance.start();
     }
@@ -71,7 +71,7 @@ public class WebCrawlerTest {
         
         try {
                 // Testing a new WebCrawler without the start
-                WebCrawler myNewWebCrawler = new WebCrawler(stackOverflow, 15);
+                WebCrawler myNewWebCrawler = new WebCrawler(stackOverflow, 15, WebCrawler.StopCriteria.PAGES);
 
                 // Insert a new Vertex - WebPage
                 myNewWebCrawler.insertWebPage(new WebPage("https://stackoverflow.com/jobs"));

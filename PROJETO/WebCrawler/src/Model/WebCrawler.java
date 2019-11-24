@@ -23,25 +23,40 @@ import Exceptions.*;
  * @author BRKsCosta and Daniel Cordeiro
  */
 public class WebCrawler {
-
+    
+    // Default attributes
     private String startURL = "";
     private final Graph<WebPage, Link> webCrawler;
-    private WebPage initialWebPage;
-    private int numPages = 0;
+    private WebPage rootWebPage;
+    
+    // StopCriteria
+    private int numStopCriteria = 0;
+    private StopCriteria stopCriteriaChoosed;
 
+    public enum StopCriteria{
+        PAGES, DEPTH
+    }
+    
+    
     /**
      *
      * Create a object of <i><p>
      * Web Crawler </p></i> type with a DiGraph instance s
      *
-     * @param string Base URL
-     * @param numberOfLinks Max number of link requested by user
+     * @param baseUrl the root url
+     * @param criteriaNumber number of stop criteria
+     * @param stopCriteria type of stop criteria
      */
-    public WebCrawler(String string, int numberOfLinks) throws IOException {
-        this.startURL = string;
-        this.webCrawler = new MyDiGraph();
-        this.initialWebPage = new WebPage(string);
-        this.numPages = numberOfLinks;
+    public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
+        
+        // Assigned values given
+        this.startURL = baseUrl;
+        this.numStopCriteria = criteriaNumber;
+        this.stopCriteriaChoosed = stopCriteria;
+        
+        // Instanciate new values
+        this.webCrawler = new MyDiGraph<>();
+        this.rootWebPage = new WebPage(baseUrl);
     }
 
     /**
@@ -78,7 +93,14 @@ public class WebCrawler {
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
-        Iterable<WebPage> BFS = this.BFS(initialWebPage);
+        // Use different ways gettins BFS order
+        Iterable<WebPage> BFS;
+        if (stopCriteriaChoosed == StopCriteria.PAGES){
+            BFS = this.BFSByPages(rootWebPage);
+        }else{
+            BFS = this.BFSByDepth(rootWebPage);
+        }
+        
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.getPagesNotFound(BFS.iterator().next()));
@@ -118,16 +140,115 @@ public class WebCrawler {
      * @return <code>void</code>
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
-    public Iterable<WebPage> BFS(WebPage webPage)
+    public Iterable<WebPage> BFSByPages(WebPage webPage)
             throws WebCrawlerException, IOException {
 
-        //Contar máximo de WebPages
+        // Variables
+        // Contar numero de WebPages contadas
         int countMaxVisitedPage = 0;
-
+        List<WebPage> BFSList = new ArrayList<>();
+        Queue<WebPage> WebPagesToVisit = new LinkedList<>();
+        
+        if (this.numStopCriteria == 0){
+            System.out.println("Web Crawler não tem nenhuma Web Page");
+            return BFSList;
+        }else if(this.numStopCriteria >= 1){
+            WebPagesToVisit.add(webPage);
+            
+            // Insert the webPage in the webCrawler
+            webCrawler.insertVertex(webPage);
+            
+            // Increment countMaxVisitedPage by 1
+            countMaxVisitedPage ++;
+        }
+        
+        while (!WebPagesToVisit.isEmpty()){
+            WebPage visitedWebPage = WebPagesToVisit.poll();
+            System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
+            
+            // PRINT SOMETHING
+            
+            // Get all incident links for 
+            Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+            
+            for(Link link: allIncidentWebLinks){
+                
+                if (countMaxVisitedPage == this.numStopCriteria){
+                    return BFSList;
+                }
+                
+                // Insert a new WebPage in the webCrawler
+                WebPage webPageInserting = new WebPage(link.getLinkName());
+                //this.insertWebPage(webPageInserting); PARA QUÊ TER ISTO SE SÓ TEMOS PARA ESTE.... NEM VALE A PENA
+                webCrawler.insertVertex(webPageInserting);
+                WebPagesToVisit.add(webPageInserting);
+                System.out.println("Link da página: " + webPageInserting.getPersonalURL());
+                
+                // Insert a new Link between WebPages
+                webCrawler.insertEdge(visitedWebPage, webPageInserting, link);
+                
+                // Increment countMaxVisitedPage by 1
+                countMaxVisitedPage ++;
+            }
+            System.out.println("]\n");
+        }
+        
+        return BFSList;
+        
+        
+        
+        
+        
+/*
+        while(countMaxVisitedPage != this.numStopCriteria){
+            // Insert the webPage in the webCrawler
+            this.insertWebPage(webPage);
+            WebPagesToVisit.add(webPage);
+            
+            // Increment countMaxVisitedPage by 1
+            countMaxVisitedPage ++;
+            
+            // Get all incident links for 
+            Queue<Link> allIncidentWebPages = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
+            
+            // Iterate in all incidentLinks and add to webCrawler new WebPages until it gets to the numberOfPages in numStopCriteria
+            for(Link link: allIncidentWebPages){
+                
+                if (countMaxVisitedPage == this.numStopCriteria){
+                    return BFSList;
+                }
+                
+                // Insert a new WebPage in the webCrawler
+                WebPage webPageInserting = new WebPage(link.getLinkName());
+                this.insertWebPage(webPageInserting);
+                
+                // Insert a new Link between WebPages
+                webCrawler.insertEdge(webPage, webPageInserting, link);
+                
+                // Increment countMaxVisitedPage by 1
+                countMaxVisitedPage ++;
+            }
+            // Recursive for all incidentWebPages
+            // Iterate in all incidentLinks and add to webCrawler new WebPages until it gets to the numberOfPages in numStopCriteria
+            for(Link link: allIncidentWebPages){
+                
+            }
+                
+            
+        }
+        
+        return BFSList;        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         //Insere página no grafo
         this.insertWebPage(webPage);
-
-        List<WebPage> listOfWebPages = new ArrayList<>();
 
         Set<WebPage> visited = new HashSet<>();
         //Queue<WebPage> queue = new LinkedList<>();
@@ -194,7 +315,17 @@ public class WebCrawler {
 
         }
 
-        return listOfWebPages;
+        return listOfWebPages;*/
+    }
+    
+    public Iterable<WebPage> BFSByDepth(WebPage webPage)
+            throws WebCrawlerException, IOException {
+        
+        
+        
+        
+        
+        return null;
     }
 
     /**

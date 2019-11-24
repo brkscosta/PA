@@ -7,11 +7,7 @@ package Main;
 
 import Model.WebCrawler;
 import Exceptions.WebCrawlerException;
-import Interfaces.Vertex;
-import Model.WebPage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

@@ -80,23 +80,22 @@ public class MyDiGraphTest {
     }
 
     /**
-     * Test of vertices method, of class MyDiGraph.
-     */
-    @Test
-    public void testVertices() {
-
-//        Collection<Vertex<String>> expVertex = this.vertex;
-//        Collection<Vertex<String>> resVertex = digraph.vertices();
-//
-//        assertEquals(expVertex, resVertex);
-    }
-
-    /**
      * Test of incidentEdges method, of class MyDiGraph.
      */
     @Test
     public void testIncidentEdges() {
 
+        Collection<Edge<String, String>> incidentEdges = digraph.incidentEdges(vertex.get(1));
+
+        List<String> arr = new ArrayList<>();
+
+        for (Edge<String, String> incidentEdge : incidentEdges) {
+            arr.add(incidentEdge.element());
+            for (String string : arr) {
+                if(incidentEdge.element().equals(string))
+                    assertEquals(incidentEdge.element(), string);
+            }
+        }
     }
 
     /**
@@ -122,6 +121,8 @@ public class MyDiGraphTest {
      */
     @Test
     public void testInsertVertex() {
+        Vertex<String> insertVertex = digraph.insertVertex((String) "Teste");
+        assertEquals("Teste", insertVertex.element());
     }
 
     /**

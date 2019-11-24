@@ -157,6 +157,7 @@ public class WebCrawler {
             
             // Insert the webPage in the webCrawler
             webCrawler.insertVertex(webPage);
+            BFSList.add(webPage);
             
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage ++;
@@ -181,6 +182,7 @@ public class WebCrawler {
                 WebPage webPageInserting = new WebPage(link.getLinkName());
                 //this.insertWebPage(webPageInserting); PARA QUÊ TER ISTO SE SÓ TEMOS PARA ESTE.... NEM VALE A PENA
                 webCrawler.insertVertex(webPageInserting);
+                BFSList.add(webPageInserting);
                 WebPagesToVisit.add(webPageInserting);
                 System.out.println("Link da página: " + webPageInserting.getPersonalURL());
                 
@@ -321,6 +323,65 @@ public class WebCrawler {
     public Iterable<WebPage> BFSByDepth(WebPage webPage)
             throws WebCrawlerException, IOException {
         
+        // Variables
+        // Contar numero de links incidentes percorridos desde a root
+        int countLevelOfWebCrawler = 0;
+        List<WebPage> BFSList = new ArrayList<>();
+        Queue<WebPage> WebPagesToVisit = new LinkedList<>();
+        
+        if (this.numStopCriteria == 0){
+            System.out.println("Web Crawler contém como root no nivel 0: " + webPage.getPersonalURL());
+            // Insert the webPage in the webCrawler
+            webCrawler.insertVertex(webPage);
+            BFSList.add(webPage);
+            return BFSList;
+        }else{
+            WebPagesToVisit.add(webPage);
+        }
+        
+        List<WebPage> incidentsToVisit = new ArrayList<>(); // This variable will save the incidents of one level
+        incidentsToVisit.add(webPage);
+        
+        WebPage lastWebPageOfALevel = new WebPage(webPage.getPersonalURL());
+        
+        while (!WebPagesToVisit.isEmpty()){
+            WebPage visitedWebPage = WebPagesToVisit.poll();
+            System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
+            
+            if(incidentsToVisit.contains(visitedWebPage)){
+                countLevelOfWebCrawler ++;
+            }
+            
+            // PRINT SOMETHING
+            
+            // Get all incident links for 
+            Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+            
+            // I will create this variable to make sure it saves the last incidentWebLink
+            WebPage webPageInserting;
+            for(Link link: allIncidentWebLinks){
+                
+                // Insert a new WebPage in the webCrawler
+                webPageInserting = new WebPage(link.getLinkName());
+                //this.insertWebPage(webPageInserting); PARA QUÊ TER ISTO SE SÓ TEMOS PARA ESTE.... NEM VALE A PENA
+                webCrawler.insertVertex(webPageInserting);
+                WebPagesToVisit.add(webPageInserting);
+                System.out.println("Link da página: " + webPageInserting.getPersonalURL());
+                
+                // Insert a new Link between WebPages
+                webCrawler.insertEdge(visitedWebPage, webPageInserting, link);
+                
+            }
+            lastWebPageOfALevel = webPageInserting;
+            
+            System.out.println("]\n");
+            
+            if (countLevelOfWebCrawler == this.numStopCriteria){
+                    return BFSList;
+            }
+        }
+        
+        return BFSList;
         
         
         

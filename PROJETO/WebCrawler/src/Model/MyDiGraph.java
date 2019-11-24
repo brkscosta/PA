@@ -262,7 +262,19 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
     @Override
     public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkVertex(outbound);
+
+        List<Edge<E, V>> outboundEdges = new ArrayList<>();
+        for (Edge<E, V> edge : edges.values()) {
+
+            if (edge.vertices()[0] == outbound) {
+                /* edge.vertices()[0] == v || edge.vertices()[1] == v */
+                outboundEdges.add(edge);
+            }
+
+        }
+
+        return outboundEdges;
     }
 
     private class MyVertex implements Vertex<V> {

@@ -67,7 +67,7 @@ public class MyDiGraphTest {
      * Test of numVertices method, of class MyDiGraph.
      */
     @Test
-    public void testNumVertices() {
+    public void numVertices_numeroVertices_obterNumVertices() {
         assertEquals(5, digraph.numVertices());
     }
 
@@ -75,7 +75,7 @@ public class MyDiGraphTest {
      * Test of numEdges method, of class MyDiGraph.
      */
     @Test
-    public void testNumEdges() {
+    public void numEdges_numeroVertices_obterNumEges() {
         assertEquals(4, digraph.numEdges());
     }
 
@@ -83,7 +83,7 @@ public class MyDiGraphTest {
      * Test of incidentEdges method, of class MyDiGraph.
      */
     @Test
-    public void testIncidentEdges() {
+    public void incidentEdges_igualdadeArrays_comparacao() {
 
         Collection<Edge<String, String>> incidentEdges = digraph.incidentEdges(vertex.get(1));
 
@@ -102,7 +102,7 @@ public class MyDiGraphTest {
      * Test of opposite method, of class MyDiGraph.
      */
     @Test
-    public void testOpposite() {
+    public void opposite_verticeOposto_porUmVertice() {
         Vertex<String> opposite = digraph.opposite(vertex.get(4), edges.get(1));
         String element = opposite.element();
         assertEquals("Google", element);
@@ -112,7 +112,7 @@ public class MyDiGraphTest {
      * Test of areAdjacent method, of class MyDiGraph.
      */
     @Test
-    public void testAreAdjacent() {
+    public void areAdjacent_verdadeSeAdjacentes_doisVertices() {
         assertEquals(true, digraph.areAdjacent(vertex.get(0), vertex.get(4)));
     }
 
@@ -120,7 +120,7 @@ public class MyDiGraphTest {
      * Test of insertVertex method, of class MyDiGraph.
      */
     @Test
-    public void testInsertVertex() {
+    public void insertVertex_retornaMesmoElemento_insersaoVertex() {
         Vertex<String> insertVertex = digraph.insertVertex((String) "Teste");
         assertEquals("Teste", insertVertex.element());
     }
@@ -129,7 +129,7 @@ public class MyDiGraphTest {
      * Test of insertEdge method, of class MyDiGraph.
      */
     @Test(expected = InvalidVertexException.class)
-    public void testInsertEdge_vertex_no_exists() {
+    public void testInsertEdge_naoExiste_verticeNaoPresenteGrafo() {
         Edge<String, String> e1 = digraph.insertEdge("Google", "Ana Aeroports", "ana.com");
 
         assertEquals("ana.com", e1);
@@ -139,13 +139,13 @@ public class MyDiGraphTest {
      * Test of insertEdge method, of class MyDiGraph.
      */
     @Test(expected = InvalidVertexException.class)
-    public void testInsertEdge_vertex_alredy_exists() {
+    public void testInsertEdge_excessao_verticeExistente() {
         Vertex<String> v = digraph.insertVertex(vertex.get(0).element());
 
         assertEquals("Google", v);
     }
 
-    public void teste_insert_vertex() {
+    public void insertVertex_retornaVertice_novoElemento() {
         assertEquals("Asus", digraph.insertVertex("Asus"));
     }
 
@@ -153,7 +153,7 @@ public class MyDiGraphTest {
      * Test of removeVertex method, of class MyDiGraph.
      */
     @Test
-    public void testRemoveVertex() {
+    public void removeVertex_elementoAdicionado_adicionaNovo() {
 
         for (Vertex<String> vertex1 : vertex) {
             if (vertex1.element().contains("Moodle")) {
@@ -166,7 +166,7 @@ public class MyDiGraphTest {
      * Test of removeEdge method, of class MyDiGraph.
      */
     @Test
-    public void testRemoveEdge() {
+    public void removeEdge_elementoAdicionado_adicionaNovo() {
 
         for (Edge<String, String> edge : edges) {
             if (edge.element().contains("facebook.com")) {
@@ -180,7 +180,7 @@ public class MyDiGraphTest {
      * Test of replace method, of class MyDiGraph.
      */
     @Test
-    public void testReplace_Vertex() {
+    public void testReplace_retornaUltimo_insereVertice() {
 
         String retornado = "";
 
@@ -198,7 +198,7 @@ public class MyDiGraphTest {
      * Test of replace method, of class MyDiGraph.
      */
     @Test
-    public void testReplace_Edge() {
+    public void testReplaceEdge_retornaUltimo_insereAresta() {
         String retornado = "";
         for (Edge<String, String> edge : digraph.edges()) {
             if (edge.element().contains("facebook.com")) {
@@ -212,7 +212,7 @@ public class MyDiGraphTest {
      * Test of outboundEdges method, of class MyDiGraph.
      */
     @Test
-    public void testOutboundEdges() {
+    public void outboundEdges_trueSeIguais_comparaElementosArray() {
         Collection<Edge<String, String>> outboundEdges = digraph.outboundEdges(vertex.get(0));
 
         List<String> arr = new ArrayList<>();

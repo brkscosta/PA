@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +30,7 @@ public class WebPageTest {
      * Test of getTitleName method, of class WebPage.
      */
     @Test
-    public void testGetTitleName() {
+    public void getTitleName_tituloPagina_obterTitulo() {
         System.out.println("getTitleName");
         String expResult = "Moodle do Instituto Politécnico de Setúbal";
         assertEquals(expResult, wepageInstance.getTitleName());
@@ -42,7 +41,7 @@ public class WebPageTest {
      * Test of setPersonalURL method, of class WebPage.
      */
     @Test
-    public void testSetPersonalURL() {
+    public void setPersonalURL_URLMudado_mudarURL() {
         System.out.println("setPersonalURL");
         String expResult = this.moodle;
         wepageInstance.setPersonalURL(this.moodle);
@@ -53,7 +52,7 @@ public class WebPageTest {
      * Test of getPersonalURL method, of class WebPage.
      */
     @Test
-    public void testGetPersonalURL() {
+    public void getPersonalURL_obterUrl_inserirURL() {
         System.out.println("getPersonalURL");
         String expResult = this.moodle;
         assertEquals(expResult, wepageInstance.getPersonalURL());
@@ -64,7 +63,7 @@ public class WebPageTest {
      * Test of getStatusCode method, of class WebPage.
      */
     @Test
-    public void testGetStatusCode() throws Exception {
+    public void getStatusCode_codigo200OK_obterStatusCode() throws Exception {
         System.out.println("getStatusCode");
         int expResult = 200;
         int result = wepageInstance.getStatusCode();
@@ -75,7 +74,7 @@ public class WebPageTest {
      * Test of setTitleName method, of class WebPage.
      */
     @Test
-    public void testSetTitleName() {
+    public void setTitleName_tituloMudado_mudarTituloPagina() {
         System.out.println("setTitleName");
         String expResult = "Teste";
         wepageInstance.setTitleName("Teste");
@@ -86,7 +85,7 @@ public class WebPageTest {
      * Test of getAllIncidentWebPages method, of class WebPage.
      */
     @Test
-    public void testGetAllIncidentWebPages() throws Exception {
+    public void getAllIncidentWebPages_listaLinksPagina_obterTodosLinks() throws Exception {
         System.out.println("getAllIncidentWebPages");
         Queue<Link> expResult = new LinkedList();
         Queue<Link> result = wepageInstance.getAllIncidentWebPages(this.moodle);

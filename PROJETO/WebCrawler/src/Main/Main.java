@@ -14,21 +14,19 @@ import java.io.IOException;
  * @author BRKsCosta
  */
 public class Main {
-   
+
     /**
      * @param args the command line arguments
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws WebCrawlerException, IOException {
 
-        String moodle = "https://moodle.ips.pt/1920/";
         String stackOverflow = "https://stackoverflow.com/";
         String google = "https://www.google.com/";
         String youTube = "https://www.youtube.com/watch?v=yF3JWJksP9I";
-        String crawlerTest = "https://crawler-test.com/";
-        WebCrawler crawler = new WebCrawler(youTube, 5, WebCrawler.StopCriteria.PAGES);
+        WebCrawler crawler = new WebCrawler(google, 20, WebCrawler.StopCriteria.PAGES);
         crawler.start();
-        
+
     }
 
 }

@@ -32,6 +32,7 @@ public class WebCrawlerTest {
         
         // Test pages not found
         String page404 = "https://deviup.com.br:3001/api/lembrete/2";
+        String page_2_404 = "https://deviup.com.br:3001/api/lembrete/3";
         this.web404 = new WebPage(page404);
         webCrawlerInstance.webCrawler.insertVertex(web404);
         webCrawlerInstance.start();
@@ -44,21 +45,21 @@ public class WebCrawlerTest {
      * @throws WebCrawlerException
      */
     @Test
-    public void testPageNotFound() throws IOException, WebCrawlerException {
+    public void pageNotFound_nPaginasNaoEncontrada_adicionaPaginaNaoEncontrada() throws IOException, WebCrawlerException {
         assertEquals(1, webCrawlerInstance.getPagesNotFound(web404));
     }
 
     @Test
-    public void countLinks() throws IOException, WebCrawlerException {
+    public void countLinks_numeroTotalLinks_iteraListaLinks() throws IOException, WebCrawlerException {
         int result = webCrawlerInstance.countLinks();
         int expResult = 1;
         assertEquals(expResult, result);
     }
 
     @Test
-    public void countWebPages() {
+    public void countWebPages_numeroTotalPaginas_iteraListaPaginas() {
         int result = webCrawlerInstance.countWebPages();
-        int expResult = 3;
+        int expResult = 4;
         assertEquals(expResult, result);
     }
 

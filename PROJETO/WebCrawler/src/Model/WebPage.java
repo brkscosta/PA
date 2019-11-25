@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 // My Packages
 import Exceptions.WebCrawlerException;
+import org.jsoup.HttpStatusException;
 
 /**
  * Class that represents the <code>Vertex</code> on graph.
@@ -116,7 +117,7 @@ public class WebPage {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
-        
+
         return connection.getResponseCode();
     }
 
@@ -144,23 +145,29 @@ public class WebPage {
             throw new WebCrawlerException("URL não pode ser vazio");
         }
 
-        Document doc = Jsoup.connect(personalLink).get();
-        Elements links = doc.select("a[href]");
-        Queue<Link> listIncidentsWebPages = new LinkedList();
+        try {
+            Document doc = Jsoup.connect(personalLink).get();
+            
+            Elements links = doc.select("a[href]");
+            Queue<Link> listIncidentsWebPages = new LinkedList();
 
-        for (Element link : links) {
-            String href = link.attr("abs:href");
-            String newHref = processLink(href, personalLink);
-            Link newObjLink = new Link(newHref);
-            listIncidentsWebPages.offer(newObjLink);
+            for (Element link : links) {
+                String href = link.attr("abs:href");
+                String newHref = processLink(href, personalLink);
+                Link newObjLink = new Link(newHref);
+                listIncidentsWebPages.offer(newObjLink);
 
+            }
+
+            Set<Link> set = new HashSet(listIncidentsWebPages);
+            listIncidentsWebPages.clear();
+            listIncidentsWebPages.addAll(set);
+            return listIncidentsWebPages;
+            
+        } catch (HttpStatusException ex) {
+            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-
-        Set<Link> set = new HashSet(listIncidentsWebPages);
-        listIncidentsWebPages.clear();
-        listIncidentsWebPages.addAll(set);
-
-        return listIncidentsWebPages;
     }
 
     /**

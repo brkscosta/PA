@@ -5,6 +5,7 @@
  */
 package Views;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -22,7 +23,7 @@ import javafx.scene.layout.VBox;
  * @author BRKsCosta
  */
 public class Main extends Pane {
-    
+
     private VBox mainVBox;
     private MenuBar menuBar;
     private Menu menuFile;
@@ -44,6 +45,7 @@ public class Main extends Pane {
     private Label lblCriteria;
     private Label lblWebCrawler;
     private HBox bottomHBox;
+    
 
     public Main() {
         this.initializeComponents();
@@ -75,13 +77,20 @@ public class Main extends Pane {
         this.menuHelp.getItems().add(mHelpAbout);
 
         this.menuBar = new MenuBar(menuFile, menuEdit, menuHelp);
-        this.lblCriteria = new Label("Critérios");
+
+        this.lblCriteria = new Label("Modos Pesquisa");
         this.anchorPaneLeft = new AnchorPane(lblCriteria);
-        
+
         this.splitPane = new SplitPane(anchorPaneLeft, anchorPaneGraph, anchorPaneRigth);
-        // Finish Setup
-        this.mainVBox = new VBox(menuBar, splitPane, bottomHBox);
         
+        // Finishing Setup
+        this.mainVBox = new VBox();
+        this.mainVBox.getChildren().add(menuBar);
+        this.mainVBox.getChildren().add(splitPane);
+        this.mainVBox.getChildren().add(bottomHBox);
+        
+        mainVBox.setSpacing(10);
+        mainVBox.setPadding(new Insets(15, 20, 10, 10));
     }
 
 }

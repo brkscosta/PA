@@ -90,7 +90,8 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         MyEdge edge = checkEdge(e);
 
         if (!edge.contains(v)) {
-            return null; /* this edge does not connect vertex v */
+            return null;
+            /* this edge does not connect vertex v */
         }
 
         if (edge.vertices()[0] == v) {
@@ -109,9 +110,13 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
         /* find and edge that contains both u and v */
         for (Edge<E, V> edge : edges.values()) {
-            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
+//            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
+//                return true;
+//            }
+            if(edge.vertices()[0] == u && edge.vertices()[1] == v || 
+                    edge.vertices()[0] == v && edge.vertices()[1] == v)
                 return true;
-            }
+
         }
         return false;
     }
@@ -119,7 +124,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     @Override
     public Vertex<V> insertVertex(V vElement) {
         if (existsVertexWith(vElement)) {
-            throw new IllegalArgumentException("There's already a vertex with this element.");
+            throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
         MyVertex newVertex = new MyVertex(vElement);
@@ -286,7 +291,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public V element(){
+        public V element() {
             return this.element;
         }
 
@@ -309,7 +314,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
 
         @Override
-        public E element(){
+        public E element() {
             return this.element;
         }
 

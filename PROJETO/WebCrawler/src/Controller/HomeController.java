@@ -4,24 +4,24 @@
  * and open the template in the editor.
  */
 package Controller;
+import Model.WebCrawler;
 import Views.*;
-import Model.WebPage;
+
 /**
  *
  * @author BRKsCosta
  */
-public class MainController {
+public class HomeController {
     
-    private Main mainView;
-    private WebPage model;
+    private final Home mainView;
+    private final WebCrawler model;
 
-    public MainController(Main mainView, WebPage model) {
+    public HomeController(WebCrawler model, Home mainView) {
         this.mainView = mainView;
         this.model = model;
     }
     
-    
-    
+    // TODO Methods here
     
     
 }

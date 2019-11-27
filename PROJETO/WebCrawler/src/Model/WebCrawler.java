@@ -16,6 +16,7 @@ import Exceptions.*;
 import Main.Main;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Observable;
 
 @SuppressWarnings("null")
 /**
@@ -23,9 +24,11 @@ import java.net.URL;
  * {@link Graph.Vertex} is the type WebPage and <code>Edge</code>
  * {@link Graph.Edge} is the type of Link
  *
+ * Use the methods setChanged() and notifyObservers()
+ * 
  * @author BRKsCosta and Daniel Cordeiro
  */
-public class WebCrawler {
+public class WebCrawler extends Observable {
 
     // Default attributes
     private String startURL = "";

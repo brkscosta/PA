@@ -10,7 +10,9 @@ import Controller.IHomeOperations;
 import Model.WebCrawler;
 import java.util.Observable;
 import java.util.Observer;
-import javafx.geometry.Insets;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
@@ -18,7 +20,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -28,7 +29,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.AnchorPane;
@@ -41,10 +41,10 @@ import javafx.scene.layout.VBox;
  *
  * @author BRKsCosta
  */
-public class Home extends BorderPane implements Observer, IHomeOperations {
-    
+public class Home extends Pane implements Observer, IHomeOperations {
+
     private WebCrawler webCrawlerModel;
-    
+
     private VBox mainVBox;
     private MenuBar menuBar;
     private Menu menuFile;
@@ -75,10 +75,11 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
     private Group group;
     private Scene scene;
     private PerspectiveCamera camera;
-    
+
     public Home(WebCrawler model) {
         this.webCrawlerModel = model;
-        
+        this.initializeComponents();
+
     }
 
     private Scene createScene() {
@@ -139,7 +140,8 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
         this.splitPane.getItems().add(0, anchorPaneLeft);
         this.splitPane.getItems().add(1, scrollPaneGraph);
         this.splitPane.getItems().add(2, anchorPaneRigth);
-        
+
+        //Config HBox Bootom
         this.bottomHBox = new HBox(new Label("Teste"));
         this.bottomHBox.setNodeOrientation(NodeOrientation.INHERIT);
         this.bottomHBox.setAlignment(Pos.CENTER_LEFT);
@@ -148,7 +150,7 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
         this.bottomHBox.setCenterShape(true);
         this.bottomHBox.setCache(true);
 
-        // Finishing Setup
+        //Config VBox
         this.mainVBox = new VBox();
         this.mainVBox.setAlignment(Pos.TOP_LEFT);
         this.mainVBox.setOpacity(1);
@@ -160,15 +162,13 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
         this.mainVBox.setScaleX(1);
         this.mainVBox.setScaleY(1);
         this.mainVBox.setScaleZ(1);
-        
+
+        // Finishing Setup
         this.mainVBox.getChildren().add(menuBar);
         this.mainVBox.getChildren().add(splitPane);
         this.mainVBox.getChildren().add(bottomHBox);
-        this.mainVBox.getChildren().add(btnStartCrawler);
-        
+
         //this.mainVBox.getChildren().addAll(menuBar, splitPane, bottomHBox);
-        
-        
     }
 
     @Override
@@ -198,7 +198,8 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
 
     @Override
     public void exitApp() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Platform.exit();
+        System.exit(0);
     }
 
     @Override
@@ -212,13 +213,29 @@ public class Home extends BorderPane implements Observer, IHomeOperations {
     }
 
     @Override
-    public void seTriggersButtons(HomeController controller) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setTriggersButtons(HomeController controller) {
+        
+        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.exitApp();
+            }
+        });
+        
+        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent t) {
+                System.out.println("Inicar crawler");
+            }
+        });
+        
+        
     }
-    
+
     @Override
     public String toString() {
         return "View: " + Home.class;
     }
-    
+
 }

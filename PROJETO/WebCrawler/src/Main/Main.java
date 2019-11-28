@@ -9,9 +9,11 @@ import Controller.HomeController;
 import Model.WebCrawler;
 import Exceptions.WebCrawlerException;
 import Views.Home;
+import java.awt.Panel;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
@@ -19,7 +21,8 @@ import javafx.stage.Stage;
  * @author BRKsCosta
  */
 public class Main extends Application {
-    private static int DIM = 600;
+
+
     /**
      * @param args the command line arguments
      * @throws Exceptions.WebCrawlerException
@@ -40,12 +43,13 @@ public class Main extends Application {
     }
 
     private Scene createAppScene() throws IOException {
+        
         String stackOverflow = "https://stackoverflow.com/";
         String google = "https://www.google.com/";
         String youTube = "https://www.youtube.com/watch?v=yF3JWJksP9I";
         //crawler.start();
         
-        WebCrawler model = new WebCrawler(google, 4, WebCrawler.StopCriteria.PAGES);
+        WebCrawler model = new WebCrawler(youTube, 4, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
         System.out.println(view.toString());

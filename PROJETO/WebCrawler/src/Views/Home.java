@@ -8,6 +8,7 @@ package Views;
 import Controller.HomeController;
 import Controller.IHomeOperations;
 import Model.WebCrawler;
+import java.awt.Panel;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,13 +37,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
  *
  * @author BRKsCosta
  */
-public class Home extends Pane implements Observer, IHomeOperations {
+    public class Home extends StackPane implements Observer, IHomeOperations {
 
     private WebCrawler webCrawlerModel;
 
@@ -76,7 +79,8 @@ public class Home extends Pane implements Observer, IHomeOperations {
     private Scene scene;
     private PerspectiveCamera camera;
 
-    public Home(WebCrawler model) {
+    public Home(WebCrawler model, Node... nodes) {
+        super(nodes);
         this.webCrawlerModel = model;
         this.initializeComponents();
 
@@ -97,6 +101,7 @@ public class Home extends Pane implements Observer, IHomeOperations {
         this.mFileItemExportFile = new MenuItem("Export File");
         this.mFileItemExit = new MenuItem("Exit");
         this.separatorMenu = new SeparatorMenuItem();
+        
         this.menuFile.getItems().addAll(mFileItemExportFile, mFileItemImportFile,
                 separatorMenu, mFileItemExit);
 
@@ -167,7 +172,7 @@ public class Home extends Pane implements Observer, IHomeOperations {
         this.mainVBox.getChildren().add(menuBar);
         this.mainVBox.getChildren().add(splitPane);
         this.mainVBox.getChildren().add(bottomHBox);
-
+        
         //this.mainVBox.getChildren().addAll(menuBar, splitPane, bottomHBox);
     }
 
@@ -215,21 +220,21 @@ public class Home extends Pane implements Observer, IHomeOperations {
     @Override
     public void setTriggersButtons(HomeController controller) {
         
-        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.exitApp();
-            }
-        });
-        
-        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent t) {
-                System.out.println("Inicar crawler");
-            }
-        });
-        
+//        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                controller.exitApp();
+//            }
+//        });
+//        
+//        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
+//            
+//            @Override
+//            public void handle(ActionEvent t) {
+//                System.out.println("Inicar crawler");
+//            }
+//        });
+//        
         
     }
 

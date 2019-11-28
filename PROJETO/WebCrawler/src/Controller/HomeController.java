@@ -19,9 +19,38 @@ public class HomeController {
     public HomeController(WebCrawler model, Home mainView) {
         this.mainView = mainView;
         this.model = model;
+        
+        mainView.setTriggersButtons(this);
+        model.addObserver(mainView);
     }
     
     // TODO Methods here
     
+    public void exitApp(){
+        mainView.exitApp();
+    }
+    
+    public void importFiles(){
+        //TODO
+    }
+    
+    public void startCrawler(){
+        // TODO
+        
+        
+    }
+    
+    public void exportFiles() {
+        
+        //TODO
+    }
+    
+    public void undoAction() {
+        // TODO
+    }
+    
+    public void showErrors() {
+        
+    }
     
 }

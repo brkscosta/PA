@@ -19,6 +19,6 @@ public interface IHomeOperations {
     void clearError();
     void showError();
     
-    void seTriggersButtons(HomeController controller);
+    void setTriggersButtons(HomeController controller);
     
 }

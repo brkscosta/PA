@@ -37,14 +37,14 @@ public class ConcreteStatisticC implements IStatistic {
         int totalElements = values.size();
         // check if total number of scores is even
         if (totalElements % 2 == 0) {
-             GradeEntry sumOfMiddleElements = values.get(totalElements / 2) + values.get(totalElements / 2 - 1);
+             //sumOfMiddleElements = values.get(totalElements / 2) + values.get(totalElements / 2 - 1);
             // calculate average of middle elements
-            median = ((double) sumOfMiddleElements) / 2;
+            //median = ((double) sumOfMiddleElements) / 2;
         } else {
             // get the middle element
             median = (double) values.size() / 2;
         }
-        return median;
+        return 0;
     }
 
 }

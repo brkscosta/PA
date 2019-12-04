@@ -11,7 +11,7 @@ package Controller;
  */
 public interface IHomeOperations {
     
-    void getInputURL();
+    String getInputURL();
     void undoGraph();
     void importFile();
     void exportFile();

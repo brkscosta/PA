@@ -8,18 +8,18 @@ package Views;
 import Controller.HomeController;
 import Controller.IHomeOperations;
 import Model.WebCrawler;
-import java.awt.Panel;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -32,23 +32,20 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
  *
  * @author BRKsCosta
  */
-    public class Home extends StackPane implements Observer, IHomeOperations {
+public class Home extends VBox implements Observer, IHomeOperations {
 
     private WebCrawler webCrawlerModel;
 
-    private VBox mainVBox;
     private MenuBar menuBar;
     private Menu menuFile;
     private Menu menuEdit;
@@ -75,22 +72,10 @@ import javafx.scene.layout.VBox;
     private Label lblNumPages;
     private ScrollPane scrollPaneGraph;
     private HBox bottomHBox;
-    private Group group;
-    private Scene scene;
-    private PerspectiveCamera camera;
 
-    public Home(WebCrawler model, Node... nodes) {
-        super(nodes);
+    public Home(WebCrawler model) {
         this.webCrawlerModel = model;
         this.initializeComponents();
-
-    }
-
-    private Scene createScene() {
-        this.group = new Group();
-        this.scene.setRoot(group);
-        this.scene.setCamera(camera);
-        return scene;
     }
 
     private void initializeComponents() {
@@ -101,7 +86,7 @@ import javafx.scene.layout.VBox;
         this.mFileItemExportFile = new MenuItem("Export File");
         this.mFileItemExit = new MenuItem("Exit");
         this.separatorMenu = new SeparatorMenuItem();
-        
+
         this.menuFile.getItems().addAll(mFileItemExportFile, mFileItemImportFile,
                 separatorMenu, mFileItemExit);
 
@@ -126,10 +111,12 @@ import javafx.scene.layout.VBox;
         this.txtFieldNumPages = new TextField();
         this.rdBtnBreadthFirstDepth = new RadioButton("Profundidade");
         this.rdBtnIterative = new RadioButton("Iterativo");
+        
         this.anchorPaneLeft = new AnchorPane();
         this.anchorPaneLeft.getChildren().addAll(lblCriteria, txtFieldURL, btnStartCrawler,
                 rdBtnBreadthFirst, lblNumPages, txtFieldNumPages, rdBtnBreadthFirstDepth,
                 rdBtnIterative);
+        
 
         // Statistics on rigth pane
         this.lblStatistics = new Label("Estatísticas");
@@ -142,48 +129,37 @@ import javafx.scene.layout.VBox;
         this.scrollPaneGraph.setContent(lblWebCrawler);
 
         this.splitPane = new SplitPane();
-        this.splitPane.getItems().add(0, anchorPaneLeft);
-        this.splitPane.getItems().add(1, scrollPaneGraph);
-        this.splitPane.getItems().add(2, anchorPaneRigth);
-
-        //Config HBox Bootom
-        this.bottomHBox = new HBox(new Label("Teste"));
-        this.bottomHBox.setNodeOrientation(NodeOrientation.INHERIT);
-        this.bottomHBox.setAlignment(Pos.CENTER_LEFT);
-        this.bottomHBox.setAccessibleRole(AccessibleRole.PARENT);
-        this.bottomHBox.setScaleShape(true);
-        this.bottomHBox.setCenterShape(true);
-        this.bottomHBox.setCache(true);
-
-        //Config VBox
-        this.mainVBox = new VBox();
-        this.mainVBox.setAlignment(Pos.TOP_LEFT);
-        this.mainVBox.setOpacity(1);
-        this.mainVBox.setNodeOrientation(NodeOrientation.INHERIT);
-        this.mainVBox.setCursor(Cursor.DEFAULT);
-        this.mainVBox.setBlendMode(BlendMode.SRC_OVER);
-        this.mainVBox.setAccessibleRole(AccessibleRole.PARENT);
-        this.mainVBox.setFillWidth(true);
-        this.mainVBox.setScaleX(1);
-        this.mainVBox.setScaleY(1);
-        this.mainVBox.setScaleZ(1);
-
-        // Finishing Setup
-        this.mainVBox.getChildren().add(menuBar);
-        this.mainVBox.getChildren().add(splitPane);
-        this.mainVBox.getChildren().add(bottomHBox);
+        this.splitPane.getItems().addAll(anchorPaneLeft, scrollPaneGraph, anchorPaneRigth);
         
-        //this.mainVBox.getChildren().addAll(menuBar, splitPane, bottomHBox);
+        
+        //Config HBox Bootom
+        this.bottomHBox = new HBox(5, new Label("HBOx"), new Label("Another lbl"));
+        bottomHBox.setStyle("-fx-background-color: #FFFF;");
+        bottomHBox.setAlignment(Pos.CENTER_LEFT);
+        bottomHBox.setMinHeight(40);
+        bottomHBox.setMaxHeight(40);
+        /*Creates layout*/
+        this.setSpacing(10);
+        this.getChildren().addAll(menuBar, splitPane, bottomHBox);
+
     }
 
     @Override
     public void update(Observable o, Object o1) {
+
+        /*if(o instanceof WebCrawler){
+            WebCrawler model = (WebCrawler)o;
+            
+            // TODO
+            
+        }*/
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
-    public void getInputURL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String getInputURL() {
+        return this.txtFieldURL.getText();
     }
 
     @Override
@@ -219,23 +195,22 @@ import javafx.scene.layout.VBox;
 
     @Override
     public void setTriggersButtons(HomeController controller) {
-        
-//        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                controller.exitApp();
-//            }
-//        });
+
+        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                controller.exitApp();
+            }
+        });
+
+        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                System.out.println("Inicar crawler");
+            }
+        });
 //        
-//        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
-//            
-//            @Override
-//            public void handle(ActionEvent t) {
-//                System.out.println("Inicar crawler");
-//            }
-//        });
-//        
-        
     }
 
     @Override

@@ -9,11 +9,11 @@ import Controller.HomeController;
 import Model.WebCrawler;
 import Exceptions.WebCrawlerException;
 import Views.Home;
-import java.awt.Panel;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -35,31 +35,21 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         
-        Scene mainScene = createAppScene();
+        String url = "http://moodle.ips.pt/";
+        
+        WebCrawler model = new WebCrawler(url, 2, WebCrawler.StopCriteria.PAGES);
+        Home view = new Home(model);
+        HomeController controller = new HomeController(model, view);
+               
+        BorderPane window = new BorderPane();
+        window.setCenter(view);
+        
+        Scene mainScene = new Scene(window, 1000, 900);
         
         primaryStage.setTitle("Web Crawler");
         primaryStage.setScene(mainScene);
         primaryStage.show();
     }
-
-    private Scene createAppScene() throws IOException {
-        
-        String stackOverflow = "https://stackoverflow.com/";
-        String google = "https://www.google.com/";
-        String youTube = "https://www.youtube.com/watch?v=yF3JWJksP9I";
-        //crawler.start();
-        
-        WebCrawler model = new WebCrawler(youTube, 4, WebCrawler.StopCriteria.PAGES);
-        Home view = new Home(model);
-        HomeController controller = new HomeController(model, view);
-        System.out.println(view.toString());
-        
-        model.addObserver(view);
-        
-        Scene scene = new Scene(view, 900, 500);
-        
-        return scene;
-        
-    }
+    
     
 }

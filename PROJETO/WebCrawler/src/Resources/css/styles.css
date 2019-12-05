@@ -5,11 +5,15 @@
 .root {
     -fx-padding: 15; 
     -fx-background-color: cornsilk;
-  }
-  
-  #textFieldSearchURL {
+}
+
+#textFieldSearchURL {
     -fx-background-image:url('http://icons.iconarchive.com/icons/graphicloads/100-flat/24/zoom-seach-icon.png');
     -fx-background-repeat: no-repeat;
     -fx-background-position: right center;
-    -fx-font-size: 20;
-  }
+    -fx-font-size: 15;
+}
+
+#textFieldNumPages {
+    -fx-font-size: 15;
+}

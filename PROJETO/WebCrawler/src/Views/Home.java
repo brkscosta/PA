@@ -52,7 +52,8 @@ import javafx.scene.image.ImageView;
 public class Home extends VBox implements Observer, IHomeOperations {
 
     private WebCrawler webCrawlerModel;
-
+    
+    //Menu  
     private MenuBar menuBar;
     private Menu menuFile;
     private Menu menuEdit;
@@ -63,23 +64,31 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private MenuItem mEditUndo;
     private MenuItem mEditRedo;
     private MenuItem mHelpAbout;
+    private SeparatorMenuItem separatorMenu;
+    
+    //Actions left panel
     private Button btnStartCrawler;
     private TextField txtFieldURL;
     private TextField txtFieldNumPages;
     private RadioButton rdBtnBreadthFirst;
     private RadioButton rdBtnBreadthFirstDepth;
     private RadioButton rdBtnIterative;
-    private SeparatorMenuItem separatorMenu;
+   
+    //Layout
     private SplitPane splitPane;
     private AnchorPane anchorPaneLeft;
     private AnchorPane anchorPaneRigth;
-    private Label lblStatistics;
-    private Label lblCriteria;
-    private Label lblWebCrawler;
-    private Label lblNumPages;
     private ScrollPane scrollPaneGraph;
     private HBox bottomHBox;
-
+    
+    //Labels
+    private Label lblStatistics;
+    private Label labelErros;
+    private Label lblCriteria;
+    private Label lblAnotherThing;
+    private Label lblWebCrawler;
+    private Label lblNumPages;
+    
     public Home(WebCrawler model) {
         this.webCrawlerModel = model;
         this.initializeComponents();
@@ -197,8 +206,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
         //Config HBox Bootom
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
-        Label labelErros = new Label("Erros Aqui");
-        Label lblAnotherThing = new Label("Outra Coisa");
+        this.labelErros = new Label("Erros Aqui");
+        this.lblAnotherThing = new Label("Outra Coisa");
         this.bottomHBox = new HBox();
         HBox.setHgrow(panelBottom, Priority.ALWAYS);
         this.bottomHBox.getChildren().addAll(labelErros, panelBottom, lblAnotherThing);
@@ -209,7 +218,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
     }
-
+    
+    /**
+     * This method build the bar chart
+     * @return 
+     */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Devices");
@@ -246,17 +259,21 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void undoGraph() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Views.Home.undoGraph()");
     }
-
+    
+    private void redoGraph(){
+        System.out.println("Views.Home.redoGraph()");
+    }
+    
     @Override
     public void importFile() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Views.Home.importFile()");
     }
 
     @Override
     public void exportFile() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Views.Home.exportFile()");
     }
 
     @Override
@@ -268,12 +285,12 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void clearError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.labelErros.setText("");
     }
 
     @Override
     public void showError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
@@ -285,15 +302,41 @@ public class Home extends VBox implements Observer, IHomeOperations {
                 controller.exitApp();
             }
         });
-
+        
+        this.mFileItemExportFile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Export file");
+            }
+        });
+        
+        this.mFileItemImportFile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Import File");
+            }
+        });
+        
+        this.mEditUndo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                undoGraph();
+            }
+        });
+        
+        this.mEditRedo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                redoGraph();
+            }
+        });
+        
         this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent t) {
                 System.out.println("Inicar crawler");
             }
-        });
-//        
+        });   
     }
 
     @Override

@@ -27,30 +27,34 @@ public class HomeController {
     // TODO Methods here
     
     public void exitApp(){
-        mainView.exitApp();
+        this.mainView.exitApp();
     }
-    
+
     public void importFiles(){
         //TODO
     }
     
-    public void startCrawler(){
-        // TODO
-        
-        
+    public void clearErrors(){
+        this.mainView.clearError();
     }
     
     public void exportFiles() {
-        
         //TODO
+        this.mainView.exportFile();
     }
     
     public void undoAction() {
         // TODO
+        mainView.undoGraph();
     }
     
     public void showErrors() {
         
+    }
+    
+    @Override
+    public String toString() {
+        return "HomeController";
     }
     
 }

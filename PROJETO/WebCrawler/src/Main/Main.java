@@ -21,7 +21,6 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-
     /**
      * @param args the command line arguments
      * @throws Exceptions.WebCrawlerException
@@ -39,12 +38,13 @@ public class Main extends Application {
         WebCrawler model = new WebCrawler(url, 2, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
-               
+        System.out.println(" " + controller);
+        
         BorderPane window = new BorderPane();
         window.setCenter(view);
         Scene mainScene = new Scene(window, 1024, 500);
         primaryStage.setTitle("Web Crawler");
-        //primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
         primaryStage.show();
      

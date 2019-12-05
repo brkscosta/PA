@@ -262,6 +262,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void exitApp() {
         Platform.exit();
+        System.out.println("Views.Home.exitApp()");
         System.exit(0);
     }
 

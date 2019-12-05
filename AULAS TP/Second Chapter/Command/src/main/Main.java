@@ -4,10 +4,6 @@
  * and open the template in the editor.
  */
 package main;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * CLIENT
  *
@@ -23,9 +19,6 @@ public class Main {
         
         Bank bank = new Bank();
         
-        List<Command> commands = new ArrayList<>();
-        
-        
         System.out.println(bank);
         
         Command credit = new CreditCommand(bank, "1002", 10.0);
@@ -39,6 +32,7 @@ public class Main {
         manager.addTask(credit);
         manager.addTask(transfer);
         manager.runTasks();
+
         System.out.println(bank);
         
     }

@@ -13,7 +13,6 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -43,12 +42,12 @@ public class Main extends Application {
                
         BorderPane window = new BorderPane();
         window.setCenter(view);
-        
-        Scene mainScene = new Scene(window, 1000, 900);
-        
+        Scene mainScene = new Scene(window, 1024, 500);
         primaryStage.setTitle("Web Crawler");
+        //primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
         primaryStage.show();
+     
     }
     
     

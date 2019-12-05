@@ -1,0 +1,15 @@
+/* textfield.css 
+   place in same location as TextFieldCssSample.java and ensure build system copies it to output directory
+   image used courtesy of creative commons attribution license: http://www.rockettheme.com/blog/design/1658-free-halloween-icon-pack1
+*/
+.root {
+    -fx-padding: 15; 
+    -fx-background-color: cornsilk;
+  }
+  
+  #textFieldSearchURL {
+    -fx-background-image:url('http://icons.iconarchive.com/icons/graphicloads/100-flat/24/zoom-seach-icon.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right center;
+    -fx-font-size: 20;
+  }

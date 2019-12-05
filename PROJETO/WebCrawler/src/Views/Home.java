@@ -189,6 +189,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.splitPane = new SplitPane();
+        
+        //TODO Add graph here
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, scrollPaneGraph, anchorPaneRigth);
 

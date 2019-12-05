@@ -34,7 +34,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         
         String url = "http://moodle.ips.pt/";
-        
+        //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
         WebCrawler model = new WebCrawler(url, 2, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);

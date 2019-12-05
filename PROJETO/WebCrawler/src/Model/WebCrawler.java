@@ -48,6 +48,7 @@ public class WebCrawler extends Observable {
      * @param baseUrl the root url
      * @param criteriaNumber number of stop criteria
      * @param stopCriteria type of stop criteria
+     * @throws java.io.IOException
      */
     public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
 

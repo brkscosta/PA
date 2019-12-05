@@ -17,10 +17,8 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -33,6 +31,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -44,6 +44,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 
 /**
  *
@@ -52,7 +55,7 @@ import javafx.scene.image.ImageView;
 public class Home extends VBox implements Observer, IHomeOperations {
 
     private WebCrawler webCrawlerModel;
-    
+
     //Menu  
     private MenuBar menuBar;
     private Menu menuFile;
@@ -65,7 +68,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private MenuItem mEditRedo;
     private MenuItem mHelpAbout;
     private SeparatorMenuItem separatorMenu;
-    
+
     //Actions left panel
     private Button btnStartCrawler;
     private TextField txtFieldURL;
@@ -73,14 +76,15 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private RadioButton rdBtnBreadthFirst;
     private RadioButton rdBtnBreadthFirstDepth;
     private RadioButton rdBtnIterative;
-   
+    private final Spinner spinner = new Spinner();
+
     //Layout
     private SplitPane splitPane;
     private AnchorPane anchorPaneLeft;
     private AnchorPane anchorPaneRigth;
     private ScrollPane scrollPaneGraph;
     private HBox bottomHBox;
-    
+
     //Labels
     private Label lblStatistics;
     private Label labelErros;
@@ -88,7 +92,9 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Label lblAnotherThing;
     private Label lblWebCrawler;
     private Label lblNumPages;
-    
+
+    private static final String INITAL_VALUE = "0";
+
     public Home(WebCrawler model) {
         this.webCrawlerModel = model;
         this.initializeComponents();
@@ -139,25 +145,61 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         this.lblNumPages = new Label("Número de páginas");
         this.txtFieldNumPages = new TextField();
-        txtFieldNumPages.setId("textFieldNumPages");
-        txtFieldNumPages.setMinSize(10, 10);
+        this.txtFieldNumPages.setId("textFieldNumPages");
+        this.txtFieldNumPages.setMinSize(10, 10);
         this.rdBtnBreadthFirstDepth = new RadioButton("Profundidade");
         this.rdBtnBreadthFirstDepth.setToggleGroup(group);
         this.rdBtnBreadthFirstDepth.setSelected(false);
         this.rdBtnIterative = new RadioButton("Iterativo");
         this.rdBtnIterative.setToggleGroup(group);
         this.rdBtnIterative.setSelected(false);
-
+        
+        //Left Layout
         this.anchorPaneLeft = new AnchorPane();
+        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000,
+                Integer.parseInt(INITAL_VALUE)));
+        spinner.setEditable(true);
+
+        EventHandler<KeyEvent> enterKeyEventHandler;
+
+        enterKeyEventHandler = (KeyEvent event) -> {
+            // handle users "enter key event"
+            if (event.getCode() == KeyCode.ENTER){
+                try {
+                    // yes, using exception for control is a bad solution ;-)
+                    int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
+                    System.out.println("Number on input: " + parseInt);
+                } catch (NumberFormatException e) {
+                    // show message to user: "only numbers allowed"
+                    // reset editor to INITAL_VALUE
+                    spinner.getEditor().textProperty().set(INITAL_VALUE);
+                }
+            }
+        };
+
+        // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
+        // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
+        // throw an exception
+        spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(1));
+        int row = 0;
+        grid.add(new Label("Nº Pages: "), 0, row);
+        grid.add(spinner, 1, row);
+
         VBox items = new VBox(lblCriteria, txtFieldURL, btnStartCrawler,
-                rdBtnBreadthFirst, lblNumPages, txtFieldNumPages, rdBtnBreadthFirstDepth,
-                rdBtnIterative);
+                rdBtnBreadthFirst, grid, rdBtnBreadthFirstDepth, rdBtnIterative);
         items.setPadding(new Insets(5, 0, 0, 10));
         AnchorPane.setTopAnchor(items, 15.0);
         AnchorPane.setLeftAnchor(items, 10.0);
         AnchorPane.setRightAnchor(items, 10.0);
         this.anchorPaneLeft.getChildren().add(items);
-
+        //END LEFT LAYOUT
+        
+        
         // Statistics on rigth pane
         this.lblStatistics = new Label("Estatísticas");
         this.anchorPaneRigth = new AnchorPane();
@@ -173,6 +215,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
+        
         try {
             //Creating an image 
             Image image;
@@ -198,7 +241,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.splitPane = new SplitPane();
-        
+
         //TODO Add graph here
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, scrollPaneGraph, anchorPaneRigth);
@@ -218,10 +261,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
     }
-    
+
     /**
      * This method build the bar chart
-     * @return 
+     *
+     * @return
      */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
@@ -261,11 +305,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
     public void undoGraph() {
         System.out.println("Views.Home.undoGraph()");
     }
-    
-    private void redoGraph(){
+
+    private void redoGraph() {
         System.out.println("Views.Home.redoGraph()");
     }
-    
+
     @Override
     public void importFile() {
         System.out.println("Views.Home.importFile()");
@@ -290,7 +334,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void showError() {
-        
+
     }
 
     @Override
@@ -302,41 +346,41 @@ public class Home extends VBox implements Observer, IHomeOperations {
                 controller.exitApp();
             }
         });
-        
+
         this.mFileItemExportFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Export file");
             }
         });
-        
+
         this.mFileItemImportFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Import File");
             }
         });
-        
+
         this.mEditUndo.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 undoGraph();
             }
         });
-        
+
         this.mEditRedo.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 redoGraph();
             }
         });
-        
+
         this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                System.out.println("Inicar crawler");
+                System.out.println(getInputURL());
             }
-        });   
+        });
     }
 
     @Override

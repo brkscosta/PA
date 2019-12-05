@@ -5,37 +5,121 @@
  */
 package Model;
 
+import Exceptions.InvalidEdgeException;
+import Exceptions.InvalidVertexException;
+import Interfaces.Digraph;
+import Interfaces.Edge;
+import Interfaces.Vertex;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// My packages
-import Interfaces.*;
-import Exceptions.*;
-
 /**
- * ADT Graph implementation that stores a collection of edges (and vertices) and
- * where each edge contains the references for the vertices it connects.
- *
+ * Implementation of a digraph that adheres to the {@link Digraph} interface.
+ * <br>
  * Does not allow duplicates of stored elements through <b>equals</b> criteria.
- *
+ * <br>
+ * @param <V> Type of element stored at a vertex
+ * @param <E> Type of element stored at an edge
+ * 
  * @author brunomnsilva
  */
 public class MyDiGraph<V, E> implements Digraph<V, E> {
 
-    /* inner classes are defined at the end of the class, so are the auxiliary methods 
+     /* inner classes are defined at the end of the class, so are the auxiliary methods 
      */
-    private HashMap<V, Vertex<V>> vertices; // list of webPages
-    private HashMap<E, Edge<E, V>> edges; // list of edges between webPages by a link
+    private final Map<V, Vertex<V>> vertices;
+    private final Map<E, Edge<E, V>> edges;
 
-    /**
-     * Creates a empty graph.
-     */
     public MyDiGraph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
+    }
+    
+    
+    @Override
+    public synchronized Collection<Edge<E, V>> incidentEdges(Vertex<V> inbound) 
+            throws InvalidVertexException {
+        checkVertex(inbound);
+
+        List<Edge<E, V>> incidentEdges = new ArrayList<>();
+        for (Edge<E, V> edge : edges.values()) {
+
+            if (((MyEdge) edge).getInbound() == inbound) {
+                incidentEdges.add(edge);
+            }
+        }
+        return incidentEdges;
+    }
+    
+    @Override
+    public synchronized Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
+        checkVertex(outbound);
+
+        List<Edge<E, V>> outboundEdges = new ArrayList<>();
+        for (Edge<E, V> edge : edges.values()) {
+
+            if (((MyEdge) edge).getOutbound() == outbound) {
+                outboundEdges.add(edge);
+            }
+        }
+        return outboundEdges;
+    }
+
+    @Override
+    public boolean areAdjacent(Vertex<V> outbound, Vertex<V> inbound) throws InvalidVertexException {
+        //we allow loops, so we do not check if outbound == inbound
+        checkVertex(outbound);
+        checkVertex(inbound);
+
+        /* find and edge that goes outbound ---> inbound */
+        for (Edge<E, V> edge : edges.values()) {
+            if (((MyEdge) edge).getOutbound() == outbound && ((MyEdge) edge).getInbound() == inbound) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public synchronized Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        if (existsEdgeWith(edgeElement)) {
+            throw new InvalidEdgeException("There's already an edge with this element.");
+        }
+
+        MyVertex outVertex = checkVertex(outbound);
+        MyVertex inVertex = checkVertex(inbound);
+
+        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
+
+        edges.put(edgeElement, newEdge);
+
+        return newEdge;
+    }
+
+    @Override
+    public synchronized Edge<E, V> insertEdge(V outboundElement, V inboundElement, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        if (existsEdgeWith(edgeElement)) {
+            throw new InvalidEdgeException("There's already an edge with this element.");
+        }
+
+        if (!existsVertexWith(outboundElement)) {
+            throw new InvalidVertexException("No vertex contains " + outboundElement);
+        }
+        if (!existsVertexWith(inboundElement)) {
+            throw new InvalidVertexException("No vertex contains " + inboundElement);
+        }
+
+        MyVertex outVertex = vertexOf(outboundElement);
+        MyVertex inVertex = vertexOf(inboundElement);
+
+        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
+
+        edges.put(edgeElement, newEdge);
+
+        return newEdge;
     }
 
     @Override
@@ -49,49 +133,30 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public Collection<Vertex<V>> vertices() {
+    public synchronized Collection<Vertex<V>> vertices() {
         List<Vertex<V>> list = new ArrayList<>();
-        for (Vertex<V> v : vertices.values()) {
+        vertices.values().forEach((v) -> {
             list.add(v);
-        }
+        });
         return list;
     }
 
     @Override
-    public Collection<Edge<E, V>> edges() {
+    public synchronized Collection<Edge<E, V>> edges() {
         List<Edge<E, V>> list = new ArrayList<>();
-        for (Edge<E, V> e : edges.values()) {
+        edges.values().forEach((e) -> {
             list.add(e);
-        }
+        });
         return list;
     }
 
     @Override
-    public Collection<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidEdgeException {
-
-        checkVertex(v);
-
-        List<Edge<E, V>> incidentEdges = new ArrayList<>();
-        for (Edge<E, V> edge : edges.values()) {
-
-            if (((MyEdge) edge).contains(v)) {
-                /* edge.vertices()[0] == v || edge.vertices()[1] == v */
-                incidentEdges.add(edge);
-            }
-
-        }
-
-        return incidentEdges;
-    }
-
-    @Override
-    public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
+    public synchronized Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         checkVertex(v);
         MyEdge edge = checkEdge(e);
 
         if (!edge.contains(v)) {
-            return null;
-            /* this edge does not connect vertex v */
+            return null; /* this edge does not connect vertex v */
         }
 
         if (edge.vertices()[0] == v) {
@@ -103,26 +168,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public boolean areAdjacent(Vertex<V> u, Vertex<V> v) throws InvalidVertexException {
-        //we allow loops, so we do not check if u == v
-        checkVertex(v);
-        checkVertex(u);
-
-        /* find and edge that contains both u and v */
-        for (Edge<E, V> edge : edges.values()) {
-//            if (((MyEdge) edge).contains(v) && ((MyEdge) edge).contains(v)) {
-//                return true;
-//            }
-            if(edge.vertices()[0] == u && edge.vertices()[1] == v || 
-                    edge.vertices()[0] == v && edge.vertices()[1] == v)
-                return true;
-
-        }
-        return false;
-    }
-
-    @Override
-    public Vertex<V> insertVertex(V vElement) {
+    public synchronized Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
         if (existsVertexWith(vElement)) {
             throw new InvalidVertexException("There's already a vertex with this element.");
         }
@@ -135,56 +181,16 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException {
-
-        if (existsEdgeWith(edgeElement)) {
-            throw new IllegalArgumentException("There's already an edge with this element.");
-        }
-
-        MyVertex outVertex = checkVertex(u);
-        MyVertex inVertex = checkVertex(v);
-
-        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
-
-        edges.put(edgeElement, newEdge);
-
-        return newEdge;
-
-    }
-
-    @Override
-    public Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement) throws InvalidVertexException {
-        if (existsEdgeWith(edgeElement)) {
-            throw new IllegalArgumentException("There's already an edge with this element.");
-        }
-
-        if (!existsVertexWith(vElement1)) {
-            throw new InvalidVertexException("No vertex contains " + vElement1);
-        }
-        if (!existsVertexWith(vElement2)) {
-            throw new InvalidVertexException("No vertex contains " + vElement2);
-        }
-
-        MyVertex outVertex = vertexOf(vElement1);
-        MyVertex inVertex = vertexOf(vElement2);
-
-        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
-
-        edges.put(edgeElement, newEdge);
-
-        return newEdge;
-
-    }
-
-    @Override
-    public V removeVertex(Vertex<V> v) throws InvalidVertexException {
+    public synchronized V removeVertex(Vertex<V> v) throws InvalidVertexException {
         checkVertex(v);
 
         V element = v.element();
 
         //remove incident edges
-        Iterable<Edge<E, V>> incidentEdges = incidentEdges(v);
-        for (Edge<E, V> edge : incidentEdges) {
+        Collection<Edge<E, V>> inOutEdges = incidentEdges(v);
+        inOutEdges.addAll(outboundEdges(v));
+        
+        for (Edge<E, V> edge : inOutEdges) {
             edges.remove(edge.element());
         }
 
@@ -194,7 +200,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
+    public synchronized E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
         checkEdge(e);
 
         E element = e.element();
@@ -206,7 +212,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     @Override
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if (existsVertexWith(newElement)) {
-            throw new IllegalArgumentException("There's already a vertex with this element.");
+            throw new InvalidVertexException("There's already a vertex with this element.");
         }
 
         MyVertex vertex = checkVertex(v);
@@ -220,7 +226,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     @Override
     public E replace(Edge<E, V> e, E newElement) throws InvalidEdgeException {
         if (existsEdgeWith(newElement)) {
-            throw new IllegalArgumentException("There's already an edge with this element.");
+            throw new InvalidEdgeException("There's already an edge with this element.");
         }
 
         MyEdge edge = checkEdge(e);
@@ -247,7 +253,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     private boolean existsEdgeWith(E edgeElement) {
         return edges.containsKey(edgeElement);
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(
@@ -264,24 +270,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         }
         return sb.toString();
     }
-
-    @Override
-    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
-        checkVertex(outbound);
-
-        List<Edge<E, V>> outboundEdges = new ArrayList<>();
-        for (Edge<E, V> edge : edges.values()) {
-
-            if (edge.vertices()[0] == outbound) {
-                /* edge.vertices()[0] == v || edge.vertices()[1] == v */
-                outboundEdges.add(edge);
-            }
-
-        }
-
-        return outboundEdges;
-    }
-
+    
     private class MyVertex implements Vertex<V> {
 
         V element;
@@ -327,6 +316,7 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
             Vertex[] vertices = new Vertex[2];
             vertices[0] = vertexOutbound;
             vertices[1] = vertexInbound;
+
             return vertices;
         }
 
@@ -334,6 +324,14 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
         public String toString() {
             return "Edge{{" + element + "}, vertexOutbound=" + vertexOutbound.toString()
                     + ", vertexInbound=" + vertexInbound.toString() + '}';
+        }
+        
+        public Vertex<V> getOutbound() {
+            return vertexOutbound;
+        }
+        
+        public Vertex<V> getInbound() {
+            return vertexInbound;
         }
     }
 
@@ -345,7 +343,8 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
      * @throws InvalidVertexException
      */
     private MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
-
+        if(v == null) throw new InvalidVertexException("Null vertex.");
+        
         MyVertex vertex;
         try {
             vertex = (MyVertex) v;
@@ -361,7 +360,8 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
     }
 
     private MyEdge checkEdge(Edge<E, V> e) throws InvalidEdgeException {
-
+        if(e == null) throw new InvalidEdgeException("Null edge.");
+        
         MyEdge edge;
         try {
             edge = (MyEdge) e;
@@ -375,4 +375,5 @@ public class MyDiGraph<V, E> implements Digraph<V, E> {
 
         return edge;
     }
+    
 }

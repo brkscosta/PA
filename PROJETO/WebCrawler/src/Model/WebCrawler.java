@@ -3,17 +3,12 @@ package Model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 // My packages
 import Interfaces.*;
 import Exceptions.*;
-import Main.Main;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Observable;

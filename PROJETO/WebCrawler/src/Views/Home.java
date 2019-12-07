@@ -7,9 +7,11 @@ package Views;
 
 import Controller.HomeController;
 import Controller.IHomeOperations;
+import Exceptions.WebCrawlerException;
 import Model.WebCrawler;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -378,7 +380,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                System.out.println(getInputURL());
+                try {
+                    controller.start();
+                } catch (WebCrawlerException | IOException ex) {
+                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

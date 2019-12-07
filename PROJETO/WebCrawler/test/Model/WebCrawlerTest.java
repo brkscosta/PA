@@ -8,10 +8,8 @@ package Model;
 import java.io.IOException;
 import static junit.framework.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 // My packages
-import Interfaces.*;
 import Exceptions.*;
 import org.junit.Before;
 
@@ -22,17 +20,15 @@ import org.junit.Before;
 public class WebCrawlerTest {
 
     private WebCrawler webCrawlerInstance;
+    
     String moodle = "https://moodle.ips.pt/1920/";
-    String stackOverflow = "https://stackoverflow.com/";
     WebPage web404;
-
+    String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";  
     @Before
     public void setUp() throws IOException, WebCrawlerException {
-        this.webCrawlerInstance = new WebCrawler(this.moodle, 2, WebCrawler.StopCriteria.PAGES);
-        
+        this.webCrawlerInstance = new WebCrawler(this.testeWebCrawler, 15, WebCrawler.StopCriteria.PAGES);
         // Test pages not found
         String page404 = "https://deviup.com.br:3001/api/lembrete/2";
-        String page_2_404 = "https://deviup.com.br:3001/api/lembrete/3";
         this.web404 = new WebPage(page404);
         webCrawlerInstance.webCrawler.insertVertex(web404);
         webCrawlerInstance.start();
@@ -62,5 +58,4 @@ public class WebCrawlerTest {
         int expResult = 4;
         assertEquals(expResult, result);
     }
-
 }

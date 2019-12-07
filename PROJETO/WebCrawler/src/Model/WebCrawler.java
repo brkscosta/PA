@@ -11,6 +11,7 @@ import Interfaces.*;
 import Exceptions.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.UnexpectedException;
 import java.util.Observable;
 
 @SuppressWarnings("null")
@@ -28,7 +29,7 @@ public class WebCrawler extends Observable {
     // Default attributes
     private String startURL = "";
     public final Digraph<WebPage, Link> webCrawler;
-    private WebPage rootWebPage;
+    public WebPage rootWebPage;
     private int countHttpsLinks;
     private int countPageNotFound;
 
@@ -45,7 +46,7 @@ public class WebCrawler extends Observable {
      * Create a object of <i><p>
      * Web Crawler </p></i> type with a DiGraph instance s
      *
-     * @param baseUrl the root url
+     * @param baseUrl the root URL
      * @param criteriaNumber number of stop criteria
      * @param stopCriteria type of stop criteria
      * @throws java.io.IOException
@@ -162,7 +163,7 @@ public class WebCrawler extends Observable {
                 // Insert a new WebPage in the webCrawler
                 WebPage webPageInserting = new WebPage(link.getLinkName());
                 webCrawler.insertVertex(webPageInserting);
-                countHttpsLinks += this.getPagesNotFound(webPageInserting);
+                countPageNotFound += this.getPagesNotFound(webPageInserting);
 
                 BFSList.add(webPageInserting);
                 webPagesToVisit.add(webPageInserting);
@@ -179,7 +180,7 @@ public class WebCrawler extends Observable {
 
         return BFSList;
     }
-
+     
     /**
      * Checks if exists already a webPage like the param inside the webPage
      *
@@ -216,7 +217,7 @@ public class WebCrawler extends Observable {
             throws WebCrawlerException, IOException {
 
         //TODO
-        return null;
+        throw new UnexpectedException("Not supported");
     }
 
     /**

@@ -23,21 +23,22 @@ public class Main extends Application {
 
     /**
      * @param args the command line arguments
-     * @throws Exceptions.WebCrawlerException
-     * @throws java.io.IOException
      */
-    public static void main(String[] args) throws WebCrawlerException, IOException {
+    public static void main(String[] args) {
         launch(args);
+        
     }
-    
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         
         String url = "http://moodle.ips.pt/";
+        String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
         //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
-        WebCrawler model = new WebCrawler(url, 2, WebCrawler.StopCriteria.PAGES);
+        WebCrawler model = new WebCrawler(url, 25, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
+        
         System.out.println(" " + controller);
         
         BorderPane window = new BorderPane();
@@ -47,8 +48,7 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
         primaryStage.show();
-     
+
     }
-    
-    
+
 }

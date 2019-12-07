@@ -4,8 +4,11 @@
  * and open the template in the editor.
  */
 package Controller;
+import Exceptions.WebCrawlerException;
 import Model.WebCrawler;
+import Model.WebPage;
 import Views.*;
+import java.io.IOException;
 
 /**
  *
@@ -25,6 +28,12 @@ public class HomeController {
     }
     
     // TODO Methods here
+    
+    public void start() throws WebCrawlerException, IOException{
+        WebPage rootWebPage = model.rootWebPage;
+        rootWebPage.setPersonalURL(this.mainView.getInputURL());
+        model.start();
+    }
     
     public void exitApp(){
         this.mainView.exitApp();

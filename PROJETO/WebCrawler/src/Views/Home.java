@@ -8,6 +8,7 @@ package Views;
 import Controller.HomeController;
 import Controller.IHomeOperations;
 import Model.WebCrawler;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Observable;
@@ -219,7 +220,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
         try {
             //Creating an image 
             Image image;
-            image = new Image(new FileInputStream("D:\\Engenharia\\Ano 3\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
+            //image = new Image(new FileInputStream("D:\\Engenharia\\Ano 3\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
+
+            String localDir = System.getProperty("user.dir");
+            File file = new File(localDir + "/src/Resources/images/graph.png");
+
+            image = new Image(new FileInputStream(file.getAbsolutePath()));
+           
             //Setting the image view 
             ImageView imageView = new ImageView(image);
 

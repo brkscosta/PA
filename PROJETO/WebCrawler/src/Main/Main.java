@@ -43,9 +43,9 @@ public class Main extends Application {
         
         BorderPane window = new BorderPane();
         window.setCenter(view);
-        Scene mainScene = new Scene(window, 1024, 500);
+        Scene mainScene = new Scene(window, 1090, 500);
         primaryStage.setTitle("Web Crawler");
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
         primaryStage.show();
 

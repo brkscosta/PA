@@ -11,7 +11,6 @@ import Model.Caretaker;
 import View.BagOfWordsUI;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -33,8 +32,7 @@ public class Main extends Application {
         /* view */
         BagOfWordsUI view = new BagOfWordsUI(bag);
         
-        /* controller */
-        BagOfWordsController controller = new BagOfWordsController(bag, caretaker, view);
+        new BagOfWordsController(bag, caretaker, view);
         
         Scene scene = new Scene(view, 300, 250);
         

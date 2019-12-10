@@ -23,12 +23,11 @@ public class HomeController {
         this.mainView = mainView;
         this.model = model;
         
-        mainView.setTriggersButtons(this);
+        mainView.setTriggersButtons(HomeController.this);
         model.addObserver(mainView);
     }
     
-    // TODO Methods here
-    
+    // Methods here
     public void start() throws WebCrawlerException, IOException{
         WebPage rootWebPage = model.rootWebPage;
         rootWebPage.setPersonalURL(this.mainView.getInputURL());
@@ -58,7 +57,7 @@ public class HomeController {
     }
     
     public void showErrors() {
-        
+        mainView.showError();
     }
     
     @Override

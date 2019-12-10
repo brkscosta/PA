@@ -3,19 +3,15 @@ package Model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 // My packages
 import Interfaces.*;
 import Exceptions.*;
-import Main.Main;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.UnexpectedException;
 import java.util.Observable;
 
 @SuppressWarnings("null")
@@ -33,7 +29,7 @@ public class WebCrawler extends Observable {
     // Default attributes
     private String startURL = "";
     public final Digraph<WebPage, Link> webCrawler;
-    private WebPage rootWebPage;
+    public WebPage rootWebPage;
     private int countHttpsLinks;
     private int countPageNotFound;
 
@@ -50,9 +46,10 @@ public class WebCrawler extends Observable {
      * Create a object of <i><p>
      * Web Crawler </p></i> type with a DiGraph instance s
      *
-     * @param baseUrl the root url
+     * @param baseUrl the root URL
      * @param criteriaNumber number of stop criteria
      * @param stopCriteria type of stop criteria
+     * @throws java.io.IOException
      */
     public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
 
@@ -166,7 +163,7 @@ public class WebCrawler extends Observable {
                 // Insert a new WebPage in the webCrawler
                 WebPage webPageInserting = new WebPage(link.getLinkName());
                 webCrawler.insertVertex(webPageInserting);
-                countHttpsLinks += this.getPagesNotFound(webPageInserting);
+                countPageNotFound += this.getPagesNotFound(webPageInserting);
 
                 BFSList.add(webPageInserting);
                 webPagesToVisit.add(webPageInserting);
@@ -183,7 +180,7 @@ public class WebCrawler extends Observable {
 
         return BFSList;
     }
-
+     
     /**
      * Checks if exists already a webPage like the param inside the webPage
      *
@@ -220,7 +217,7 @@ public class WebCrawler extends Observable {
             throws WebCrawlerException, IOException {
 
         //TODO
-        return null;
+        throw new UnexpectedException("Not supported");
     }
 
     /**

@@ -22,16 +22,17 @@
  * THE SOFTWARE.
  */
 package Interfaces;
-import java.util.Collection;
-import Exceptions.*;
 
+import Exceptions.InvalidEdgeException;
+import Exceptions.InvalidVertexException;
+import java.util.Collection;
 
 /**
  * A graph is made up of a set of vertices connected by edges, where the edges 
  * have no direction associated with them, i.e., they establish a two-way connection.
  *
- * @param <E> Type of values stored in edges
- * @param <V> Type of values stored in vertices
+ * @param <V> Type of element stored at a vertex
+ * @param <E> Type of element stored at an edge
  * 
  * @see Edge
  * @see Vertex
@@ -180,7 +181,7 @@ public interface Graph<V, E> {
      *                                      method.
      */
     public Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement)
-            throws InvalidVertexException, InvalidEdgeException;;
+            throws InvalidVertexException, InvalidEdgeException;
 
     /**
      * Removes a vertex, along with all of its incident edges, and returns the element

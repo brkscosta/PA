@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,7 +30,7 @@ public class WebPage {
 
     private String titleName = "";
     private String personalURL = "";
-    private final List<WebPage> incidentWebPages = new ArrayList<>();
+    private final Queue<Link> listIncidentsWebPages;
     private int statusCode;
 
     /**
@@ -42,7 +40,7 @@ public class WebPage {
      * @throws java.io.IOException
      */
     public WebPage(String url) throws IOException {
-
+        this.listIncidentsWebPages = new LinkedList<>();
         // Instantiate the personalUrl
         this.personalURL = url;
 
@@ -54,6 +52,11 @@ public class WebPage {
         // Get the status code
         this.statusCode = this.getStatusCode();
 
+        insertStatusCodeTitle(connection);
+
+    }
+
+    private void insertStatusCodeTitle(Connection connection) {
         try {
             switch (statusCode) {
                 case 404:
@@ -71,7 +74,6 @@ public class WebPage {
         } catch (IOException e) {
             Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);
         }
-
     }
 
     public void setStatusCode(int status) {
@@ -139,34 +141,34 @@ public class WebPage {
      * @throws IOException
      */
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
-
-        //Check if page is not found
-        if ("".equals(personalLink)) {
-            throw new WebCrawlerException("URL não pode ser vazio");
-        }
-
+        Queue<Link> a = new LinkedList();
         try {
+            //Check if page is not found
+            if ("".equals(personalLink) || personalLink == null) {
+                throw new WebCrawlerException("URL não pode ser vazio ou nulo");
+            }
+
             Document doc = Jsoup.connect(personalLink).get();
-            
             Elements links = doc.select("a[href]");
-            Queue<Link> listIncidentsWebPages = new LinkedList();
 
             for (Element link : links) {
                 String href = link.attr("abs:href");
                 String newHref = processLink(href, personalLink);
                 Link newObjLink = new Link(newHref);
                 listIncidentsWebPages.offer(newObjLink);
-
             }
-
             Set<Link> set = new HashSet(listIncidentsWebPages);
             listIncidentsWebPages.clear();
             listIncidentsWebPages.addAll(set);
+
             return listIncidentsWebPages;
-            
+
         } catch (HttpStatusException ex) {
-            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            if (ex.getStatusCode() == 404) {
+                this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
+                Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return listIncidentsWebPages;
         }
     }
 
@@ -215,17 +217,14 @@ public class WebPage {
      */
     @Override
     public String toString() {
-        try {
-            return "WebPage { " + "personalURL=" + personalURL
-                    + ", incidentWebPages = "
-                    + getAllIncidentWebPages(this.personalURL).size()
-                    + ", statusCode = " + this.statusCode + '}' + "\n";
-        } catch (WebCrawlerException ex) {
-            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return "";
+        return "WebPage { " + "personalURL=" + personalURL
+                + ", incidentWebPages = "
+                + getListIncidentsWebPages().size()
+                + ", statusCode = " + this.statusCode + '}' + "\n";
+    }
+
+    public Queue<Link> getListIncidentsWebPages() {
+        return listIncidentsWebPages;
     }
 
 }

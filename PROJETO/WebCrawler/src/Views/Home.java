@@ -17,10 +17,8 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -176,7 +174,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         try {
             //Creating an image 
             Image image;
-            image = new Image(new FileInputStream("D:\\Engenharia\\Ano 3\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
+            image = new Image(new FileInputStream("C:\\OneDrive\\Documentos\\GitHub\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
             //Setting the image view 
             ImageView imageView = new ImageView(image);
 

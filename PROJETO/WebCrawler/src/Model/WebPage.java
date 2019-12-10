@@ -157,12 +157,13 @@ public class WebPage {
                 Link newObjLink = new Link(newHref);
                 listIncidentsWebPages.offer(newObjLink);
             }
+            
             Set<Link> set = new HashSet(listIncidentsWebPages);
             listIncidentsWebPages.clear();
             listIncidentsWebPages.addAll(set);
-
+            
             return listIncidentsWebPages;
-
+            
         } catch (HttpStatusException ex) {
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));

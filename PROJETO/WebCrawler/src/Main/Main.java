@@ -34,8 +34,9 @@ public class Main extends Application {
         
         String url = "http://moodle.ips.pt/";
         String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
+        
         //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
-        WebCrawler model = new WebCrawler(url, 25, WebCrawler.StopCriteria.PAGES);
+        WebCrawler model = new WebCrawler(testeWebCrawler, 20, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
         

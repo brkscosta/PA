@@ -221,7 +221,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         try {
             //Creating an image 
             Image image;
-            image = new Image(new FileInputStream("D:\\Engenharia\\Ano 3\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
+            image = new Image(new FileInputStream("C:\\OneDrive\\Documentos\\GitHub\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
             //Setting the image view 
             ImageView imageView = new ImageView(image);
 

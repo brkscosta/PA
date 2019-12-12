@@ -7,9 +7,7 @@ package Main;
 
 import Controller.HomeController;
 import Model.WebCrawler;
-import Exceptions.WebCrawlerException;
 import Views.Home;
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -26,7 +24,6 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        
     }
 
     @Override

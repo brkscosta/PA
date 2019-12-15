@@ -9,9 +9,8 @@ import Controller.HomeController;
 import Controller.IHomeOperations;
 import Exceptions.WebCrawlerException;
 import Model.WebCrawler;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -155,7 +154,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.rdBtnIterative = new RadioButton("Iterativo");
         this.rdBtnIterative.setToggleGroup(group);
         this.rdBtnIterative.setSelected(false);
-        
+
         //Left Layout
         this.anchorPaneLeft = new AnchorPane();
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000,
@@ -166,7 +165,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         enterKeyEventHandler = (KeyEvent event) -> {
             // handle users "enter key event"
-            if (event.getCode() == KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
                 try {
                     // yes, using exception for control is a bad solution ;-)
                     int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
@@ -200,8 +199,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         AnchorPane.setRightAnchor(items, 10.0);
         this.anchorPaneLeft.getChildren().add(items);
         //END LEFT LAYOUT
-        
-        
+
         // Statistics on rigth pane
         this.lblStatistics = new Label("Estatísticas");
         this.anchorPaneRigth = new AnchorPane();
@@ -217,31 +215,26 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
-        
-        try {
-            //Creating an image 
-            Image image;
-            image = new Image(new FileInputStream("C:\\OneDrive\\Documentos\\GitHub\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
-            //Setting the image view 
-            ImageView imageView = new ImageView(image);
 
-            //Setting the position of the image 
-            imageView.setX(50);
-            imageView.setY(25);
-
-            //setting the fit height and width of the image view 
-            imageView.setFitHeight(455);
-            imageView.setFitWidth(500);
-
-            //Setting the preserve ratio of the image view 
-            imageView.setPreserveRatio(true);
-            boxScroll.getChildren().add(lblWebCrawler);
-            boxScroll.getChildren().add(imageView);
-            this.scrollPaneGraph = new ScrollPane();
-            this.scrollPaneGraph.setContent(boxScroll);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //Creating an image
+        Image image;
+        InputStream in
+                = getClass().getResourceAsStream("/Resources/images/graph.png");
+        image = new Image(in);
+        //Setting the image view
+        ImageView imageView = new ImageView(image);
+        //Setting the position of the image
+        imageView.setX(50);
+        imageView.setY(25);
+        //setting the fit height and width of the image view
+        imageView.setFitHeight(455);
+        imageView.setFitWidth(500);
+        //Setting the preserve ratio of the image view
+        imageView.setPreserveRatio(true);
+        boxScroll.getChildren().add(lblWebCrawler);
+        boxScroll.getChildren().add(imageView);
+        this.scrollPaneGraph = new ScrollPane();
+        this.scrollPaneGraph.setContent(boxScroll);
         this.splitPane = new SplitPane();
 
         //TODO Add graph here
@@ -342,49 +335,31 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void setTriggersButtons(HomeController controller) {
 
-        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.exitApp();
-            }
+        this.mFileItemExit.setOnAction((ActionEvent event) -> {
+            controller.exitApp();
         });
 
-        this.mFileItemExportFile.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Export file");
-            }
+        this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
+            System.out.println("Export file");
         });
 
-        this.mFileItemImportFile.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Import File");
-            }
+        this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
+            System.out.println("Import File");
         });
 
-        this.mEditUndo.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                undoGraph();
-            }
+        this.mEditUndo.setOnAction((ActionEvent event) -> {
+            undoGraph();
         });
 
-        this.mEditRedo.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                redoGraph();
-            }
+        this.mEditRedo.setOnAction((ActionEvent event) -> {
+            redoGraph();
         });
 
-        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                try {
-                    controller.start();
-                } catch (WebCrawlerException | IOException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        this.btnStartCrawler.setOnAction((ActionEvent t) -> {
+            try {
+                controller.start();
+            } catch (WebCrawlerException | IOException ex) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

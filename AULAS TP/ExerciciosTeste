@@ -14,6 +14,8 @@
 		
 	}
 	
+	//Ex 
+	
 	EX 5
 	
 	public int sumOfActivesEdges() {
@@ -23,14 +25,15 @@
 		while(it.hasNext()) {
 			
 			Edges<E, V> elem = it.next();
-			int val = elem.element().value();
-			sum += val; 	
+			boolean val = elem.element().isAcitve();
+			if(val == true)
+				sum += val;
 			return sum;
 		}
 		
 	}
 	
-	EX 7
+	//	EX 7
 
 	public int sumOfActivesAdjacentEdges(Vertex<V> v) {
 	
@@ -40,8 +43,8 @@
 		
 			Vertex<V>[] vertices = edge.vertices();
 			if(vertices[0] == v || vertices[1] = v) {
-			
-				sum += edge.element().value();
+				if(edge.element().isctive())	
+					sum += edge.element().value();
 			}
 		}	
 		return sum;
@@ -106,15 +109,17 @@
 		
 		int val = treeRoot.element().value();
 		
-		f
+		
 		if(val < thresold)
-			return val + sumOfLessThan(thresold, treeRoot.rigth) +
+			return val + sumOfLessThan(thresold, treeRoot.left) +
 				   sumOfLessThan(thresold, treeRoot.rigth);
 		else
 			return 0 + 
 					sumOfLessThan(thresold, treeRoot.left) +
 					sumOfLessThan(thresold, treeRoot.rigth)
 	}
+	
+	// Ex 
 	
 	// EX4
 	boolean exists(T element){

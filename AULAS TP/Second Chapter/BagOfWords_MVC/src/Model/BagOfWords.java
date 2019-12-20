@@ -26,7 +26,9 @@ public class BagOfWords extends Observable implements Originator {
     }
     
     public void add(String word) {
-        bag.add(word);
+        
+        if(!bag.contains(word))
+            bag.add(word);
         
         setChanged();
         notifyObservers();

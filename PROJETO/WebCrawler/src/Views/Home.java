@@ -347,46 +347,28 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void setTriggersButtons(HomeController controller) {
 
-        this.mFileItemExit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                controller.exitApp();
-            }
+        this.mFileItemExit.setOnAction((ActionEvent event) -> {
+            controller.exitApp();
         });
 
-        this.mFileItemExportFile.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Export file");
-            }
+        this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
+            System.out.println("Export file");
         });
 
-        this.mFileItemImportFile.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Import File");
-            }
+        this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
+            System.out.println("Import File");
         });
 
-        this.mEditUndo.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                undoGraph();
-            }
+        this.mEditUndo.setOnAction((ActionEvent event) -> {
+            undoGraph();
         });
 
-        this.mEditRedo.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                redoGraph();
-            }
+        this.mEditRedo.setOnAction((ActionEvent event) -> {
+            redoGraph();
         });
 
-        this.btnStartCrawler.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                System.out.println(getInputURL());
-            }
+        this.btnStartCrawler.setOnAction((ActionEvent t) -> {
+            System.out.println(getInputURL());
         });
     }
 

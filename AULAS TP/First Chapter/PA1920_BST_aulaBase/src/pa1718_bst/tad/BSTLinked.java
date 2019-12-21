@@ -229,15 +229,36 @@ public class BSTLinked<E extends Comparable> implements BinarySearchTree<E> {
 
     @Override
     public Iterable<E> posOrder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<E> list = new ArrayList<>();
+        posOrder(this.root, list);
+        return list;
+    }
 
+    private void posOrder(TreeNode treeRoot, ArrayList<E> elements) {
+
+        if(treeRoot == null) return;
+
+        posOrder(treeRoot.right, elements);
+        elements.add(treeRoot.element);
+        posOrder(treeRoot.left, elements);
     }
 
     @Override
     public Iterable<E> preOrder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<E> list = new ArrayList<>();
+        preOrder(this.root, list);
+        return list;
     }
-    
+
+    private void preOrder(TreeNode treeRoot, ArrayList<E> elements) {
+
+        if(treeRoot == null) return;
+        
+        elements.add(treeRoot.element);
+        posOrder(treeRoot.left, elements);
+        posOrder(treeRoot.right, elements);
+    }
+
     @Override
     public String toString() {
         if (isEmpty()) {

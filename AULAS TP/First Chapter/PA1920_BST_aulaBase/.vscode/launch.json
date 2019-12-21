@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "pa1718_bst.Main",
+            "projectName": "PA1920_BST_aulaBase_1d204c75"
+        },
+        {
+            "name": "Run",
+            "type": "java",
+            "request": "launch",
+            "stopOnEntry": true,
+            "jdkPath": "${env:JAVA_HOME}/bin",
+            "cwd": "${workspaceRoot}",
+            "startupClass": "${workspaceRoot}/src/pa1718_bst/Main.java",
+            "startupClassPathPattern": "src/main/java/",
+            "classpath": [
+                "${workspaceRoot}/bin"
+            ],
+            "sourcePath": [
+                "${workspaceRoot}/src"
+            ]
+        }
+    ]
+}

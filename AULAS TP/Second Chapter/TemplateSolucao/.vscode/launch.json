@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TemplateBase",
+            "request": "launch",
+            "mainClass": "solucaoTemplate.TemplateBase"
+        }
+    ]
+}

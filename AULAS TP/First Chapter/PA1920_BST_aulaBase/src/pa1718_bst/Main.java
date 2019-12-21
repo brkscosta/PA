@@ -41,19 +41,13 @@ public class Main {
         System.out.println("Maximum element? " + bst.maximum());
         
         System.out.println("Elements: ");
-        Iterable<Integer> elements = bst.inOrder();
+        Iterable<Integer> elements = bst.posOrder();
         for(Integer i : elements) {
             System.out.print(i + " ");
         }
-        System.out.println();        
-        
       
         System.out.println("BST:");
         System.out.println(bst);
-
-        
-        
-        
         
     }
     

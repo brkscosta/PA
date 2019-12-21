@@ -1,0 +1,202 @@
+	//Grafos 
+	Ex 1
+	
+	public boolean containsEdge(Vertex<V> v, Edge<E, V> e) {
+	
+		
+		for(Edge<E, V> edge : edges) {
+				
+			if(e.vertices[0] == v || e.vertices[1] == v)
+				return true;
+		}
+		
+		return false;
+		
+	}
+	
+	//Ex 
+	
+	EX 5
+	
+	public int sumOfActivesEdges() {
+	
+		Iterator<Edge<E, V>> it = edges.iterator();
+		int sum = 0;
+		while(it.hasNext()) {
+			
+			Edges<E, V> elem = it.next();
+			boolean val = elem.element().isAcitve();
+			if(val == true)
+				sum += val;
+			return sum;
+		}
+		
+	}
+	
+	//	EX 7
+
+	public int sumOfActivesAdjacentEdges(Vertex<V> v) {
+	
+		int sum = 0;
+		
+		for(Edge<E, v> edge : edges.values()){
+		
+			Vertex<V>[] vertices = edge.vertices();
+			if(vertices[0] == v || vertices[1] = v) {
+				if(edge.element().isctive())	
+					sum += edge.element().value();
+			}
+		}	
+		return sum;
+	}
+	
+	EX 8
+	public void removeVertex(Vertex<V> v) {
+	
+		//remove mapeamento;
+		vertices.remove(v.element());
+		
+		List<E> toRemove = nwe ArrayList();
+		
+		for(Edge<E, v> edge : edges.values()){
+
+			// Testar se é adjacente
+			Vertex<V>[] vertices = edge.vertices();
+			if(vertices[0] == v || vertices[1] = v) {
+				//Não podemos iterar e alterar a coleção simultaneamente
+				toRemove.add(edge.element());
+			}
+		}
+		
+		for(E e : toRemove) {
+			
+			edge.remove(e)
+		
+		}
+	
+	}
+	
+	
+	public int countEvenValueEdges() {
+	
+		int count = 0;
+		
+		for(Edge<E, v> edge : edges.values()){
+		
+			if(edge.element().value() % 2 == 0) {
+				count++;
+			}
+		}	
+		return count;
+	}
+	
+	/*-----------------------------------------------------*/
+	//Árvores
+	
+	EX 7
+	
+	public int sumOfLessThan(int thresold) {
+		
+		return intOfLessThan(thresold, root);
+	
+	}
+	
+	
+	private int sumOfLessThan(int thresold,TreeRoot treeRoot) {
+	
+		if(treeRoot == null) return 0;
+		
+		
+		int val = treeRoot.element().value();
+		
+		
+		if(val < thresold)
+			return val + sumOfLessThan(thresold, treeRoot.left) +
+				   sumOfLessThan(thresold, treeRoot.rigth);
+		else
+			return 0 + 
+					sumOfLessThan(thresold, treeRoot.left) +
+					sumOfLessThan(thresold, treeRoot.rigth)
+	}
+	
+	// Ex 
+	
+	// EX4
+	boolean exists(T element){
+	
+		return exists(element, root);
+	}
+	
+	boolean exists(T element, TreeRoot treeRoot){
+	
+		if(treeRoot == null) return false;
+		
+		int diff = element.value() - treeRoot.element.value();
+		
+		if(diff == 0) return true;
+		
+		else if(dif < 0) return exists(element, treeRoot.left);
+		else return exists(element, treeRoot.right);
+		
+	}
+	
+	
+	//EX 6
+	
+	int sumOfTree(TreeRoot treeRoot) {		
+		return sumOfTreee(treeRoot);
+	}
+	
+	
+	int sumOfTree(TreeRoot treeRoot) {
+	
+		if(treeRoot == null) return 0;
+		
+		return treeRoot.element.value() + sumOfTree(treeRoot.left) +
+			sumOfTree(treeRoot.rigth);	
+	
+	}
+	
+	// Padrão
+	//EX 8 A
+	
+	
+	public class Linha {
+	
+		//..
+		
+		private class LinhaMemento implements Memento {
+		
+			Ponto p1,p2;
+			public LinhaMemento(Ponto p1, Ponto p2) {
+				
+				this.p1 = new Ponto(p1.getX(), p1.getY());
+				this.p2 = new Ponto(p2.getX(), p2.getY());
+			}
+		
+		}
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

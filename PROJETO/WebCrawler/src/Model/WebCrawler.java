@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.UnexpectedException;
 import java.util.Observable;
-import Model.WebCrawlerException;
-
 
 @SuppressWarnings("null")
 /**
@@ -20,7 +18,7 @@ import Model.WebCrawlerException;
  * {@link Graph.Edge} is the type of Link
  *
  * Use the methods setChanged() and notifyObservers()
- * 
+ *
  * @author BRKsCosta and Daniel Cordeiro
  */
 public class WebCrawler extends Observable {
@@ -35,7 +33,6 @@ public class WebCrawler extends Observable {
     // StopCriteria
     private int numStopCriteria = 0;
     private StopCriteria stopCriteriaChoosed;
-    
 
     public enum StopCriteria {
         PAGES, DEPTH
@@ -52,7 +49,6 @@ public class WebCrawler extends Observable {
      * @throws java.io.IOException
      */
     public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
-
         // Assigned values given
         this.startURL = baseUrl;
         this.numStopCriteria = criteriaNumber;
@@ -69,12 +65,10 @@ public class WebCrawler extends Observable {
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
+
         // Use different ways gettins BFS order
         Iterable<WebPage> BFS;
         if (stopCriteriaChoosed == StopCriteria.PAGES) {
-            //Vertex<WebPage> root = graph.insertVertex((new WebPage(rootWebPage.getPersonalURL())));
-            //BFS = bredthFirstTranversalVersion2(root);
-            //System.out.println(bredthFirstTranversalVersion2(root));
             BFS = this.BFSByPages(rootWebPage);
         } else {
             BFS = this.BFSByDepth(rootWebPage);
@@ -134,6 +128,8 @@ public class WebCrawler extends Observable {
         if (this.checkIfHasWebPage(webPage) == false) {
             // Insert the webPage in the graph
             graph.insertVertex(webPage);
+            setChanged();
+            notifyObservers();
         }
 
         webPagesToVisit.add(webPage);
@@ -170,7 +166,8 @@ public class WebCrawler extends Observable {
 
                 // Insert a new Link between WebPages
                 graph.insertEdge(visitedWebPage, webPageInserting, link);
-
+                setChanged();
+                notifyObservers();
                 // Increment countMaxVisitedPage by 1
                 countMaxVisitedPage++;
             }
@@ -179,7 +176,7 @@ public class WebCrawler extends Observable {
 
         return BFSList;
     }
-     
+
     /**
      * Checks if exists already a webPage like the param inside the webPage
      *
@@ -194,12 +191,13 @@ public class WebCrawler extends Observable {
         }
         return false;
     }
-    
+
     /**
      * Count https protocols
+     *
      * @param startURL site URL
      * @return Number of pages founded
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     private int countHttpsProtocols(String startURL) throws MalformedURLException {
         int count = 0;

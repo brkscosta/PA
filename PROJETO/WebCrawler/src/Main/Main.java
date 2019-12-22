@@ -30,29 +30,33 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
-        
+
         String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
-        
+
         //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
         WebCrawler model = new WebCrawler(testeWebCrawler, 20, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
-        
         System.out.println(" " + controller);
-        
+
+        configApp(view, primaryStage);
+
+    }
+    
+    private void configApp(Home view, Stage primaryStage) {
         BorderPane window = new BorderPane();
         window.setCenter(view);
+
+        //Config window
         Scene mainScene = new Scene(window, 1500, 700);
         primaryStage.sizeToScene();
         primaryStage.setTitle("Web Crawler");
-        StageStyle style = primaryStage.getStyle();
-        primaryStage.initStyle(style);
+        primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         primaryStage.show();
-        
+        view.graphView.init();
     }
 
 }

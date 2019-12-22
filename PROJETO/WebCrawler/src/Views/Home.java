@@ -11,9 +11,10 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
-import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+import com.brunomnsilva.smartgraph.graph.Digraph;
+import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
+import com.brunomnsilva.smartgraph.graph.Graph;
+import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -49,8 +50,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -63,9 +62,10 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     private WebCrawler model;
 
-    SmartPlacementStrategy strategy;
-    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-    SmartGraphPanel<WebPage, Link> graphView;
+    //SmartPlacementStrategy strategy;
+    SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    SmartPlacementStrategy strategyRandom = new SmartRandomPlacementStrategy();
+    public SmartGraphPanel<WebPage, Link> graphView;
 
     //Menu  
     private MenuBar menuBar;
@@ -105,14 +105,16 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Label lblNumPages;
 
     private static final String INITAL_VALUE = "0";
-
+    Graph<String, String> g = build_sample_digraph();
+    
     public Home(WebCrawler model) {
         this.model = model;
         this.strategy = new SmartCircularSortedPlacementStrategy();
         this.graphView = new SmartGraphPanel(this.model.graph, strategy);
+        //this.graphView = new SmartGraphPanel(g, strategyRandom);
         this.initializeComponents();
     }
-    
+
     private void initializeComponents() {
 
         //Set up menu bar
@@ -222,37 +224,15 @@ public class Home extends VBox implements Observer, IHomeOperations {
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
 
-        //Center pane graph will shows here
-        VBox boxScroll = new VBox();
-        this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
-        this.lblWebCrawler.setFont(new Font("Verdana", 16));
-        this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
+        //Graph interface
+        SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
+        graphView.setAutomaticLayout(true);
 
-        //Creating an image
-        /*Image image;
-        InputStream in
-        = getClass().getResourceAsStream("/Resources/images/graph.png");
-        image = new Image(in);
-        //Setting the image view
-        ImageView imageView = new ImageView(image);
-        //Setting the position of the image
-        imageView.setX(50);
-        imageView.setY(25);
-        //setting the fit height and width of the image view
-        imageView.setFitHeight(455);
-        imageView.setFitWidth(500);
-        //Setting the preserve ratio of the image view
-        imageView.setPreserveRatio(true);*/
-        SmartGraphDemoContainer smartGraphDemoContainer = new SmartGraphDemoContainer(graphView);
-        boxScroll.getChildren().addAll(lblWebCrawler, graphView);
-        //boxScroll.getChildren().add(imageView);
-        this.scrollPaneGraph = new ScrollPane();
-        this.scrollPaneGraph.setContent(boxScroll);
         this.splitPane = new SplitPane();
 
         //TODO Add graph here
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
-        this.splitPane.getItems().addAll(anchorPaneLeft, scrollPaneGraph, anchorPaneRigth);
+        this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
 
         //Config HBox Bootom
         Pane panelBottom = new Pane();
@@ -291,17 +271,40 @@ public class Home extends VBox implements Observer, IHomeOperations {
         return vbox;
     }
 
+    private Graph<String, String> build_sample_digraph() {
+
+        Digraph<String, String> g = new DigraphEdgeList<>();
+
+        g.insertVertex("A");
+        g.insertVertex("B");
+        g.insertVertex("C");
+        g.insertVertex("D");
+        g.insertVertex("E");
+        g.insertVertex("F");
+
+        g.insertEdge("A", "B", "AB");
+        g.insertEdge("B", "A", "AB2");
+        g.insertEdge("A", "C", "AC");
+        g.insertEdge("A", "D", "AD");
+        g.insertEdge("B", "C", "BC");
+        g.insertEdge("C", "D", "CD");
+        g.insertEdge("B", "E", "BE");
+        g.insertEdge("F", "D", "DF");
+        g.insertEdge("F", "D", "DF2");
+
+        //yep, its a loop!
+        g.insertEdge("A", "A", "Loop");
+
+        return g;
+    }
+
     @Override
     public void update(Observable o, Object o1) {
 
-        /*if(o instanceof WebCrawler){
-            WebCrawler model = (WebCrawler)o;
-            
-            // TODO
-            
-        }*/
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+       if(o instanceof WebCrawler){
+            WebCrawler observableModel = (WebCrawler)o;
+            graphView.update();
+        }
     }
 
     @Override
@@ -379,6 +382,19 @@ public class Home extends VBox implements Observer, IHomeOperations {
             } catch (WebCrawlerException | IOException ex) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
             }
+        });
+
+        graphView.setVertexDoubleClickAction(graphVertex -> {
+            System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
+            //want fun? uncomment below with automatic layout
+            /*this.g.removeVertex(graphVertex.getUnderlyingVertex());
+            graphView.update();*/
+        });
+
+        graphView.setEdgeDoubleClickAction(graphEdge -> {
+            System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
+            //dynamically change the style when clicked
+            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
         });
     }
 

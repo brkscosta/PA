@@ -6,11 +6,14 @@
 package Views;
 
 import Controller.HomeController;
-import Controller.IHomeOperations;
-import Exceptions.WebCrawlerException;
+import Model.WebCrawlerException;
+import Model.Link;
 import Model.WebCrawler;
+import Model.WebPage;
+import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -24,6 +27,8 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -55,7 +60,11 @@ import javafx.scene.layout.GridPane;
  */
 public class Home extends VBox implements Observer, IHomeOperations {
 
-    private WebCrawler webCrawlerModel;
+    private WebCrawler model;
+
+    SmartPlacementStrategy strategy;
+    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    SmartGraphPanel<WebPage, Link> graphView;
 
     //Menu  
     private MenuBar menuBar;
@@ -97,10 +106,12 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private static final String INITAL_VALUE = "0";
 
     public Home(WebCrawler model) {
-        this.webCrawlerModel = model;
+        this.model = model;
+        this.strategy = new SmartCircularSortedPlacementStrategy();
+        this.graphView = new SmartGraphPanel(this.model.graph, strategy);
         this.initializeComponents();
     }
-
+    
     private void initializeComponents() {
 
         //Set up menu bar
@@ -217,7 +228,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
 
         //Creating an image
-        Image image;
+        /*Image image;
         InputStream in
                 = getClass().getResourceAsStream("/Resources/images/graph.png");
         image = new Image(in);
@@ -230,9 +241,9 @@ public class Home extends VBox implements Observer, IHomeOperations {
         imageView.setFitHeight(455);
         imageView.setFitWidth(500);
         //Setting the preserve ratio of the image view
-        imageView.setPreserveRatio(true);
-        boxScroll.getChildren().add(lblWebCrawler);
-        boxScroll.getChildren().add(imageView);
+        imageView.setPreserveRatio(true);*/
+        boxScroll.getChildren().addAll(lblWebCrawler, graphView);
+        //boxScroll.getChildren().add(imageView);
         this.scrollPaneGraph = new ScrollPane();
         this.scrollPaneGraph.setContent(boxScroll);
         this.splitPane = new SplitPane();
@@ -328,8 +339,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
     }
 
     @Override
-    public void showError() {
+    public void showError(String errorMsg) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Something is wrong...");
+        alert.setContentText(errorMsg);
 
+        alert.showAndWait();
     }
 
     @Override

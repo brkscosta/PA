@@ -5,12 +5,9 @@
  */
 package Model;
 
-import Exceptions.InvalidVertexException;
-import Interfaces.Digraph;
-import Interfaces.Edge;
-import Interfaces.Vertex;
 import java.util.ArrayList;
 import java.util.Collection;
+import com.brunomnsilva.smartgraph.graph.*;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -27,7 +24,7 @@ public class MyDiGraphTest {
     private final List<Edge<String, String>> edges;
 
     public MyDiGraphTest() {
-        this.digraph = new MyDiGraph<>();
+        this.digraph = new DigraphEdgeList<>();
         this.vertex = new ArrayList<>();
         this.edges = new ArrayList<>();
     }

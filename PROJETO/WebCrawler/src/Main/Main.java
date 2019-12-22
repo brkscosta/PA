@@ -10,6 +10,7 @@ import Model.WebCrawler;
 import Views.Home;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -29,7 +30,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         
-        String url = "http://moodle.ips.pt/";
+        
         String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
         
         //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
@@ -41,10 +42,11 @@ public class Main extends Application {
         
         BorderPane window = new BorderPane();
         window.setCenter(view);
-        Scene mainScene = new Scene(window, 1090, 500);
+        Scene mainScene = new Scene(window, 1500, 700);
         primaryStage.setTitle("Web Crawler");
         primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         primaryStage.show();
         
     }

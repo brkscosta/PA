@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // My Packages
-import Exceptions.WebCrawlerException;
+import Model.WebCrawlerException;
 import org.jsoup.HttpStatusException;
 
 /**

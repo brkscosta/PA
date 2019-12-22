@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
-
-// My packages
-import Interfaces.*;
-import Exceptions.*;
+import com.brunomnsilva.smartgraph.graph.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.UnexpectedException;
 import java.util.Observable;
+import Model.WebCrawlerException;
+
 
 @SuppressWarnings("null")
 /**
@@ -28,14 +27,15 @@ public class WebCrawler extends Observable {
 
     // Default attributes
     private String startURL = "";
-    public final Digraph<WebPage, Link> webCrawler;
-    public WebPage rootWebPage;
+    public final Graph<WebPage, Link> graph;
     private int countHttpsLinks;
     private int countPageNotFound;
+    public final WebPage rootWebPage;
 
     // StopCriteria
     private int numStopCriteria = 0;
     private StopCriteria stopCriteriaChoosed;
+    
 
     public enum StopCriteria {
         PAGES, DEPTH
@@ -58,8 +58,7 @@ public class WebCrawler extends Observable {
         this.numStopCriteria = criteriaNumber;
         this.stopCriteriaChoosed = stopCriteria;
 
-        // Instanciate new values
-        this.webCrawler = new MyDiGraph<>();
+        this.graph = new DigraphEdgeList();
         this.rootWebPage = new WebPage(baseUrl);
     }
 
@@ -73,7 +72,7 @@ public class WebCrawler extends Observable {
         // Use different ways gettins BFS order
         Iterable<WebPage> BFS;
         if (stopCriteriaChoosed == StopCriteria.PAGES) {
-            //Vertex<WebPage> root = webCrawler.insertVertex((new WebPage(rootWebPage.getPersonalURL())));
+            //Vertex<WebPage> root = graph.insertVertex((new WebPage(rootWebPage.getPersonalURL())));
             //BFS = bredthFirstTranversalVersion2(root);
             //System.out.println(bredthFirstTranversalVersion2(root));
             BFS = this.BFSByPages(rootWebPage);
@@ -133,8 +132,8 @@ public class WebCrawler extends Observable {
         }
 
         if (this.checkIfHasWebPage(webPage) == false) {
-            // Insert the webPage in the webCrawler
-            webCrawler.insertVertex(webPage);
+            // Insert the webPage in the graph
+            graph.insertVertex(webPage);
         }
 
         webPagesToVisit.add(webPage);
@@ -160,9 +159,9 @@ public class WebCrawler extends Observable {
 
                 countHttpsLinks += this.countHttpsProtocols(link.getLinkName());
 
-                // Insert a new WebPage in the webCrawler
+                // Insert a new WebPage in the graph
                 WebPage webPageInserting = new WebPage(link.getLinkName());
-                webCrawler.insertVertex(webPageInserting);
+                graph.insertVertex(webPageInserting);
                 countPageNotFound += this.getPagesNotFound(webPageInserting);
 
                 BFSList.add(webPageInserting);
@@ -170,7 +169,7 @@ public class WebCrawler extends Observable {
                 System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
                 // Insert a new Link between WebPages
-                webCrawler.insertEdge(visitedWebPage, webPageInserting, link);
+                graph.insertEdge(visitedWebPage, webPageInserting, link);
 
                 // Increment countMaxVisitedPage by 1
                 countMaxVisitedPage++;
@@ -188,14 +187,20 @@ public class WebCrawler extends Observable {
      * @return if exists the webPage
      */
     private boolean checkIfHasWebPage(WebPage webPage) {
-        for (Vertex<WebPage> page : webCrawler.vertices()) {
+        for (Vertex<WebPage> page : graph.vertices()) {
             if (page.element() == webPage) {
                 return true;
             }
         }
         return false;
     }
-
+    
+    /**
+     * Count https protocols
+     * @param startURL site URL
+     * @return Number of pages founded
+     * @throws MalformedURLException 
+     */
     private int countHttpsProtocols(String startURL) throws MalformedURLException {
         int count = 0;
         URL u = new URL(startURL);
@@ -226,7 +231,7 @@ public class WebCrawler extends Observable {
      * @return Number of links (Edges)
      */
     public int countLinks() {
-        return webCrawler.numEdges();
+        return graph.numEdges();
     }
 
     /**
@@ -235,7 +240,7 @@ public class WebCrawler extends Observable {
      * @return Number of titles (Vertex)
      */
     public int countWebPages() {
-        return webCrawler.numVertices();
+        return graph.numVertices();
     }
 
 }

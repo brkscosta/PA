@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Controller;
+package Views;
+
+import Controller.HomeController;
 
 /**
  *
@@ -17,7 +19,7 @@ public interface IHomeOperations {
     void exportFile();
     void exitApp();
     void clearError();
-    void showError();
+    void showError(String errorMsg);
     
     void setTriggersButtons(HomeController controller);
     

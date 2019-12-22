@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Controller;
-import Exceptions.WebCrawlerException;
+import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
 import Views.*;
@@ -57,7 +57,8 @@ public class HomeController {
     }
     
     public void showErrors() {
-        mainView.showError();
+        String error = mainView.getInputURL();
+        mainView.showError(error);
     }
     
     @Override

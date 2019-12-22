@@ -10,6 +10,7 @@ import Model.WebCrawlerException;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
@@ -230,7 +231,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         //Creating an image
         /*Image image;
         InputStream in
-                = getClass().getResourceAsStream("/Resources/images/graph.png");
+        = getClass().getResourceAsStream("/Resources/images/graph.png");
         image = new Image(in);
         //Setting the image view
         ImageView imageView = new ImageView(image);
@@ -242,6 +243,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         imageView.setFitWidth(500);
         //Setting the preserve ratio of the image view
         imageView.setPreserveRatio(true);*/
+        SmartGraphDemoContainer smartGraphDemoContainer = new SmartGraphDemoContainer(graphView);
         boxScroll.getChildren().addAll(lblWebCrawler, graphView);
         //boxScroll.getChildren().add(imageView);
         this.scrollPaneGraph = new ScrollPane();

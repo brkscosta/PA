@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -43,7 +44,10 @@ public class Main extends Application {
         BorderPane window = new BorderPane();
         window.setCenter(view);
         Scene mainScene = new Scene(window, 1500, 700);
+        primaryStage.sizeToScene();
         primaryStage.setTitle("Web Crawler");
+        StageStyle style = primaryStage.getStyle();
+        primaryStage.initStyle(style);
         primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));

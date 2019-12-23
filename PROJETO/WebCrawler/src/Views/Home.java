@@ -111,7 +111,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     }
 
     private void initializeComponents() {
-        
+
         //Set up menu bar
         this.menuFile = new Menu("File");
         this.mFileItemImportFile = new MenuItem("Import File");
@@ -269,7 +269,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         if (o instanceof WebCrawler) {
             WebCrawler observableModel = (WebCrawler) o;
-            
+
             graphView.update();
         }
     }
@@ -314,7 +314,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     public void showError(String errorMsg) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText(errorMsg);
+        alert.setHeaderText("Alguma coisa não está certa...");
         alert.setContentText(errorMsg);
 
         alert.showAndWait();
@@ -344,11 +344,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
+
             try {
                 controller.start();
             } catch (WebCrawlerException | IOException ex) {
                 Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         });
 
         graphView.setVertexDoubleClickAction(graphVertex -> {

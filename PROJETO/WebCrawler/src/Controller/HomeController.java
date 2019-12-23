@@ -26,15 +26,14 @@ public class HomeController {
 
         view.setTriggersButtons(HomeController.this);
         model.addObserver(view);
-        
-
     }
  
     // Methods here
     public void start() throws WebCrawlerException, IOException {
         setRootWebPage();
         model.start();
-        view.graphView.getStylableVertex(model.rootWebPage).setStyle("-fx-fill: gold; -fx-stroke: brown;");
+        System.out.println("view: " + view.graphView);
+        
     }
 
     public void automaticMode() {
@@ -42,7 +41,6 @@ public class HomeController {
     }
     
     public void iterativeMode(){
-        // TODO
         setRootWebPage();
     }
     

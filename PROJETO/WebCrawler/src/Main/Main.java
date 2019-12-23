@@ -29,7 +29,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage ignonred) throws Exception {
 
         String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
 
@@ -37,13 +37,14 @@ public class Main extends Application {
         WebCrawler model = new WebCrawler(testeWebCrawler, 10, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
-        System.out.println(" " + controller);
 
-        configApp(view, primaryStage);
+        System.out.println(" " + controller);
+        Stage stage = new Stage(StageStyle.DECORATED);
+        configApp(view, stage, model);
         
     }
     
-    private void configApp(Home view, Stage primaryStage) {
+    private void configApp(Home view, Stage primaryStage, WebCrawler model) {
         BorderPane window = new BorderPane();
         window.setCenter(view);
 
@@ -51,12 +52,13 @@ public class Main extends Application {
         Scene mainScene = new Scene(window, 1500, 700);
         primaryStage.sizeToScene();
         primaryStage.setTitle("Web Crawler");
-        primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setResizable(true);
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         primaryStage.show();
         view.graphView.init();
+        
+        
     }
 
 }

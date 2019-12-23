@@ -15,9 +15,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-// My Packages
-import Model.WebCrawlerException;
 import org.jsoup.HttpStatusException;
 
 /**
@@ -27,7 +24,7 @@ import org.jsoup.HttpStatusException;
  *
  */
 public class WebPage {
-
+    private static final Logger LOGGER = Logger.getLogger( WebPage.class.getName());
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -193,8 +190,8 @@ public class WebPage {
                 link = u.getProtocol() + "://" + u.getAuthority() + stripFilename(u.getPath()) + link;
             }
             return link;
-        } catch (MalformedURLException e) {
-            System.out.println(e.getMessage());
+        } catch (MalformedURLException ex) {
+            LOGGER.log( Level.INFO, ex.toString(), ex);
             return null;
         }
     }

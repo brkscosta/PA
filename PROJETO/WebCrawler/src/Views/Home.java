@@ -13,6 +13,7 @@ import Model.WebPage;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
+import static java.util.Collections.list;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -34,7 +35,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -56,7 +56,7 @@ import javafx.scene.layout.GridPane;
  * @author BRKsCosta
  */
 public class Home extends VBox implements Observer, IHomeOperations {
-
+    private static final Logger LOGGER = Logger.getLogger( Home.class.getName());
     private WebCrawler model;
 
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
@@ -344,11 +344,10 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
-
             try {
                 controller.start();
             } catch (WebCrawlerException | IOException ex) {
-                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+               LOGGER.log( Level.FINEST, ex.toString(), ex);
             }
 
         });

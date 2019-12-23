@@ -16,6 +16,7 @@ import Model.WebCrawler;
 import Model.WebPage;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
+import com.sun.prism.paint.Color;
 import java.io.IOException;
 import static java.util.Collections.list;
 import java.util.Observable;
@@ -54,6 +55,7 @@ import javafx.scene.text.Font;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
 
 /**
  *
@@ -243,6 +245,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
         this.labelErros = new Label("Erros Aqui");
+        this.labelErros.setTextFill(Paint.valueOf("#ff6961"));
         this.lblAnotherThing = new Label("Outra Coisa");
         this.bottomHBox = new HBox();
         HBox.setHgrow(panelBottom, Priority.ALWAYS);

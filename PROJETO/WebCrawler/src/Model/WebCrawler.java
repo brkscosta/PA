@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 import com.brunomnsilva.smartgraph.graph.*;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.UnexpectedException;
+import java.util.Collection;
 import java.util.Observable;
 
 @SuppressWarnings("null")
@@ -29,6 +31,7 @@ public class WebCrawler extends Observable {
     private int countHttpsLinks;
     private int countPageNotFound;
     public final WebPage rootWebPage;
+    public SmartGraphPanel<WebPage, Link> graphView;
 
     // StopCriteria
     private int numStopCriteria = 0;
@@ -53,15 +56,14 @@ public class WebCrawler extends Observable {
         this.startURL = baseUrl;
         this.numStopCriteria = criteriaNumber;
         this.stopCriteriaChoosed = stopCriteria;
-
         this.graph = new DigraphEdgeList();
         this.rootWebPage = new WebPage(baseUrl);
+       
     }
 
     /**
      * This method start the crow of a website
      *
-     * @throws Exceptions.WebCrawlerException
      * @throws java.io.IOException
      */
     public void start() throws WebCrawlerException, IOException {
@@ -113,23 +115,20 @@ public class WebCrawler extends Observable {
     @SuppressWarnings("UnnecessaryReturnStatement")
     public Iterable<WebPage> BFSByPages(WebPage webPage)
             throws WebCrawlerException, IOException {
-
-        // Variables
+      
         // Contar numero de WebPages contadas
         int countMaxVisitedPage = 0;
         List<WebPage> BFSList = new ArrayList<>();
         Queue<WebPage> webPagesToVisit = new LinkedList<>();
 
         if (this.numStopCriteria == 0) {
-            System.out.println("Web Crawler não tem nenhuma Web Page");
             return BFSList;
         }
 
         if (this.checkIfHasWebPage(webPage) == false) {
             // Insert the webPage in the graph
             graph.insertVertex(webPage);
-            setChanged();
-            notifyObservers();
+            
         }
 
         webPagesToVisit.add(webPage);

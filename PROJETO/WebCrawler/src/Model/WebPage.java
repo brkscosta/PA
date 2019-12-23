@@ -141,7 +141,6 @@ public class WebPage {
      * @throws IOException
      */
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
-        Queue<Link> a = new LinkedList();
         try {
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
@@ -218,10 +217,7 @@ public class WebPage {
      */
     @Override
     public String toString() {
-        return "WebPage { " + "personalURL=" + personalURL
-                + ", incidentWebPages = "
-                + getListIncidentsWebPages().size()
-                + ", statusCode = " + this.statusCode + '}' + "\n";
+        return "Title: " + titleName + " Code = " + this.statusCode + "\n";
     }
 
     public Queue<Link> getListIncidentsWebPages() {

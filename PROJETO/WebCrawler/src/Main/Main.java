@@ -34,13 +34,13 @@ public class Main extends Application {
         String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";
 
         //Aplicar padrão memento no webCrawler e criar uma classe para fazer a gestão
-        WebCrawler model = new WebCrawler(testeWebCrawler, 20, WebCrawler.StopCriteria.PAGES);
+        WebCrawler model = new WebCrawler(testeWebCrawler, 10, WebCrawler.StopCriteria.PAGES);
         Home view = new Home(model);
         HomeController controller = new HomeController(model, view);
         System.out.println(" " + controller);
 
         configApp(view, primaryStage);
-
+        
     }
     
     private void configApp(Home view, Stage primaryStage) {

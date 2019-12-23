@@ -11,9 +11,6 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graph.Digraph;
-import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
 import java.util.Observable;
@@ -62,9 +59,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     private WebCrawler model;
 
-    //SmartPlacementStrategy strategy;
+    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-    SmartPlacementStrategy strategyRandom = new SmartRandomPlacementStrategy();
     public SmartGraphPanel<WebPage, Link> graphView;
 
     //Menu  
@@ -93,7 +89,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private SplitPane splitPane;
     private AnchorPane anchorPaneLeft;
     private AnchorPane anchorPaneRigth;
-    private ScrollPane scrollPaneGraph;
     private HBox bottomHBox;
 
     //Labels
@@ -105,18 +100,18 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Label lblNumPages;
 
     private static final String INITAL_VALUE = "0";
-    Graph<String, String> g = build_sample_digraph();
-    
+
     public Home(WebCrawler model) {
         this.model = model;
         this.strategy = new SmartCircularSortedPlacementStrategy();
         this.graphView = new SmartGraphPanel(this.model.graph, strategy);
         //this.graphView = new SmartGraphPanel(g, strategyRandom);
         this.initializeComponents();
+
     }
 
     private void initializeComponents() {
-
+        
         //Set up menu bar
         this.menuFile = new Menu("File");
         this.mFileItemImportFile = new MenuItem("Import File");
@@ -150,6 +145,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         lblCriteria.setAlignment(Pos.CENTER);
 
         this.txtFieldURL = new TextField();
+        this.txtFieldURL.setText("http://www.brunomnsilva.com/sandbox/index.html");
         this.txtFieldURL.setId("textFieldSearchURL");
         this.txtFieldURL.setPrefSize(6, 15);
 
@@ -227,10 +223,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         //Graph interface
         SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
         graphView.setAutomaticLayout(true);
-
         this.splitPane = new SplitPane();
-
-        //TODO Add graph here
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
 
@@ -271,38 +264,12 @@ public class Home extends VBox implements Observer, IHomeOperations {
         return vbox;
     }
 
-    private Graph<String, String> build_sample_digraph() {
-
-        Digraph<String, String> g = new DigraphEdgeList<>();
-
-        g.insertVertex("A");
-        g.insertVertex("B");
-        g.insertVertex("C");
-        g.insertVertex("D");
-        g.insertVertex("E");
-        g.insertVertex("F");
-
-        g.insertEdge("A", "B", "AB");
-        g.insertEdge("B", "A", "AB2");
-        g.insertEdge("A", "C", "AC");
-        g.insertEdge("A", "D", "AD");
-        g.insertEdge("B", "C", "BC");
-        g.insertEdge("C", "D", "CD");
-        g.insertEdge("B", "E", "BE");
-        g.insertEdge("F", "D", "DF");
-        g.insertEdge("F", "D", "DF2");
-
-        //yep, its a loop!
-        g.insertEdge("A", "A", "Loop");
-
-        return g;
-    }
-
     @Override
     public void update(Observable o, Object o1) {
 
-       if(o instanceof WebCrawler){
-            WebCrawler observableModel = (WebCrawler)o;
+        if (o instanceof WebCrawler) {
+            WebCrawler observableModel = (WebCrawler) o;
+            
             graphView.update();
         }
     }
@@ -347,7 +314,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     public void showError(String errorMsg) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Something is wrong...");
+        alert.setHeaderText(errorMsg);
         alert.setContentText(errorMsg);
 
         alert.showAndWait();
@@ -387,8 +354,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
             //want fun? uncomment below with automatic layout
-            /*this.g.removeVertex(graphVertex.getUnderlyingVertex());
-            graphView.update();*/
+            this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+            graphView.update();
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {

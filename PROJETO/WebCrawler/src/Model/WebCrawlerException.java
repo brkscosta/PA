@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Exceptions;
+package Model;
 
 /**
  *
- * @author BRKsCosta
+ * @author brkscosta
  */
-public class WebCrawlerException extends Exception {
+public class WebCrawlerException extends RuntimeException {
 
-    public WebCrawlerException(String title_or_link_is_empty) {
-        super(title_or_link_is_empty);
+    public WebCrawlerException(String string) {
+        super(string);
     }
+    
     
 }

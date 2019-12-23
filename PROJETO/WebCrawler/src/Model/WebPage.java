@@ -15,10 +15,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-// My Packages
-import Exceptions.WebCrawlerException;
 import org.jsoup.HttpStatusException;
 
 /**
@@ -28,7 +24,7 @@ import org.jsoup.HttpStatusException;
  *
  */
 public class WebPage {
-
+    private static final Logger LOGGER = Logger.getLogger( WebPage.class.getName());
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -142,7 +138,6 @@ public class WebPage {
      * @throws IOException
      */
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
-        Queue<Link> a = new LinkedList();
         try {
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
@@ -195,8 +190,8 @@ public class WebPage {
                 link = u.getProtocol() + "://" + u.getAuthority() + stripFilename(u.getPath()) + link;
             }
             return link;
-        } catch (MalformedURLException e) {
-            System.out.println(e.getMessage());
+        } catch (MalformedURLException ex) {
+            LOGGER.log( Level.INFO, ex.toString(), ex);
             return null;
         }
     }
@@ -219,10 +214,7 @@ public class WebPage {
      */
     @Override
     public String toString() {
-        return "WebPage { " + "personalURL=" + personalURL
-                + ", incidentWebPages = "
-                + getListIncidentsWebPages().size()
-                + ", statusCode = " + this.statusCode + '}' + "\n";
+        return "Title: " + titleName + " Code = " + this.statusCode + "\n";
     }
 
     public Queue<Link> getListIncidentsWebPages() {

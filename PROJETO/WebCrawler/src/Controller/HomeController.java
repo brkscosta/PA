@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package Controller;
-import Exceptions.WebCrawlerException;
+
+import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
 import Views.*;
@@ -15,54 +16,69 @@ import java.io.IOException;
  * @author BRKsCosta
  */
 public class HomeController {
-    
-    private final Home mainView;
+
+    private final Home view;
     private final WebCrawler model;
 
-    public HomeController(WebCrawler model, Home mainView) {
-        this.mainView = mainView;
+    public HomeController(WebCrawler model, Home view) {
+        this.view = view;
         this.model = model;
-        
-        mainView.setTriggersButtons(HomeController.this);
-        model.addObserver(mainView);
+
+        view.setTriggersButtons(HomeController.this);
+        model.addObserver(view);
     }
-    
+ 
     // Methods here
-    public void start() throws WebCrawlerException, IOException{
-        WebPage rootWebPage = model.rootWebPage;
-        rootWebPage.setPersonalURL(this.mainView.getInputURL());
+    public void start() throws WebCrawlerException, IOException {
+        setRootWebPage();
         model.start();
-    }
-    
-    public void exitApp(){
-        this.mainView.exitApp();
+        System.out.println("view: " + view.graphView);
+        
     }
 
-    public void importFiles(){
+    public void automaticMode() {
+        setRootWebPage();
+    }
+    
+    public void iterativeMode(){
+        setRootWebPage();
+    }
+    
+    private void setRootWebPage() {
+        WebPage rootWebPage = model.rootWebPage;
+        String inputURL = this.view.getInputURL();
+
+        if (inputURL.trim().length() == 0)
+            view.showError("Não pode ter um URL vazio!");
+        
+        rootWebPage.setPersonalURL(inputURL);
+    }
+
+    public void exitApp() {
+        this.view.exitApp();
+    }
+
+    public void importFiles() {
         //TODO
     }
-    
-    public void clearErrors(){
-        this.mainView.clearError();
+
+    public void clearErrors() {
+        this.view.clearError();
     }
-    
+
     public void exportFiles() {
         //TODO
-        this.mainView.exportFile();
+        this.view.exportFile();
     }
-    
+
     public void undoAction() {
         // TODO
-        mainView.undoGraph();
+        view.undoGraph();
     }
-    
-    public void showErrors() {
-        mainView.showError();
-    }
-    
+
     @Override
     public String toString() {
         return "HomeController";
     }
-    
+
 }

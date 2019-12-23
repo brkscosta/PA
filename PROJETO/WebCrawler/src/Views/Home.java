@@ -6,11 +6,18 @@
 package Views;
 
 import Controller.HomeController;
-import Controller.IHomeOperations;
 import Model.WebCrawler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import Model.WebCrawlerException;
+import Model.Link;
+import Model.WebCrawler;
+import Model.WebPage;
+import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
+import com.brunomnsilva.smartgraph.graphview.*;
+import java.io.IOException;
+import static java.util.Collections.list;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -24,13 +31,14 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -43,8 +51,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -54,8 +60,12 @@ import javafx.scene.layout.GridPane;
  * @author BRKsCosta
  */
 public class Home extends VBox implements Observer, IHomeOperations {
+    private static final Logger LOGGER = Logger.getLogger( Home.class.getName());
+    private WebCrawler model;
 
-    private WebCrawler webCrawlerModel;
+    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
+    SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    public SmartGraphPanel<WebPage, Link> graphView;
 
     //Menu  
     private MenuBar menuBar;
@@ -83,7 +93,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private SplitPane splitPane;
     private AnchorPane anchorPaneLeft;
     private AnchorPane anchorPaneRigth;
-    private ScrollPane scrollPaneGraph;
     private HBox bottomHBox;
 
     //Labels
@@ -97,8 +106,12 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private static final String INITAL_VALUE = "0";
 
     public Home(WebCrawler model) {
-        this.webCrawlerModel = model;
+        this.model = model;
+        this.strategy = new SmartCircularSortedPlacementStrategy();
+        this.graphView = new SmartGraphPanel(this.model.graph, strategy);
+        //this.graphView = new SmartGraphPanel(g, strategyRandom);
         this.initializeComponents();
+
     }
 
     private void initializeComponents() {
@@ -136,6 +149,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         lblCriteria.setAlignment(Pos.CENTER);
 
         this.txtFieldURL = new TextField();
+        this.txtFieldURL.setText("http://www.brunomnsilva.com/sandbox/index.html");
         this.txtFieldURL.setId("textFieldSearchURL");
         this.txtFieldURL.setPrefSize(6, 15);
 
@@ -210,48 +224,20 @@ public class Home extends VBox implements Observer, IHomeOperations {
         AnchorPane.setRightAnchor(vboxChart, 80.0);
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
-
+        
         //Center pane graph will shows here
         VBox boxScroll = new VBox();
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
         
-        try {
-            //Creating an image 
-            Image image;
-            //image = new Image(new FileInputStream("D:\\Engenharia\\Ano 3\\PA\\PROJETO\\WebCrawler\\src\\Resources\\images\\graph.png"));
-
-            String localDir = System.getProperty("user.dir");
-            File file = new File(localDir + "/src/Resources/images/graph.png");
-
-            image = new Image(new FileInputStream(file.getAbsolutePath()));
-           
-            //Setting the image view 
-            ImageView imageView = new ImageView(image);
-
-            //Setting the position of the image 
-            imageView.setX(50);
-            imageView.setY(25);
-
-            //setting the fit height and width of the image view 
-            imageView.setFitHeight(455);
-            imageView.setFitWidth(500);
-
-            //Setting the preserve ratio of the image view 
-            imageView.setPreserveRatio(true);
-            boxScroll.getChildren().add(lblWebCrawler);
-            boxScroll.getChildren().add(imageView);
-            this.scrollPaneGraph = new ScrollPane();
-            this.scrollPaneGraph.setContent(boxScroll);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //Graph interface
+        SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
+        graphView.setAutomaticLayout(true);
+        
         this.splitPane = new SplitPane();
-
-        //TODO Add graph here
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
-        this.splitPane.getItems().addAll(anchorPaneLeft, scrollPaneGraph, anchorPaneRigth);
+        this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
 
         //Config HBox Bootom
         Pane panelBottom = new Pane();
@@ -293,14 +279,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void update(Observable o, Object o1) {
 
-        /*if(o instanceof WebCrawler){
-            WebCrawler model = (WebCrawler)o;
-            
-            // TODO
-            
-        }*/
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (o instanceof WebCrawler) {
+            WebCrawler observableModel = (WebCrawler) o;
 
+            graphView.update();
+        }
     }
 
     @Override
@@ -340,8 +323,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
     }
 
     @Override
-    public void showError() {
+    public void showError(String errorMsg) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Alguma coisa não está certa...");
+        alert.setContentText(errorMsg);
 
+        alert.showAndWait();
     }
 
     @Override
@@ -368,7 +356,27 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
+            
             System.out.println(getInputURL());
+            
+            try {
+                controller.start();
+            } catch (WebCrawlerException | IOException ex) {
+               LOGGER.log( Level.FINEST, ex.toString(), ex);
+            }
+        });
+
+        graphView.setVertexDoubleClickAction(graphVertex -> {
+            System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
+            //want fun? uncomment below with automatic layout
+            this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+            graphView.update();
+        });
+
+        graphView.setEdgeDoubleClickAction(graphEdge -> {
+            System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
+            //dynamically change the style when clicked
+            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
         });
     }
 

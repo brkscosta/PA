@@ -6,18 +6,17 @@
 package Views;
 
 import Controller.HomeController;
-import Model.WebCrawlerException;
 import Model.Link;
 import Model.WebCrawler;
+import Model.WebCrawler.StopCriteria;
+import Model.WebCrawlerException;
 import Model.WebPage;
+import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
-import static java.util.Collections.list;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,15 +49,24 @@ import javafx.scene.text.Font;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.Scene;
+import java.util.logging.Logger;
+import Patterns.Singleton.LoggerWriter;
+import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
+import com.brunomnsilva.smartgraph.graph.Graph;
+import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import javafx.scene.layout.BorderPane;
 
 /**
  *
  * @author BRKsCosta
  */
 public class Home extends VBox implements Observer, IHomeOperations {
-    private static final Logger LOGGER = Logger.getLogger( Home.class.getName());
-    private WebCrawler model;
 
+    LoggerWriter logW = LoggerWriter.getInstance();
+    private WebCrawler model;
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     public SmartGraphPanel<WebPage, Link> graphView;
@@ -81,7 +89,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private TextField txtFieldURL;
     private TextField txtFieldNumPages;
     private RadioButton rdBtnBreadthFirst;
-    private RadioButton rdBtnBreadthFirstDepth;
+    private RadioButton rdBtnDepth;
     private RadioButton rdBtnIterative;
     private final Spinner spinner = new Spinner();
 
@@ -99,15 +107,59 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Label lblWebCrawler;
     private Label lblNumPages;
 
-    private static final String INITAL_VALUE = "0";
+    private static final String INITAL_VALUE = "10";
+    private Scene scene;
 
     public Home(WebCrawler model) {
         this.model = model;
+        Graph<String, String> g = build_flower_graph();
         this.strategy = new SmartCircularSortedPlacementStrategy();
+        //this.graphView = new SmartGraphPanel(g, strategy);
         this.graphView = new SmartGraphPanel(this.model.graph, strategy);
-        //this.graphView = new SmartGraphPanel(g, strategyRandom);
+
         this.initializeComponents();
 
+        update(model, null);
+    }
+
+    private Graph<String, String> build_flower_graph() {
+
+        Graph<String, String> g = new DigraphEdgeList<>();
+
+        g.insertVertex("A");
+        g.insertVertex("B");
+        g.insertVertex("C");
+        g.insertVertex("D");
+        g.insertVertex("E");
+        g.insertVertex("F");
+        g.insertVertex("G");
+
+        g.insertEdge("A", "B", "1");
+        g.insertEdge("A", "C", "2");
+        g.insertEdge("A", "D", "3");
+        g.insertEdge("A", "E", "4");
+        g.insertEdge("A", "F", "5");
+        g.insertEdge("A", "G", "6");
+
+        g.insertVertex("H");
+        g.insertVertex("I");
+        g.insertVertex("J");
+        g.insertVertex("K");
+        g.insertVertex("L");
+        g.insertVertex("M");
+        g.insertVertex("N");
+
+        g.insertEdge("H", "I", "7");
+        g.insertEdge("H", "J", "8");
+        g.insertEdge("H", "K", "9");
+        g.insertEdge("H", "L", "10");
+        g.insertEdge("H", "M", "11");
+        g.insertEdge("H", "N", "12");
+
+        g.insertEdge("A", "H", "0");
+
+        //g.insertVertex("ISOLATED");
+        return g;
     }
 
     private void initializeComponents() {
@@ -158,9 +210,9 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.txtFieldNumPages = new TextField();
         this.txtFieldNumPages.setId("textFieldNumPages");
         this.txtFieldNumPages.setMinSize(10, 10);
-        this.rdBtnBreadthFirstDepth = new RadioButton("Profundidade");
-        this.rdBtnBreadthFirstDepth.setToggleGroup(group);
-        this.rdBtnBreadthFirstDepth.setSelected(false);
+        this.rdBtnDepth = new RadioButton("Profundidade");
+        this.rdBtnDepth.setToggleGroup(group);
+        this.rdBtnDepth.setSelected(false);
         this.rdBtnIterative = new RadioButton("Iterativo");
         this.rdBtnIterative.setToggleGroup(group);
         this.rdBtnIterative.setSelected(false);
@@ -171,28 +223,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
                 Integer.parseInt(INITAL_VALUE)));
         spinner.setEditable(true);
 
-        EventHandler<KeyEvent> enterKeyEventHandler;
-
-        enterKeyEventHandler = (KeyEvent event) -> {
-            // handle users "enter key event"
-            if (event.getCode() == KeyCode.ENTER) {
-                try {
-                    // yes, using exception for control is a bad solution ;-)
-                    int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
-                    System.out.println("Number on input: " + parseInt);
-                } catch (NumberFormatException e) {
-                    // show message to user: "only numbers allowed"
-                    // reset editor to INITAL_VALUE
-                    spinner.getEditor().textProperty().set(INITAL_VALUE);
-                }
-            }
-        };
-
-        // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
-        // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
-        // throw an exception
-        spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
-
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -202,7 +232,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         grid.add(spinner, 1, row);
 
         VBox items = new VBox(lblCriteria, txtFieldURL, btnStartCrawler,
-                rdBtnBreadthFirst, grid, rdBtnBreadthFirstDepth, rdBtnIterative);
+                rdBtnBreadthFirst, grid, rdBtnDepth, rdBtnIterative);
         items.setPadding(new Insets(5, 0, 0, 10));
         AnchorPane.setTopAnchor(items, 15.0);
         AnchorPane.setLeftAnchor(items, 10.0);
@@ -241,6 +271,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         Home.setVgrow(splitPane, Priority.ALWAYS);
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
+
     }
 
     /**
@@ -266,11 +297,35 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void update(Observable o, Object o1) {
-
         if (o instanceof WebCrawler) {
             WebCrawler observableModel = (WebCrawler) o;
 
-            graphView.update();
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    Runnable updater = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            graphView.update();
+                        }
+                    };
+
+                    while (true) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                        }
+
+                        // UI update is run on the Application thread
+                        Platform.runLater(updater);
+                    }
+                }
+
+            });
+            thread.setDaemon(true);
+            thread.start();
         }
     }
 
@@ -316,7 +371,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
         alert.setTitle("Error");
         alert.setHeaderText("Alguma coisa não está certa...");
         alert.setContentText(errorMsg);
-
         alert.showAndWait();
     }
 
@@ -344,18 +398,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
-            try {
-                controller.start();
-            } catch (WebCrawlerException | IOException ex) {
-               LOGGER.log( Level.FINEST, ex.toString(), ex);
-            }
-
+            selectSearchType(controller);
         });
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
             //want fun? uncomment below with automatic layout
-            this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+            controller.removePage(graphVertex);
             graphView.update();
         });
 
@@ -363,12 +412,82 @@ public class Home extends VBox implements Observer, IHomeOperations {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
             graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+            graphView.update();
         });
+
+        EventHandler<KeyEvent> enterKeyEventHandler;
+
+        enterKeyEventHandler = (KeyEvent event) -> {
+            // handle users "enter key event"
+            if (event.getCode() == KeyCode.ENTER) {
+                try {
+                    // yes, using exception for control is a bad solution ;-)
+                    selectSearchType(controller);
+                    graphView.update();
+                } catch (NumberFormatException e) {
+                    // show message to user: "only numbers allowed"
+                    // reset editor to INITAL_VALUE
+                    spinner.getEditor().textProperty().set(INITAL_VALUE);
+                    graphView.update();
+                }
+            }
+        };
+
+        // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
+        // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
+        // throw an exception
+        spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
+
+    }
+
+    private void selectSearchType(HomeController controller) throws
+            LoggerException, WebCrawlerException, NumberFormatException {
+        try {
+            int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
+            if (rdBtnBreadthFirst.isSelected()) {
+
+                lblAnotherThing.setText("Selecionou BFS");
+                controller.startSearch("BFS", parseInt);
+                graphView.update();
+
+            } else if (rdBtnDepth.isSelected()) {
+                lblAnotherThing.setText("Selecionou DFS");
+                controller.startSearch("DFS", parseInt);
+                graphView.update();
+            } else {
+                lblAnotherThing.setText("Selecionou Iterativo");
+                controller.startSearch("Iterative", parseInt);
+                graphView.update();
+            }
+        } catch (IOException ex) {
+            LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
+        }
+    }
+
+    public int getNumPages() {
+        return 0;
+    }
+
+    public StopCriteria getCriteria() {
+        btnStartCrawler.setOnAction(e
+                -> {
+            if (rdBtnBreadthFirst.isSelected()) {
+                lblAnotherThing.setText("Selecionou BFS");
+                graphView.update();
+            } else if (rdBtnDepth.isSelected()) {
+                lblAnotherThing.setText("Selecionou DFS");
+                graphView.update();
+            } else {
+                lblAnotherThing.setText("Selecionou Iterativo");
+                graphView.update();
+            }
+        }
+        );
+        return null;
     }
 
     @Override
     public String toString() {
         return "View: " + Home.class;
     }
-
 }

@@ -5,10 +5,12 @@
  */
 package Controller;
 
+import Patterns.Memento.CareTaker;
 import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
 import Views.*;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.io.IOException;
 
 /**
@@ -17,40 +19,54 @@ import java.io.IOException;
  */
 public class HomeController {
 
-    private final Home view;
+    public final Home view;
     private final WebCrawler model;
+    private final CareTaker caretaker;
 
-    public HomeController(WebCrawler model, Home view) {
+    public HomeController(WebCrawler model, Home view) throws IOException {
         this.view = view;
-        this.model = model;
+        this.model = new WebCrawler(view.getInputURL(), view.getNumPages(), view.getCriteria());
+        
+        //Create new state of model
+        this.caretaker = new CareTaker(new WebCrawler(view.getInputURL(), 
+                view.getNumPages(), view.getCriteria()));
 
         view.setTriggersButtons(HomeController.this);
         model.addObserver(view);
     }
- 
+
     // Methods here
-    public void start() throws WebCrawlerException, IOException {
+    public void startSearch(String criteria, int numPages) 
+            throws WebCrawlerException, IOException {
         setRootWebPage();
-        model.start();
-        System.out.println("view: " + view.graphView);
-        
+        switch (criteria) {
+            case "BFS":
+                setRootWebPage();
+                System.out.println("passou no start");
+                model.start(WebCrawler.StopCriteria.PAGES, numPages);
+                caretaker.requestSave(view.getInputURL());
+                break;
+            case "DFS":
+                setRootWebPage();
+                model.start(WebCrawler.StopCriteria.DEPTH, 0);
+                caretaker.requestSave(view.getInputURL());
+                break;
+            default:
+                setRootWebPage();
+                model.start(WebCrawler.StopCriteria.ITERATIVE, 0);
+                caretaker.requestSave(view.getInputURL());
+                break;
+        }
     }
 
-    public void automaticMode() {
-        setRootWebPage();
-    }
-    
-    public void iterativeMode(){
-        setRootWebPage();
-    }
-    
     private void setRootWebPage() {
         WebPage rootWebPage = model.rootWebPage;
         String inputURL = this.view.getInputURL();
 
-        if (inputURL.trim().length() == 0)
+        if (inputURL.trim().length() == 0) {
             view.showError("Não pode ter um URL vazio!");
-        
+        }
+
         rootWebPage.setPersonalURL(inputURL);
     }
 
@@ -76,9 +92,22 @@ public class HomeController {
         view.undoGraph();
     }
 
-    @Override
-    public String toString() {
-        return "HomeController";
+    public void removePage(SmartGraphVertex<WebPage> graphVertex) {
+        this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+        caretaker.requestSave(view.getInputURL());
     }
 
+    public void doUndo() {
+        if (!caretaker.canUndo()) {
+            view.showError("No more undos Availables!");
+            return;
+        }
+        caretaker.requestRestore();
+    }
+    
+    @Override
+    public String toString() {
+        return "Home Controller: \n CareTaker: " + this.caretaker;
+    }
+    
 }

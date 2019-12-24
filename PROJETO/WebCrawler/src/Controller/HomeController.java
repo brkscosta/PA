@@ -33,7 +33,6 @@ public class HomeController {
         setRootWebPage();
         model.start();
         System.out.println("view: " + view.graphView);
-        
     }
 
     public void automaticMode() {

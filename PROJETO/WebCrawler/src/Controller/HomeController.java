@@ -23,55 +23,63 @@ public class HomeController {
     private final WebCrawler model;
     private final CareTaker caretaker;
 
-    public HomeController(WebCrawler model, Home view) throws IOException {
+    public HomeController(WebCrawler model, Home view, CareTaker caretaker) throws IOException {
         this.view = view;
-        this.model = new WebCrawler(view.getInputURL(), view.getNumPages(), view.getCriteria());
-        
+        this.model = model;
         //Create new state of model
-        this.caretaker = new CareTaker(new WebCrawler(view.getInputURL(), 
-                view.getNumPages(), view.getCriteria()));
+        this.caretaker = caretaker;
 
         view.setTriggersButtons(HomeController.this);
         model.addObserver(view);
     }
 
     // Methods here
-    public void startSearch(String criteria, int numPages) 
+    public void startSearch(String criteria, int numPages)
             throws WebCrawlerException, IOException {
         setRootWebPage();
         switch (criteria) {
             case "BFS":
-                setRootWebPage();
-                System.out.println("passou no start");
+                model.setStartURL(view.getInputURL());
                 model.start(WebCrawler.StopCriteria.PAGES, numPages);
                 caretaker.requestSave(view.getInputURL());
+                WebPage v = model.getRootWebPage();
+                System.out.println("Controller set root " + v);
+                if (model.countWebPages() > 0) {
+                    view.setColor(v);
+                }
                 break;
             case "DFS":
-                setRootWebPage();
+                model.setStartURL(view.getInputURL());
                 model.start(WebCrawler.StopCriteria.DEPTH, 0);
                 caretaker.requestSave(view.getInputURL());
                 break;
             default:
-                setRootWebPage();
+                model.setStartURL(view.getInputURL());
                 model.start(WebCrawler.StopCriteria.ITERATIVE, 0);
                 caretaker.requestSave(view.getInputURL());
                 break;
         }
     }
 
-    private void setRootWebPage() {
-        WebPage rootWebPage = model.rootWebPage;
+    private void setRootWebPage() throws IOException {
         String inputURL = this.view.getInputURL();
 
         if (inputURL.trim().length() == 0) {
             view.showError("Não pode ter um URL vazio!");
         }
-
+        model.setStartURL(view.getInputURL());
+        WebPage rootWebPage = model.createWebPage();
         rootWebPage.setPersonalURL(inputURL);
+        model.setRootWebPage(rootWebPage);
+
     }
 
     public void exitApp() {
         this.view.exitApp();
+    }
+
+    public WebPage getRootPage() {
+        return model.getRootWebPage();
     }
 
     public void importFiles() {
@@ -104,10 +112,10 @@ public class HomeController {
         }
         caretaker.requestRestore();
     }
-    
+
     @Override
     public String toString() {
         return "Home Controller: \n CareTaker: " + this.caretaker;
     }
-    
+
 }

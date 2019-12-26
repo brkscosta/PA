@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 import com.brunomnsilva.smartgraph.graph.*;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.UnexpectedException;
 import java.util.Observable;
 import Patterns.Singleton.LoggerWriter;
 import java.util.Date;
+import java.io.Serializable;
 
 @SuppressWarnings("null")
 /**
@@ -26,44 +25,76 @@ import java.util.Date;
  *
  * @author BRKsCosta and Daniel Cordeiro
  */
-public class WebCrawler extends Observable implements Originator {
+public class WebCrawler extends Observable implements Originator, Serializable {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
     private String startURL = "";
-    public Graph<WebPage, Link> graph;
+    public Graph<WebPage, Link> graph = new DigraphEdgeList<>();
     private int countHttpsLinks;
     private int countPageNotFound;
     public WebPage rootWebPage;
-    public SmartGraphPanel<WebPage, Link> graphView;
-
-    // StopCriteria
-    private int numStopCriteria = 0;
     private StopCriteria stopCriteriaChoosed;
 
     public WebCrawler() {
-        this.graph = new DigraphEdgeList<>();
-        this.rootWebPage = null;
+        this.countHttpsLinks = 0;
+        this.countPageNotFound = 0;
     }
 
-    /**
-     *
-     * Create a object of <i><p>
-     * Web Crawler </p></i> type with a DiGraph instance s
-     *
-     * @param baseUrl the root URL
-     * @param criteriaNumber number of stop criteria
-     * @param stopCriteria type of stop criteria
-     * @throws java.io.IOException
-     */
-    public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
-        this.startURL = baseUrl;
-        this.rootWebPage = new WebPage(baseUrl);
-        this.graph = new DigraphEdgeList<>();
+    public WebPage createWebPage() throws IOException {
+        return new WebPage(startURL);
+    }
+
+    public int getCountHttpsLinks() {
+        return countHttpsLinks;
+    }
+
+    public void setCountHttpsLinks(int countHttpsLinks) {
+        this.countHttpsLinks = countHttpsLinks;
+    }
+
+    public int getCountPageNotFound() {
+        return countPageNotFound;
+    }
+
+    public void setCountPageNotFound(int countPageNotFound) {
+        this.countPageNotFound = countPageNotFound;
+    }
+
+    public WebPage getRootWebPage() {
+        return rootWebPage;
+    }
+    
+    public Vertex<WebPage> rootPage(){
+        for(Vertex<WebPage> v : graph.vertices()){
+            if(v.element().getTitleName().equals(rootWebPage.getTitleName()))
+                return v;
+        }
+        return null;
+    }
+    
+    public void setRootWebPage(WebPage rootWebPage) {
+        this.rootWebPage = rootWebPage;
+    }
+
+    public StopCriteria getStopCriteriaChoosed() {
+        return stopCriteriaChoosed;
+    }
+
+    public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
+        this.stopCriteriaChoosed = stopCriteriaChoosed;
     }
 
     public enum StopCriteria {
         PAGES, DEPTH, ITERATIVE;
+    }
+
+    public String getStartURL() {
+        return startURL;
+    }
+
+    public void setStartURL(String startURL) {
+        this.startURL = startURL;
     }
 
     /**
@@ -87,11 +118,14 @@ public class WebCrawler extends Observable implements Originator {
                     notifyObservers();
                     break;
                 case DEPTH:
-                    it = this.BFSByDepth(rootWebPage);
+                    it = this.BFSByDepth(createWebPage());
+                    setChanged();
+                    notifyObservers();
                     break;
                 default:
-                    // Changeto iterative
-                    it = this.itertive(rootWebPage);
+                    it = this.itertive(createWebPage());
+                    setChanged();
+                    notifyObservers();
                     break;
             }
         }
@@ -182,6 +216,9 @@ public class WebCrawler extends Observable implements Originator {
                 // Insert a new WebPage in the graph
                 WebPage webPageInserting = new WebPage(link.getLinkName());
                 graph.insertVertex(webPageInserting);
+                setChanged();
+                notifyObservers();
+
                 countPageNotFound += this.getPagesNotFound(webPageInserting);
 
                 BFSList.add(webPageInserting);
@@ -192,6 +229,7 @@ public class WebCrawler extends Observable implements Originator {
                 graph.insertEdge(visitedWebPage, webPageInserting, link);
                 setChanged();
                 notifyObservers();
+
                 // Increment countMaxVisitedPage by 1
                 countMaxVisitedPage++;
             }
@@ -248,7 +286,7 @@ public class WebCrawler extends Observable implements Originator {
             throws WebCrawlerException, IOException {
 
         //TODO
-        throw new UnexpectedException("Not supported");
+        throw new UnsupportedOperationException("Not supported yet");
     }
 
     /**
@@ -257,7 +295,7 @@ public class WebCrawler extends Observable implements Originator {
      * @return Number of links (Edges)
      */
     public int countLinks() {
-        
+
         return graph.numEdges();
     }
 
@@ -267,7 +305,7 @@ public class WebCrawler extends Observable implements Originator {
      * @return Number of titles (Vertex)
      */
     public int countWebPages() {
-        
+
         return graph.numVertices();
     }
 
@@ -304,11 +342,8 @@ public class WebCrawler extends Observable implements Originator {
         private int countHttpsLinksMemento;
         private int countPageNotFoundMemento;
         public WebPage rootWebPageMemento;
-        public SmartGraphPanel<WebPage, Link> graphViewMemento;
         private Date createdAt;
 
-        // StopCriteria
-        private int numStopCriteria = 0;
         private StopCriteria stopCriteriaChoosed;
 
         public WebCrawlerMemento(Graph<WebPage, Link> graphMemento,

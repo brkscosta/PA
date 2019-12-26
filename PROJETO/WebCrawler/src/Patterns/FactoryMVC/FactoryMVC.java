@@ -11,6 +11,7 @@ import Model.WebCrawler;
 import Patterns.Memento.CareTaker;
 import Views.Home;
 import java.io.IOException;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -22,29 +23,17 @@ import javafx.stage.StageStyle;
  * @author BRKsCosta
  */
 public class FactoryMVC {
-
-    public static void showApp() throws IOException {
+    
+    public static Home view;
+    
+    public static Scene createMVCApp() throws IOException {
 
         WebCrawler model = new WebCrawler();
-        BorderPane window = new BorderPane();
-
-        Home view = new Home(model);
-        HomeController controller = new HomeController(model, view);
+        view = new Home(model);
+        CareTaker careTaker = new CareTaker(model);
+        HomeController controller = new HomeController(model, view, careTaker);
         
-        window.setCenter(view);
-        
-        Scene mainScene = new Scene(window, 1500, 700);
-        
-        Stage stage = new Stage(StageStyle.DECORATED);
-        
-        stage.sizeToScene();
-        stage.setTitle("Web Crawler");
-        stage.setResizable(false);
-        stage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
-        stage.setScene(mainScene);
-        stage.show();
-
-        view.graphView.init();
-
+        return view.getScene();
     }
+
 }

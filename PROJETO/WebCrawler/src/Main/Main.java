@@ -5,9 +5,11 @@
  */
 package Main;
 
-import static Patterns.FactoryMVC.FactoryMVC.showApp;
+import Patterns.FactoryMVC.FactoryMVC;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -24,7 +26,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage ignored) throws Exception {
-          showApp();
+        
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.sizeToScene();
+        stage.setTitle("Web Crawler");
+        stage.setResizable(false);
+        stage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
+        stage.setScene(FactoryMVC.createMVCApp());
+        stage.show(); 
+        FactoryMVC.view.graphView.init();
     }
     
 }

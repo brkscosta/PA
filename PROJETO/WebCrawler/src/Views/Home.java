@@ -451,7 +451,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     public void setColorRootPage(Vertex<WebPage> p) {
         System.out.println("root? " + p);
-        graphView.getStylableVertex(p).setStyle("-fx-fill: #D06809; -fx-stroke: #61B5F1;");
+        System.out.println("graphview ? " + graphView.getStylableVertex(p));
+        graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
 
     @Override

@@ -36,7 +36,6 @@ public class HomeController {
         model.addObserver(view);
     }
 
-    // Methods here
     public void startSearch(String criteria, int numPages)
             throws WebCrawlerException, IOException {
         switch (criteria) {
@@ -45,7 +44,9 @@ public class HomeController {
                 model.setRootWebPage(model.createWebPage());
                 model.setNumPages(numPages);
                 model.chosseSearchType(new SearchPages(model));
-                //view.setColorRootPage(model.getRootWebPage());
+                if(model.getNumPages() > 0)
+                    view.setColorRootPage(model.getRootWebPage());
+                view.updateGraph();
                 break;
             case "DFS":
                 model.setStartURL(view.getInputURL());
@@ -95,7 +96,7 @@ public class HomeController {
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         this.model.removePage(graphVertex.getUnderlyingVertex());
-        caretaker.requestSave(); // Alterar para atualizar página pessoal
+        caretaker.requestSave();
         view.updateGraph();
     }
 

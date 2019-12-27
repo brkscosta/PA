@@ -453,4 +453,8 @@ public class Home extends VBox implements Observer, IHomeOperations {
     public String toString() {
         return "View: " + Home.class;
     }
+
+    public void updateGraph() {
+        graphView.update();
+    }
 }

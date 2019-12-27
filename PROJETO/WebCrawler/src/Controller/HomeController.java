@@ -85,13 +85,13 @@ public class HomeController {
         if (!caretaker.canUndo())
             view.showError("No more undos are available.");
         caretaker.requestRestore(); 
-        view.graphView.update();
+        view.updateGraph();
     }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         //scaretaker.requestSave(view.getInputURL()); // Alterar para atualizar página pessoal
         this.model.removePage(graphVertex.getUnderlyingVertex());
-        view.graphView.update();
+        view.updateGraph();
     }
 
     @Override

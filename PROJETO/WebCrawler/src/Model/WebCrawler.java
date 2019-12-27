@@ -84,7 +84,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     }
 
     public void removePage(Vertex<WebPage> underlyingVertex) {
-        System.out.println(underlyingVertex);
+        
         graph.removeVertex(underlyingVertex);
         setChanged();
         notifyObservers();
@@ -339,7 +339,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     private class WebCrawlerMemento implements Memento {
 
         private String startURLMemento = "";
-        public Graph<WebPage, Link> graphMemento;
+        private Graph<WebPage, Link> graphMemento;
         private int countHttpsLinksMemento;
         private int countPageNotFoundMemento;
         private WebPage rootWebPageMemento;
@@ -350,7 +350,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         public WebCrawlerMemento(Graph<WebPage, Link> graphMemento,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
                 String url, StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException {
-            this.graphMemento = new DigraphEdgeList<>();
+            this.graphMemento = graphMemento;
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;
             this.rootWebPageMemento = new WebPage(url);

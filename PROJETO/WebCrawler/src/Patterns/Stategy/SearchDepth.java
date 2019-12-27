@@ -6,6 +6,7 @@
 package Patterns.Stategy;
 
 import Model.Link;
+import Model.WebCrawler;
 import Model.WebPage;
 import com.brunomnsilva.smartgraph.graph.Digraph;
 
@@ -14,9 +15,15 @@ import com.brunomnsilva.smartgraph.graph.Digraph;
  * @author BRKsCosta
  */
 public class SearchDepth implements IBreakCriteria {
+    
+    private WebCrawler model;
+    
+    public SearchDepth(WebCrawler model) {
+        this.model = model;
+    }
 
     @Override
-    public Iterable<WebPage> serchPages(WebPage webPage, int numPages) {
+    public Iterable<WebPage> serchPages(WebPage webPage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

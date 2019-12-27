@@ -31,11 +31,12 @@ public class SearchPages implements IBreakCriteria {
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
 
-    public SearchPages() {
+    public SearchPages(WebCrawler model) {
+        this.model = model;
     }
     
     @Override
-    public Iterable<WebPage> serchPages(WebPage webPage, int numPages)
+    public Iterable<WebPage> serchPages(WebPage webPage)
             throws WebCrawlerException {
 
         try {
@@ -45,8 +46,7 @@ public class SearchPages implements IBreakCriteria {
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
-            if (numPages == 0) {
-                
+            if (model.getNumPages() == 0) {
                 return pagesList;
             }
             
@@ -60,8 +60,8 @@ public class SearchPages implements IBreakCriteria {
             
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;
-            countHttpsLinks = model.countHttpsProtocols(webPage.getPersonalURL());
-            countPageNotFound = model.getPagesNotFound(webPage);
+            this.countHttpsLinks = model.countHttpsProtocols(webPage.getPersonalURL());
+            this.countPageNotFound = model.getPagesNotFound(webPage);
             
             while (!webPagesToVisit.isEmpty()) {
                 WebPage visitedWebPage = webPagesToVisit.poll();
@@ -72,7 +72,7 @@ public class SearchPages implements IBreakCriteria {
                 
                 for (Link link : allIncidentWebLinks) {
                     
-                    if (countMaxVisitedPage == numPages) {
+                    if (countMaxVisitedPage == model.getNumPages()) {
                         return pagesList;
                     }
                     

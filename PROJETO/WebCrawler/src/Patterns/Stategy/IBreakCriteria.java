@@ -5,9 +5,7 @@
  */
 package Patterns.Stategy;
 
-import Model.Link;
 import Model.WebPage;
-import com.brunomnsilva.smartgraph.graph.Digraph;
 
 /**
  *
@@ -15,7 +13,7 @@ import com.brunomnsilva.smartgraph.graph.Digraph;
  */
 public interface IBreakCriteria {
     
-    public Iterable<WebPage> serchPages(WebPage webPage, int numPages);
+    public Iterable<WebPage> serchPages(WebPage webPage);
     
     
 }

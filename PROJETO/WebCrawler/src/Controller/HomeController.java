@@ -9,6 +9,8 @@ import Patterns.Memento.CareTaker;
 import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
+import Patterns.Stategy.SearchDepth;
+import Patterns.Stategy.SearchPages;
 import Views.*;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
@@ -41,20 +43,22 @@ public class HomeController {
             case "BFS":
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
-                model.start(WebCrawler.StopCriteria.PAGES, numPages);
+                model.setNumPages(numPages);
+                model.chosseSearchType(new SearchPages(model));
                 //view.setColorRootPage(model.getRootWebPage());
-                caretaker.requestSave();
                 break;
             case "DFS":
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
-                model.start(WebCrawler.StopCriteria.DEPTH, 0);
-                caretaker.requestSave();
+                model.setNumPages(numPages);
+                model.chosseSearchType(new SearchDepth(model));
+                //view.setColorRootPage(model.getRootWebPage());
                 break;
             default:
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
-                model.start(WebCrawler.StopCriteria.ITERATIVE, 0);
+                model.itertive(model.getRootWebPage().element());
+                //view.setColorRootPage(model.getRootWebPage());
                 caretaker.requestSave();
                 break;
         }
@@ -82,9 +86,10 @@ public class HomeController {
     }
 
     public void undoAction() {
-        if (!caretaker.canUndo())
+        if (!caretaker.canUndo()) {
             view.showError("No more undos are available.");
-        caretaker.requestRestore(); 
+        }
+        caretaker.requestRestore();
         view.updateGraph();
     }
 

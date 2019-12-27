@@ -35,6 +35,7 @@ public class Main extends Application {
         stage.setScene(FactoryMVC.createMVCApp());
         stage.show(); 
         FactoryMVC.view.graphView.init();
+        
     }
     
 }

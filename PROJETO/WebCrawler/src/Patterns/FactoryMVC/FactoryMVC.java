@@ -6,17 +6,12 @@
 package Patterns.FactoryMVC;
 
 import Controller.HomeController;
-import Main.Main;
 import Model.WebCrawler;
 import Patterns.Memento.CareTaker;
 import Views.Home;
+import com.brunomnsilva.smartgraph.graphview.SmartStylableNode;
 import java.io.IOException;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  *
@@ -25,14 +20,13 @@ import javafx.stage.StageStyle;
 public class FactoryMVC {
     
     public static Home view;
-    
+    public static HomeController controller;
     public static Scene createMVCApp() throws IOException {
 
         WebCrawler model = new WebCrawler();
         view = new Home(model);
         CareTaker careTaker = new CareTaker(model);
-        HomeController controller = new HomeController(model, view, careTaker);
-        
+        controller = new HomeController(model, view, careTaker);
         return view.getScene();
     }
 

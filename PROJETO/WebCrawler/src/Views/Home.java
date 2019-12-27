@@ -8,7 +8,6 @@ package Views;
 import Controller.HomeController;
 import Model.Link;
 import Model.WebCrawler;
-import com.brunomnsilva.smartgraph.graphview.SmartStylableNode;
 import Model.WebCrawlerException;
 import Model.WebPage;
 import Patterns.Singleton.LoggerException;
@@ -108,7 +107,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     private static final String INITAL_VALUE = "10";
     private Scene scene;
-    Graph<String, String> g = build_flower_graph();
+    //Graph<String, String> g = build_flower_graph();
 
     public Home(WebCrawler model) {
 
@@ -302,17 +301,17 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void update(Observable o, Object o1) {
         WebCrawler obsModel = (WebCrawler) o;
+        if (o instanceof WebCrawler) {
+            if (obsModel.countWebPages() > 0) {
+                graphView.update();
+            }
+        }
 
     }
 
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
-    }
-
-    @Override
-    public void undoGraph() {
-        System.out.println("Views.Home.undoGraph()");
     }
 
     private void redoGraph() {
@@ -366,7 +365,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.mEditUndo.setOnAction((ActionEvent event) -> {
-            undoGraph();
+            controller.undoAction();
         });
 
         this.mEditRedo.setOnAction((ActionEvent event) -> {
@@ -379,14 +378,15 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
-
-            graphView.update();
+            //graphView.update();
         });
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
             //want fun? uncomment below with automatic layout
-            //controller.removePage(graphVertex);
+            controller.removePage(graphVertex);
+            //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
+            graphView.setAutomaticLayout(true);
             graphView.update();
         });
 
@@ -426,7 +426,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         try {
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
             if (rdBtnBreadthFirst.isSelected()) {
-             
+
                 lblAnotherThing.setText("Selecionou BFS");
                 controller.startSearch("BFS", parseInt);
 
@@ -444,15 +444,13 @@ public class Home extends VBox implements Observer, IHomeOperations {
         }
     }
 
+    public void setColorRootPage(Vertex<WebPage> p) {
+        System.out.println("root? " + p);
+        graphView.getStylableVertex(p).setStyle("-fx-fill: #D06809; -fx-stroke: #61B5F1;");
+    }
+
     @Override
     public String toString() {
         return "View: " + Home.class;
-    }
-
-    public void setColor(WebPage p) {
-        System.out.println("root? " + p);
-        SmartStylableNode stylableVertex = graphView.getStylableVertex(p);
-        stylableVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
-        graphView.update();
     }
 }

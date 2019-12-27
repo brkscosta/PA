@@ -28,11 +28,14 @@ public class CareTaker {
     
     /**
      * Requests the originator memento state and stores it.
+     * @param urlInput
      */
     public void requestSave(String urlInput) {
         //memento = originator.save();
         Memento save = originator.save(urlInput);
+        System.out.println(save.getDescription());
         mementos.push(save);
+        
     }
     
     /**

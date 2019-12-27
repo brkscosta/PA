@@ -35,6 +35,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     private int countPageNotFound;
     public WebPage rootWebPage;
     private StopCriteria stopCriteriaChoosed;
+    private List<WebPage> pagesList = new ArrayList<>();
 
     public WebCrawler() {
         this.countHttpsLinks = 0;
@@ -61,18 +62,15 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         this.countPageNotFound = countPageNotFound;
     }
 
-    public WebPage getRootWebPage() {
-        return rootWebPage;
-    }
-    
-    public Vertex<WebPage> rootPage(){
-        for(Vertex<WebPage> v : graph.vertices()){
-            if(v.element().getTitleName().equals(rootWebPage.getTitleName()))
+    public Vertex<WebPage> getRootWebPage() {
+        for (Vertex<WebPage> v : graph.vertices()) {
+            if (v.element().equals(rootWebPage)) {
                 return v;
+            }
         }
         return null;
     }
-    
+
     public void setRootWebPage(WebPage rootWebPage) {
         this.rootWebPage = rootWebPage;
     }
@@ -83,6 +81,13 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
     public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
         this.stopCriteriaChoosed = stopCriteriaChoosed;
+    }
+
+    public void removePage(Vertex<WebPage> underlyingVertex) {
+        System.out.println(underlyingVertex);
+        graph.removeVertex(underlyingVertex);
+        setChanged();
+        notifyObservers();
     }
 
     public enum StopCriteria {
@@ -113,7 +118,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         } else {
             switch (criteria) {
                 case PAGES:
-                    it = this.BFSByPages(rootWebPage, numPages);
+                    it = this.BFSByPages(createWebPage(), numPages);
                     setChanged();
                     notifyObservers();
                     break;
@@ -174,13 +179,13 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
         // Contar numero de WebPages contadas
         int countMaxVisitedPage = 0;
-        List<WebPage> BFSList = new ArrayList<>();
+       
         Queue<WebPage> webPagesToVisit = new LinkedList<>();
 
         if (numPages == 0) {
             setChanged();
             notifyObservers();
-            return BFSList;
+            return pagesList;
         }
 
         if (this.checkIfHasWebPage(webPage) == false) {
@@ -191,7 +196,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         }
 
         webPagesToVisit.add(webPage);
-        BFSList.add(webPage);
+        pagesList.add(webPage);
 
         // Increment countMaxVisitedPage by 1
         countMaxVisitedPage++;
@@ -208,7 +213,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
             for (Link link : allIncidentWebLinks) {
 
                 if (countMaxVisitedPage == numPages) {
-                    return BFSList;
+                    return pagesList;
                 }
 
                 countHttpsLinks += this.countHttpsProtocols(link.getLinkName());
@@ -221,7 +226,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
                 countPageNotFound += this.getPagesNotFound(webPageInserting);
 
-                BFSList.add(webPageInserting);
+                pagesList.add(webPageInserting);
                 webPagesToVisit.add(webPageInserting);
                 System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
@@ -236,7 +241,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
             System.out.println("]\n");
         }
 
-        return BFSList;
+        return pagesList;
     }
 
     /**
@@ -308,12 +313,12 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
         return graph.numVertices();
     }
-
+    
     @Override
     public Memento save(String url) {
         try {
             return new WebCrawlerMemento(graph, countHttpsLinks, countPageNotFound,
-                    url, stopCriteriaChoosed);
+                    url, stopCriteriaChoosed, pagesList);
         } catch (IOException ex) {
             LoggerWriter.getInstance().writeToLog(ex.getMessage());
         }
@@ -323,16 +328,12 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     @Override
     public void restore(Memento savedState) {
 
-        if (savedState instanceof WebCrawlerMemento) {
+        WebCrawlerMemento save = (WebCrawlerMemento) savedState;
+        this.graph = save.graphMemento;
+        this.rootWebPage = save.rootWebPageMemento;
 
-            WebCrawlerMemento save = (WebCrawlerMemento) savedState;
-
-            this.graph = save.graphMemento;
-            this.rootWebPage = save.rootWebPageMemento;
-
-            setChanged();
-            notifyObservers();
-        }
+        setChanged();
+        notifyObservers();
     }
 
     private class WebCrawlerMemento implements Memento {
@@ -341,19 +342,20 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         public Graph<WebPage, Link> graphMemento;
         private int countHttpsLinksMemento;
         private int countPageNotFoundMemento;
-        public WebPage rootWebPageMemento;
+        private WebPage rootWebPageMemento;
         private Date createdAt;
-
+        private List<WebPage> pageListMemento;
         private StopCriteria stopCriteriaChoosed;
 
         public WebCrawlerMemento(Graph<WebPage, Link> graphMemento,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
-                String url, StopCriteria stopCriteriaChoosed) throws IOException {
+                String url, StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException {
             this.graphMemento = new DigraphEdgeList<>();
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;
             this.rootWebPageMemento = new WebPage(url);
             this.stopCriteriaChoosed = stopCriteriaChoosed;
+            this.pageListMemento = new ArrayList<>(pageList);
             this.createdAt = new Date();
 
         }

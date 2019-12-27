@@ -14,7 +14,6 @@ import Controller.HomeController;
 public interface IHomeOperations {
     
     String getInputURL();
-    void undoGraph();
     void importFile();
     void exportFile();
     void exitApp();

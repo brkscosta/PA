@@ -10,6 +10,7 @@ import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
 import Views.*;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.io.IOException;
 
@@ -36,49 +37,34 @@ public class HomeController {
     // Methods here
     public void startSearch(String criteria, int numPages)
             throws WebCrawlerException, IOException {
-        setRootWebPage();
         switch (criteria) {
             case "BFS":
                 model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.PAGES, numPages);
+                //view.setColorRootPage(model.getRootWebPage());
                 caretaker.requestSave(view.getInputURL());
-                WebPage v = model.getRootWebPage();
-                System.out.println("Controller set root " + v);
-                if (model.countWebPages() > 0) {
-                    view.setColor(v);
-                }
                 break;
             case "DFS":
                 model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.DEPTH, 0);
                 caretaker.requestSave(view.getInputURL());
                 break;
             default:
                 model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.ITERATIVE, 0);
                 caretaker.requestSave(view.getInputURL());
                 break;
         }
     }
 
-    private void setRootWebPage() throws IOException {
-        String inputURL = this.view.getInputURL();
-
-        if (inputURL.trim().length() == 0) {
-            view.showError("Não pode ter um URL vazio!");
-        }
-        model.setStartURL(view.getInputURL());
-        WebPage rootWebPage = model.createWebPage();
-        rootWebPage.setPersonalURL(inputURL);
-        model.setRootWebPage(rootWebPage);
-
-    }
-
     public void exitApp() {
         this.view.exitApp();
     }
 
-    public WebPage getRootPage() {
+    public Vertex<WebPage> getRootPage() {
         return model.getRootWebPage();
     }
 
@@ -96,21 +82,16 @@ public class HomeController {
     }
 
     public void undoAction() {
-        // TODO
-        view.undoGraph();
+        if (!caretaker.canUndo())
+            view.showError("No more undos are available.");
+        caretaker.requestRestore(); 
+        view.graphView.update();
     }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
-        this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
-        caretaker.requestSave(view.getInputURL());
-    }
-
-    public void doUndo() {
-        if (!caretaker.canUndo()) {
-            view.showError("No more undos Availables!");
-            return;
-        }
-        caretaker.requestRestore();
+        //scaretaker.requestSave(view.getInputURL()); // Alterar para atualizar página pessoal
+        this.model.removePage(graphVertex.getUnderlyingVertex());
+        view.graphView.update();
     }
 
     @Override

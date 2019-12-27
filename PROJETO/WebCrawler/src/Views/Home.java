@@ -302,9 +302,14 @@ public class Home extends VBox implements Observer, IHomeOperations {
     public void update(Observable o, Object o1) {
         WebCrawler obsModel = (WebCrawler) o;
         if (o instanceof WebCrawler) {
+            
             if (obsModel.countWebPages() > 0) {
                 graphView.update();
             }
+           
+            if(obsModel.isFinished == true)
+                graphView.update();
+                obsModel.isFinished = false;
         }
 
     }

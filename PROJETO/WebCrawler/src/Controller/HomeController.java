@@ -43,19 +43,19 @@ public class HomeController {
                 model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.PAGES, numPages);
                 //view.setColorRootPage(model.getRootWebPage());
-                caretaker.requestSave(view.getInputURL());
+                caretaker.requestSave();
                 break;
             case "DFS":
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.DEPTH, 0);
-                caretaker.requestSave(view.getInputURL());
+                caretaker.requestSave();
                 break;
             default:
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
                 model.start(WebCrawler.StopCriteria.ITERATIVE, 0);
-                caretaker.requestSave(view.getInputURL());
+                caretaker.requestSave();
                 break;
         }
     }
@@ -89,8 +89,8 @@ public class HomeController {
     }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
-        //scaretaker.requestSave(view.getInputURL()); // Alterar para atualizar página pessoal
         this.model.removePage(graphVertex.getUnderlyingVertex());
+        caretaker.requestSave(); // Alterar para atualizar página pessoal
         view.updateGraph();
     }
 

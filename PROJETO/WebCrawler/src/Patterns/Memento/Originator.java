@@ -16,7 +16,7 @@ public interface Originator {
      * 
      * @return      the memento state 
      */
-    public Memento save(String url);
+    public Memento save();
     
     /**
      * Request to change state for this memento.

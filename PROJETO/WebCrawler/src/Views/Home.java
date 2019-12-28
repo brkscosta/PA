@@ -6,17 +6,16 @@
 package Views;
 
 import Controller.HomeController;
-import Model.WebCrawlerException;
 import Model.Link;
 import Model.WebCrawler;
+import Model.WebCrawlerException;
 import Model.WebPage;
+import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,7 +33,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -50,6 +48,12 @@ import javafx.scene.text.Font;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.Scene;
+import Patterns.Singleton.LoggerWriter;
+import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
+import com.brunomnsilva.smartgraph.graph.Graph;
+import com.brunomnsilva.smartgraph.graph.Vertex;
+import javafx.scene.layout.BorderPane;
 
 /**
  *
@@ -57,11 +61,11 @@ import javafx.scene.layout.GridPane;
  */
 public class Home extends VBox implements Observer, IHomeOperations {
 
-    private WebCrawler model;
-
+    LoggerWriter logW = LoggerWriter.getInstance();
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     public SmartGraphPanel<WebPage, Link> graphView;
+    //public SmartGraphPanel<String, String> graphView;
 
     //Menu  
     private MenuBar menuBar;
@@ -72,16 +76,18 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private MenuItem mFileItemImportFile;
     private MenuItem mFileItemExit;
     private MenuItem mEditUndo;
+    private MenuItem mEditClearGraph;
     private MenuItem mEditRedo;
     private MenuItem mHelpAbout;
     private SeparatorMenuItem separatorMenu;
+    private SeparatorMenuItem separatorEdit;
 
     //Actions left panel
     private Button btnStartCrawler;
     private TextField txtFieldURL;
     private TextField txtFieldNumPages;
     private RadioButton rdBtnBreadthFirst;
-    private RadioButton rdBtnBreadthFirstDepth;
+    private RadioButton rdBtnDepth;
     private RadioButton rdBtnIterative;
     private final Spinner spinner = new Spinner();
 
@@ -99,15 +105,62 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Label lblWebCrawler;
     private Label lblNumPages;
 
-    private static final String INITAL_VALUE = "0";
+    private static final String INITAL_VALUE = "10";
+    private Scene scene;
+    //Graph<String, String> g = build_flower_graph();
 
     public Home(WebCrawler model) {
-        this.model = model;
+
         this.strategy = new SmartCircularSortedPlacementStrategy();
-        this.graphView = new SmartGraphPanel(this.model.graph, strategy);
-        //this.graphView = new SmartGraphPanel(g, strategyRandom);
+        //this.graphView = new SmartGraphPanel(g, strategy);
+        this.graphView = new SmartGraphPanel(model.graph, strategy);
+        BorderPane window = new BorderPane(Home.this);
+        window.setCenter(Home.this);
+        this.scene = new Scene(window, 1500, 700);
         this.initializeComponents();
+
         update(model, null);
+
+    }
+
+    private Graph<String, String> build_flower_graph() {
+
+        Graph<String, String> g = new DigraphEdgeList<>();
+
+        g.insertVertex("A");
+        g.insertVertex("B");
+        g.insertVertex("C");
+        g.insertVertex("D");
+        g.insertVertex("E");
+        g.insertVertex("F");
+        g.insertVertex("G");
+
+        g.insertEdge("A", "B", "1");
+        g.insertEdge("A", "C", "2");
+        g.insertEdge("A", "D", "3");
+        g.insertEdge("A", "E", "4");
+        g.insertEdge("A", "F", "5");
+        g.insertEdge("A", "G", "6");
+
+        g.insertVertex("H");
+        g.insertVertex("I");
+        g.insertVertex("J");
+        g.insertVertex("K");
+        g.insertVertex("L");
+        g.insertVertex("M");
+        g.insertVertex("N");
+
+        g.insertEdge("H", "I", "7");
+        g.insertEdge("H", "J", "8");
+        g.insertEdge("H", "K", "9");
+        g.insertEdge("H", "L", "10");
+        g.insertEdge("H", "M", "11");
+        g.insertEdge("H", "N", "12");
+
+        g.insertEdge("A", "H", "0");
+
+        //g.insertVertex("ISOLATED");
+        return g;
     }
 
     private void initializeComponents() {
@@ -125,7 +178,9 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.menuEdit = new Menu("Edit");
         this.mEditUndo = new MenuItem("Undo");
         this.mEditRedo = new MenuItem("Redo");
-        this.menuEdit.getItems().addAll(mEditUndo, mEditRedo);
+        this.mEditClearGraph = new MenuItem("Clear Graph");
+        this.separatorEdit = new SeparatorMenuItem();
+        this.menuEdit.getItems().addAll(mEditUndo, mEditRedo, separatorEdit, mEditClearGraph);
 
         this.mHelpAbout = new MenuItem("About");
         this.menuHelp = new Menu("Help");
@@ -158,9 +213,9 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.txtFieldNumPages = new TextField();
         this.txtFieldNumPages.setId("textFieldNumPages");
         this.txtFieldNumPages.setMinSize(10, 10);
-        this.rdBtnBreadthFirstDepth = new RadioButton("Profundidade");
-        this.rdBtnBreadthFirstDepth.setToggleGroup(group);
-        this.rdBtnBreadthFirstDepth.setSelected(false);
+        this.rdBtnDepth = new RadioButton("Profundidade");
+        this.rdBtnDepth.setToggleGroup(group);
+        this.rdBtnDepth.setSelected(false);
         this.rdBtnIterative = new RadioButton("Iterativo");
         this.rdBtnIterative.setToggleGroup(group);
         this.rdBtnIterative.setSelected(false);
@@ -171,28 +226,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
                 Integer.parseInt(INITAL_VALUE)));
         spinner.setEditable(true);
 
-        EventHandler<KeyEvent> enterKeyEventHandler;
-
-        enterKeyEventHandler = (KeyEvent event) -> {
-            // handle users "enter key event"
-            if (event.getCode() == KeyCode.ENTER) {
-                try {
-                    // yes, using exception for control is a bad solution ;-)
-                    int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
-                    System.out.println("Number on input: " + parseInt);
-                } catch (NumberFormatException e) {
-                    // show message to user: "only numbers allowed"
-                    // reset editor to INITAL_VALUE
-                    spinner.getEditor().textProperty().set(INITAL_VALUE);
-                }
-            }
-        };
-
-        // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
-        // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
-        // throw an exception
-        spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
-
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -202,7 +235,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         grid.add(spinner, 1, row);
 
         VBox items = new VBox(lblCriteria, txtFieldURL, btnStartCrawler,
-                rdBtnBreadthFirst, grid, rdBtnBreadthFirstDepth, rdBtnIterative);
+                rdBtnBreadthFirst, grid, rdBtnDepth, rdBtnIterative);
         items.setPadding(new Insets(5, 0, 0, 10));
         AnchorPane.setTopAnchor(items, 15.0);
         AnchorPane.setLeftAnchor(items, 10.0);
@@ -241,6 +274,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         Home.setVgrow(splitPane, Priority.ALWAYS);
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
+
     }
 
     /**
@@ -266,26 +300,23 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void update(Observable o, Object o1) {
-
+        WebCrawler obsModel = (WebCrawler) o;
         if (o instanceof WebCrawler) {
-            WebCrawler observableModel = (WebCrawler) o;
-
-            graphView.update();
+            
+            if (obsModel.countWebPages() > 0) {
+                graphView.update();
+            }
+           
+            if(obsModel.isFinished == true)
+                graphView.update();
+                obsModel.isFinished = false;
         }
-    }
 
-    public void setColorRootPage() {
-        graphView.getStylableVertex(model.getRootWebPage()).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
 
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
-    }
-
-    @Override
-    public void undoGraph() {
-        System.out.println("Views.Home.undoGraph()");
     }
 
     private void redoGraph() {
@@ -320,7 +351,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
         alert.setTitle("Error");
         alert.setHeaderText("Alguma coisa não está certa...");
         alert.setContentText(errorMsg);
-
         alert.showAndWait();
     }
 
@@ -340,26 +370,27 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.mEditUndo.setOnAction((ActionEvent event) -> {
-            undoGraph();
+            controller.undoAction();
         });
 
         this.mEditRedo.setOnAction((ActionEvent event) -> {
             redoGraph();
         });
 
+        this.mEditClearGraph.setOnAction(((event) -> {
+            System.out.println("Clear graph");
+        }));
+
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
-
-            try {
-                controller.start();
-            } catch (WebCrawlerException | IOException ex) {
-                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            selectSearchType(controller);
+            //graphView.update();
         });
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
             controller.removePage(graphVertex);
+            //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
+            graphView.setAutomaticLayout(true);
             graphView.update();
         });
 
@@ -367,7 +398,60 @@ public class Home extends VBox implements Observer, IHomeOperations {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
             graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+            graphView.update();
         });
+
+        EventHandler<KeyEvent> enterKeyEventHandler;
+
+        enterKeyEventHandler = (KeyEvent event) -> {
+            // handle users "enter key event"
+            if (event.getCode() == KeyCode.ENTER) {
+                try {
+                    // yes, using exception for control is a bad solution ;-)
+                    selectSearchType(controller);
+                } catch (NumberFormatException e) {
+                    // show message to user: "only numbers allowed"
+                    // reset editor to INITAL_VALUE
+                    spinner.getEditor().textProperty().set(INITAL_VALUE);
+
+                }
+            }
+        };
+
+        // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
+        // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
+        // throw an exception
+        spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
+
+    }
+
+    private void selectSearchType(HomeController controller) throws
+            LoggerException, WebCrawlerException, NumberFormatException {
+        try {
+            int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
+            if (rdBtnBreadthFirst.isSelected()) {
+
+                lblAnotherThing.setText("Selecionou BFS");
+                controller.startSearch("BFS", parseInt);
+
+            } else if (rdBtnDepth.isSelected()) {
+                lblAnotherThing.setText("Selecionou DFS");
+                controller.startSearch("DFS", parseInt);
+
+            } else {
+                lblAnotherThing.setText("Selecionou Iterativo");
+                controller.startSearch("Iterative", parseInt);
+
+            }
+        } catch (IOException ex) {
+            LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
+        }
+    }
+
+    public void setColorRootPage(Vertex<WebPage> p) {
+        System.out.println("root? " + p);
+        System.out.println("graphview ? " + graphView.getStylableVertex(p));
+        graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
 
     @Override
@@ -375,4 +459,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         return "View: " + Home.class;
     }
 
+    public void updateGraph() {
+        graphView.update();
+    }
 }

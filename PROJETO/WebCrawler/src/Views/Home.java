@@ -107,7 +107,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         this.graphView = new SmartGraphPanel(this.model.graph, strategy);
         //this.graphView = new SmartGraphPanel(g, strategyRandom);
         this.initializeComponents();
-
+        update(model, null);
     }
 
     private void initializeComponents() {
@@ -274,6 +274,10 @@ public class Home extends VBox implements Observer, IHomeOperations {
         }
     }
 
+    public void setColorRootPage() {
+        graphView.getStylableVertex(model.getRootWebPage()).setStyle("-fx-fill: gold; -fx-stroke: brown;");
+    }
+
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
@@ -355,8 +359,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-            //want fun? uncomment below with automatic layout
-            this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+            controller.removePage(graphVertex);
             graphView.update();
         });
 

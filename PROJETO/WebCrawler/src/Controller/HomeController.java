@@ -9,6 +9,7 @@ import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
 import Views.*;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.io.IOException;
 
 /**
@@ -32,7 +33,6 @@ public class HomeController {
     public void start() throws WebCrawlerException, IOException {
         setRootWebPage();
         model.start();
-        System.out.println("view: " + view.graphView);
         
     }
 
@@ -80,5 +80,11 @@ public class HomeController {
     public String toString() {
         return "HomeController";
     }
+
+    public void removePage(SmartGraphVertex<WebPage> graphVertex) {
+        this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
+    }
+
+    
 
 }

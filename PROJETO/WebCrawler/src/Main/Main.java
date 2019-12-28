@@ -56,8 +56,7 @@ public class Main extends Application {
         primaryStage.setScene(mainScene);
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         primaryStage.show();
-        view.graphView.init();
-        
+        view.graphView.init();        
         
     }
 

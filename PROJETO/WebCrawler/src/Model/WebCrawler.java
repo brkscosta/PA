@@ -239,5 +239,19 @@ public class WebCrawler extends Observable {
     public int countWebPages() {
         return graph.numVertices();
     }
+    
+    
+    public WebPage getRootWebPage(){
+        
+        for (Vertex<WebPage> vertice : graph.vertices()){
+            if(vertice.element().getTitleName().equals(rootWebPage.getTitleName())) {
+                setChanged();
+                notifyObservers();
+                return vertice.element();
+            }
+        }
+        return null;
+        
+    }
 
 }

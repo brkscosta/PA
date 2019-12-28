@@ -45,7 +45,7 @@ public class HomeController {
                 model.setNumPages(numPages);
                 model.chosseSearchType(new SearchPages(model));
                 if(model.getNumPages() > 0)
-                    //view.setColorRootPage(model.getRootWebPage());
+                    view.setColorRootPage(model.getRootWebPage());
                 view.updateGraph();
                 break;
             case "DFS":

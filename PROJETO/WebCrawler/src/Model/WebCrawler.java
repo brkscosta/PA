@@ -51,6 +51,10 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
 
     }
 
+    public LoggerWriter getLogger() {
+        return logger;
+    }
+    
     public int getNumPages() {
         return numPages;
     }

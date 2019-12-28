@@ -9,17 +9,11 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
-import com.brunomnsilva.smartgraph.graph.Digraph;
-import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -98,10 +92,8 @@ public class SearchPages implements IBreakCriteria {
             }
 
             return pagesList;
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SearchPages.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(SearchPages.class.getName()).log(Level.SEVERE, null, ex);
+            model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
         }
         return null;
     }

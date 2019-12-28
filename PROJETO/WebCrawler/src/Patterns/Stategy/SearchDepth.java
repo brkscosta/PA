@@ -5,14 +5,12 @@
  */
 package Patterns.Stategy;
 
-import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
-import com.brunomnsilva.smartgraph.graph.Digraph;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta 
  */
 public class SearchDepth implements IBreakCriteria {
     
@@ -24,7 +22,7 @@ public class SearchDepth implements IBreakCriteria {
 
     @Override
     public Iterable<WebPage> serchPages(WebPage webPage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
   

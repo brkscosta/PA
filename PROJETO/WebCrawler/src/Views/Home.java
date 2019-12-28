@@ -107,7 +107,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     private static final String INITAL_VALUE = "10";
     private Scene scene;
-    //Graph<String, String> g = build_flower_graph();
 
     public Home(WebCrawler model) {
 
@@ -121,46 +120,6 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         update(model, null);
 
-    }
-
-    private Graph<String, String> build_flower_graph() {
-
-        Graph<String, String> g = new DigraphEdgeList<>();
-
-        g.insertVertex("A");
-        g.insertVertex("B");
-        g.insertVertex("C");
-        g.insertVertex("D");
-        g.insertVertex("E");
-        g.insertVertex("F");
-        g.insertVertex("G");
-
-        g.insertEdge("A", "B", "1");
-        g.insertEdge("A", "C", "2");
-        g.insertEdge("A", "D", "3");
-        g.insertEdge("A", "E", "4");
-        g.insertEdge("A", "F", "5");
-        g.insertEdge("A", "G", "6");
-
-        g.insertVertex("H");
-        g.insertVertex("I");
-        g.insertVertex("J");
-        g.insertVertex("K");
-        g.insertVertex("L");
-        g.insertVertex("M");
-        g.insertVertex("N");
-
-        g.insertEdge("H", "I", "7");
-        g.insertEdge("H", "J", "8");
-        g.insertEdge("H", "K", "9");
-        g.insertEdge("H", "L", "10");
-        g.insertEdge("H", "M", "11");
-        g.insertEdge("H", "N", "12");
-
-        g.insertEdge("A", "H", "0");
-
-        //g.insertVertex("ISOLATED");
-        return g;
     }
 
     private void initializeComponents() {

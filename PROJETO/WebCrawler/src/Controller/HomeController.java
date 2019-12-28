@@ -45,7 +45,7 @@ public class HomeController {
                 model.setNumPages(numPages);
                 model.chosseSearchType(new SearchPages(model));
                 if(model.getNumPages() > 0)
-                    view.setColorRootPage(model.getRootWebPage());
+                    //view.setColorRootPage(model.getRootWebPage());
                 view.updateGraph();
                 break;
             case "DFS":
@@ -104,11 +104,5 @@ public class HomeController {
     public String toString() {
         return "Home Controller: \n CareTaker: " + this.caretaker;
     }
-
-    public void removePage(SmartGraphVertex<WebPage> graphVertex) {
-        this.model.graph.removeVertex(graphVertex.getUnderlyingVertex());
-    }
-
-    
 
 }

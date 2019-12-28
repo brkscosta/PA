@@ -47,7 +47,7 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
     public WebCrawler() {
         this.countHttpsLinks = 0;
         this.countPageNotFound = 0;
-        this.graph = new DigraphEdgeList<>();
+        this.graph = new MyDigraph<>();
 
     }
 
@@ -219,20 +219,6 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
     public int countWebPages() {
 
         return graph.numVertices();
-    }
-    
-    
-    public WebPage getRootWebPage(){
-        
-        for (Vertex<WebPage> vertice : graph.vertices()){
-            if(vertice.element().getTitleName().equals(rootWebPage.getTitleName())) {
-                setChanged();
-                notifyObservers();
-                return vertice.element();
-            }
-        }
-        return null;
-        
     }
 
     @Override

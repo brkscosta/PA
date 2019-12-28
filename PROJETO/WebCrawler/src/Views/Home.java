@@ -388,6 +388,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
+            //want fun? uncomment below with automatic layout
             controller.removePage(graphVertex);
             //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
             graphView.setAutomaticLayout(true);

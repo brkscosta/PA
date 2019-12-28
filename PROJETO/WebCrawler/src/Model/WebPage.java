@@ -1,5 +1,6 @@
 package Model;
 
+import Patterns.Singleton.LoggerWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -13,11 +14,6 @@ import org.jsoup.select.Elements;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-// My Packages
-import Model.WebCrawlerException;
 import org.jsoup.HttpStatusException;
 
 /**
@@ -28,6 +24,7 @@ import org.jsoup.HttpStatusException;
  */
 public class WebPage {
 
+    LoggerWriter logger = LoggerWriter.getInstance();
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -72,7 +69,7 @@ public class WebPage {
                     break;
             }
         } catch (IOException e) {
-            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);
+            LoggerWriter.getInstance().writeToLog(e.getMessage());
         }
     }
 
@@ -156,17 +153,17 @@ public class WebPage {
                 Link newObjLink = new Link(newHref);
                 listIncidentsWebPages.offer(newObjLink);
             }
-            
+
             Set<Link> set = new HashSet(listIncidentsWebPages);
             listIncidentsWebPages.clear();
             listIncidentsWebPages.addAll(set);
-            
+
             return listIncidentsWebPages;
-            
+
         } catch (HttpStatusException ex) {
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
-                Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+                LoggerWriter.getInstance().writeToLog(ex.getMessage());
             }
             return listIncidentsWebPages;
         }
@@ -193,8 +190,8 @@ public class WebPage {
                 link = u.getProtocol() + "://" + u.getAuthority() + stripFilename(u.getPath()) + link;
             }
             return link;
-        } catch (MalformedURLException e) {
-            System.out.println(e.getMessage());
+        } catch (MalformedURLException ex) {
+             LoggerWriter.getInstance().writeToLog(ex.getMessage());
             return null;
         }
     }

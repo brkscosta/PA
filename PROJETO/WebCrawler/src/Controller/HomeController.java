@@ -5,10 +5,14 @@
  */
 package Controller;
 
+import Patterns.Memento.CareTaker;
 import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
+import Patterns.Stategy.SearchDepth;
+import Patterns.Stategy.SearchPages;
 import Views.*;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.io.IOException;
 
@@ -18,44 +22,55 @@ import java.io.IOException;
  */
 public class HomeController {
 
-    private final Home view;
+    public final Home view;
     private final WebCrawler model;
+    private final CareTaker caretaker;
 
-    public HomeController(WebCrawler model, Home view) {
+    public HomeController(WebCrawler model, Home view, CareTaker caretaker) throws IOException {
         this.view = view;
         this.model = model;
+        //Create new state of model
+        this.caretaker = caretaker;
 
         view.setTriggersButtons(HomeController.this);
         model.addObserver(view);
     }
- 
-    // Methods here
-    public void start() throws WebCrawlerException, IOException {
-        setRootWebPage();
-        model.start();
-        
-    }
 
-    public void automaticMode() {
-        setRootWebPage();
-    }
-    
-    public void iterativeMode(){
-        setRootWebPage();
-    }
-    
-    private void setRootWebPage() {
-        WebPage rootWebPage = model.rootWebPage;
-        String inputURL = this.view.getInputURL();
-
-        if (inputURL.trim().length() == 0)
-            view.showError("Não pode ter um URL vazio!");
-        
-        rootWebPage.setPersonalURL(inputURL);
+    public void startSearch(String criteria, int numPages)
+            throws WebCrawlerException, IOException {
+        switch (criteria) {
+            case "BFS":
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.setNumPages(numPages);
+                model.chosseSearchType(new SearchPages(model));
+                if(model.getNumPages() > 0)
+                    view.setColorRootPage(model.getRootWebPage());
+                view.updateGraph();
+                break;
+            case "DFS":
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.setNumPages(numPages);
+                model.chosseSearchType(new SearchDepth(model));
+                //view.setColorRootPage(model.getRootWebPage());
+                break;
+            default:
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.itertive(model.getRootWebPage().element());
+                //view.setColorRootPage(model.getRootWebPage());
+                caretaker.requestSave();
+                break;
+        }
     }
 
     public void exitApp() {
         this.view.exitApp();
+    }
+
+    public Vertex<WebPage> getRootPage() {
+        return model.getRootWebPage();
     }
 
     public void importFiles() {
@@ -72,13 +87,22 @@ public class HomeController {
     }
 
     public void undoAction() {
-        // TODO
-        view.undoGraph();
+        if (!caretaker.canUndo()) {
+            view.showError("No more undos are available.");
+        }
+        caretaker.requestRestore();
+        view.updateGraph();
+    }
+
+    public void removePage(SmartGraphVertex<WebPage> graphVertex) {
+        this.model.removePage(graphVertex.getUnderlyingVertex());
+        caretaker.requestSave();
+        view.updateGraph();
     }
 
     @Override
     public String toString() {
-        return "HomeController";
+        return "Home Controller: \n CareTaker: " + this.caretaker;
     }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {

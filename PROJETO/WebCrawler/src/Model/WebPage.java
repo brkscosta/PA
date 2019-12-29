@@ -1,5 +1,6 @@
 package Model;
 
+import Patterns.Singleton.LoggerWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -13,8 +14,6 @@ import org.jsoup.select.Elements;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jsoup.HttpStatusException;
 
 /**
@@ -24,7 +23,8 @@ import org.jsoup.HttpStatusException;
  *
  */
 public class WebPage {
-    private static final Logger LOGGER = Logger.getLogger( WebPage.class.getName());
+
+    LoggerWriter logger = LoggerWriter.getInstance();
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -69,7 +69,7 @@ public class WebPage {
                     break;
             }
         } catch (IOException e) {
-            Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, e);
+            LoggerWriter.getInstance().writeToLog(e.getMessage());
         }
     }
 
@@ -153,17 +153,17 @@ public class WebPage {
                 Link newObjLink = new Link(newHref);
                 listIncidentsWebPages.offer(newObjLink);
             }
-            
+
             Set<Link> set = new HashSet(listIncidentsWebPages);
             listIncidentsWebPages.clear();
             listIncidentsWebPages.addAll(set);
-            
+
             return listIncidentsWebPages;
-            
+
         } catch (HttpStatusException ex) {
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
-                Logger.getLogger(WebPage.class.getName()).log(Level.SEVERE, null, ex);
+                LoggerWriter.getInstance().writeToLog(ex.getMessage());
             }
             return listIncidentsWebPages;
         }
@@ -191,7 +191,7 @@ public class WebPage {
             }
             return link;
         } catch (MalformedURLException ex) {
-            LOGGER.log( Level.INFO, ex.toString(), ex);
+             LoggerWriter.getInstance().writeToLog(ex.getMessage());
             return null;
         }
     }

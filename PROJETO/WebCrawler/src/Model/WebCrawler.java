@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 import com.brunomnsilva.smartgraph.graph.*;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.UnexpectedException;
-import java.util.Collection;
 import java.util.Observable;
+import Patterns.Singleton.LoggerWriter;
+import Patterns.Stategy.IBreakCriteria;
+import java.util.Date;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import Patterns.Memento.IOriginator;
+import Patterns.Memento.IMemento;
 
 @SuppressWarnings("null")
 /**
@@ -23,61 +28,125 @@ import java.util.Observable;
  *
  * @author BRKsCosta and Daniel Cordeiro
  */
-public class WebCrawler extends Observable {
+public class WebCrawler extends Observable implements IOriginator, Serializable, Cloneable {
 
-    // Default attributes
-    private String startURL = "";
-    public final Graph<WebPage, Link> graph;
+    private LoggerWriter logger = LoggerWriter.getInstance();
+
+    private IBreakCriteria searchCriteria; // 
+    
+    private String startURL = ""; // main root url
+    public Graph<WebPage, Link> graph;
     private int countHttpsLinks;
     private int countPageNotFound;
-    public final WebPage rootWebPage;
-    public SmartGraphPanel<WebPage, Link> graphView;
-
-    // StopCriteria
-    private int numStopCriteria = 0;
+    public WebPage rootWebPage;
     private StopCriteria stopCriteriaChoosed;
+    private List<WebPage> pagesList = new ArrayList<>();
+    private int numPages = 0;
+    public boolean isFinished = false;
+
+    public WebCrawler() {
+        this.countHttpsLinks = 0;
+        this.countPageNotFound = 0;
+        this.graph = new MyDigraph<>();
+    }
 
     public enum StopCriteria {
-        PAGES, DEPTH
+        PAGES, DEPTH, ITERATIVE;
+    }
+    
+    // Getters 
+    public LoggerWriter getLogger() {
+        return logger;
+    }
+    
+    public int getNumPages() {
+        return numPages;
+    }
+    
+    public int getCountHttpsLinks() {
+        return countHttpsLinks;
+    }
+    
+    public int getCountPageNotFound() {
+        return countPageNotFound;
+    }
+    
+    public StopCriteria getStopCriteriaChoosed() {
+        return stopCriteriaChoosed;
+    }
+    
+    public Vertex<WebPage> getRootWebPage() {
+        for (Vertex<WebPage> v : graph.vertices()) {
+            if (v.element().equals(rootWebPage)) {
+                return v;
+            }
+        }
+        return null;
+    }
+    
+    public String getStartURL() {
+        return startURL;
     }
 
-    /**
-     *
-     * Create a object of <i><p>
-     * Web Crawler </p></i> type with a DiGraph instance s
-     *
-     * @param baseUrl the root URL
-     * @param criteriaNumber number of stop criteria
-     * @param stopCriteria type of stop criteria
-     * @throws java.io.IOException
-     */
-    public WebCrawler(String baseUrl, int criteriaNumber, StopCriteria stopCriteria) throws IOException {
-        // Assigned values given
-        this.startURL = baseUrl;
-        this.numStopCriteria = criteriaNumber;
-        this.stopCriteriaChoosed = stopCriteria;
-        this.graph = new DigraphEdgeList();
-        this.rootWebPage = new WebPage(baseUrl);
-       
+    // Setters
+    public void setNumPages(int numPages) {
+        this.numPages = numPages;
     }
+    
+    public void setCountHttpsLinks(int countHttpsLinks) {
+        this.countHttpsLinks = countHttpsLinks;
+    }
+    
+    public void setCountPageNotFound(int countPageNotFound) {
+        this.countPageNotFound = countPageNotFound;
+    }
+    
+    public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
+        this.stopCriteriaChoosed = stopCriteriaChoosed;
+    }
+    
+    public void setRootWebPage(WebPage rootWebPage) {
+        this.rootWebPage = rootWebPage;
+    }
+    
+    public void setStartURL(String startURL) {
+        this.startURL = startURL;
+    }
+    
+    public void setSearchType(IBreakCriteria criteria) {
+        this.searchCriteria = criteria;
+        this.start();
+    }
+
+    // Methods with WebPage's
+    public WebPage createWebPage() throws IOException {
+        return new WebPage(startURL);
+    }
+
+    public void removePage(Vertex<WebPage> underlyingVertex) {
+        graph.removeVertex(underlyingVertex);
+        pagesList.remove(underlyingVertex.element());
+        isFinished = true;
+
+        setChanged();
+        notifyObservers();
+    }
+
 
     /**
      * This method start the crow of a website
      *
-     * @throws java.io.IOException
      */
-    public void start() throws WebCrawlerException, IOException {
+    public void start() {
 
-        // Use different ways gettins BFS order
-        Iterable<WebPage> BFS;
-        if (stopCriteriaChoosed == StopCriteria.PAGES) {
-            BFS = this.BFSByPages(rootWebPage);
-        } else {
-            BFS = this.BFSByDepth(rootWebPage);
-        }
+        Iterable<WebPage> it;
+
+        it = searchCriteria.serchPages(rootWebPage);
+        setChanged();
+        notifyObservers();
 
         print("\n ========= Estatísticas ========= \n");
-        print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), BFS);
+        print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.countPageNotFound);
         print(" »»»»» Ligações HTTPS (%d) «««««", this.countHttpsLinks);
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
@@ -89,12 +158,27 @@ public class WebCrawler extends Observable {
     }
 
     /**
+     * Count https protocols
+     *
+     * @param startURL site URL
+     * @return Number of pages founded
+     * @throws MalformedURLException
+     */
+    public int countHttpsProtocols(String startURL) throws MalformedURLException {
+        int count = 0;
+        URL u = new URL(startURL);
+        if (u.getProtocol().equals("https")) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
      * Count number of pages not found
      *
      * @param myWebPage
      * @return Counter of pages
      * @throws IOException
-     * @throws Exceptions.WebCrawlerException
      */
     public int getPagesNotFound(WebPage myWebPage) throws IOException, WebCrawlerException {
 
@@ -105,84 +189,13 @@ public class WebCrawler extends Observable {
     }
 
     /**
-     * Enter in link and process all links associated
-     *
-     * @param webPage WebPage object
-     * @exception IOException Input Output exception
-     * @exception WebCrawlerException Some exception from inputs
-     * @return <code>void</code>
-     */
-    @SuppressWarnings("UnnecessaryReturnStatement")
-    public Iterable<WebPage> BFSByPages(WebPage webPage)
-            throws WebCrawlerException, IOException {
-      
-        // Contar numero de WebPages contadas
-        int countMaxVisitedPage = 0;
-        List<WebPage> BFSList = new ArrayList<>();
-        Queue<WebPage> webPagesToVisit = new LinkedList<>();
-
-        if (this.numStopCriteria == 0) {
-            return BFSList;
-        }
-
-        if (this.checkIfHasWebPage(webPage) == false) {
-            // Insert the webPage in the graph
-            graph.insertVertex(webPage);
-            
-        }
-
-        webPagesToVisit.add(webPage);
-        BFSList.add(webPage);
-
-        // Increment countMaxVisitedPage by 1
-        countMaxVisitedPage++;
-        countHttpsLinks = this.countHttpsProtocols(webPage.getPersonalURL());
-        countPageNotFound = this.getPagesNotFound(webPage);
-
-        while (!webPagesToVisit.isEmpty()) {
-            WebPage visitedWebPage = webPagesToVisit.poll();
-            System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
-
-            // Get all incident links for 
-            Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
-
-            for (Link link : allIncidentWebLinks) {
-
-                if (countMaxVisitedPage == this.numStopCriteria) {
-                    return BFSList;
-                }
-
-                countHttpsLinks += this.countHttpsProtocols(link.getLinkName());
-
-                // Insert a new WebPage in the graph
-                WebPage webPageInserting = new WebPage(link.getLinkName());
-                graph.insertVertex(webPageInserting);
-                countPageNotFound += this.getPagesNotFound(webPageInserting);
-
-                BFSList.add(webPageInserting);
-                webPagesToVisit.add(webPageInserting);
-                System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
-
-                // Insert a new Link between WebPages
-                graph.insertEdge(visitedWebPage, webPageInserting, link);
-                setChanged();
-                notifyObservers();
-                // Increment countMaxVisitedPage by 1
-                countMaxVisitedPage++;
-            }
-            System.out.println("]\n");
-        }
-
-        return BFSList;
-    }
-
-    /**
      * Checks if exists already a webPage like the param inside the webPage
      *
      * @param webPage we want to check
+     * @param graph
      * @return if exists the webPage
      */
-    private boolean checkIfHasWebPage(WebPage webPage) {
+    public boolean checkIfHasWebPage(WebPage webPage) {
         for (Vertex<WebPage> page : graph.vertices()) {
             if (page.element() == webPage) {
                 return true;
@@ -191,35 +204,8 @@ public class WebCrawler extends Observable {
         return false;
     }
 
-    /**
-     * Count https protocols
-     *
-     * @param startURL site URL
-     * @return Number of pages founded
-     * @throws MalformedURLException
-     */
-    private int countHttpsProtocols(String startURL) throws MalformedURLException {
-        int count = 0;
-        URL u = new URL(startURL);
-        if (u.getProtocol().equals("https")) {
-            count++;
-        }
-        return count;
-    }
-
-    /**
-     * This method goes
-     *
-     * @param webPage
-     * @return
-     * @throws WebCrawlerException
-     * @throws IOException
-     */
-    public Iterable<WebPage> BFSByDepth(WebPage webPage)
-            throws WebCrawlerException, IOException {
-
-        //TODO
-        throw new UnexpectedException("Not supported");
+    public Iterable<WebPage> itertive(WebPage rootWebPage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -228,6 +214,7 @@ public class WebCrawler extends Observable {
      * @return Number of links (Edges)
      */
     public int countLinks() {
+
         return graph.numEdges();
     }
 
@@ -237,7 +224,93 @@ public class WebCrawler extends Observable {
      * @return Number of titles (Vertex)
      */
     public int countWebPages() {
+
         return graph.numVertices();
+    }
+
+    
+    // Implement all IOriginator methods
+    @Override
+    public IMemento save() {
+        // Creates a new private Memento Object and returns it
+        try {
+            return new WebCrawlerMemento(graph, countHttpsLinks, countPageNotFound,
+                    stopCriteriaChoosed, pagesList);
+        } catch (IOException | CloneNotSupportedException ex) {
+            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+
+    }
+
+    @Override
+    public void restore(IMemento savedState) {
+
+        WebCrawlerMemento save = (WebCrawlerMemento) savedState;
+        this.graph = save.graphMemento;
+        this.isFinished = true; // Just for testing, TODO
+
+        setChanged();
+        notifyObservers();
+    }
+
+    // Private Memento with all the states and getters and setters needed
+    private class WebCrawlerMemento implements IMemento {
+
+        //private Graph<WebPage, Link> graphMemento;
+        private Vertex<WebPage> webPage;
+        private int countHttpsLinksMemento;
+        private int countPageNotFoundMemento;
+        private Date createdAt;
+        private List<WebPage> pageListMemento;
+        private StopCriteria stopCriteriaChoosed;
+
+        public WebCrawlerMemento(Vertex<WebPage> webPage,
+                int countHttpsLinksMemento, int countPageNotFoundMemento,
+                StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException, CloneNotSupportedException {
+            
+            this.webPage = new Vertex<>();
+            //this.webPage.element() = STILL IN WORK
+            
+            //this.graphMemento = new MyDigraph<>();
+            //this.graphMemento = graphMemento; // Aqui temos de por o Vertice WebPage. Não vamos puder ter 
+            this.countHttpsLinksMemento = countHttpsLinksMemento;
+            this.countPageNotFoundMemento = countPageNotFoundMemento;
+            this.stopCriteriaChoosed = stopCriteriaChoosed;
+            this.pageListMemento = new ArrayList<>(pageList);
+            this.createdAt = new Date();
+        }
+        
+        // Getters
+        public Graph<WebPage, Link> getGraphMemento() {        
+            return graphMemento;
+        }
+
+        public int getCountHttpsLinksMemento() {
+            return countHttpsLinksMemento;
+        }
+
+        public int getCountPageNotFoundMemento() {
+            return countPageNotFoundMemento;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
+        }
+
+        public List<WebPage> getPageListMemento() {
+            return pageListMemento;
+        }
+
+        public StopCriteria getStopCriteriaChoosed() {
+            return stopCriteriaChoosed;
+        }
+
+        @Override
+        public String getDescription() {
+            return String.format("WebCrawler Memento created at %s",
+                    createdAt.toString());
+        }
     }
 
 }

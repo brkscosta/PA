@@ -25,12 +25,12 @@ public class WebCrawlerTest {
     String testeWebCrawler = "http://www.brunomnsilva.com/sandbox/index.html";  
     @Before
     public void setUp() throws IOException, WebCrawlerException {
-        this.webCrawlerInstance = new WebCrawler(this.testeWebCrawler, 15, WebCrawler.StopCriteria.PAGES);
+        //this.webCrawlerInstance = new WebCrawler(this.testeWebCrawler, 15, WebCrawler.StopCriteria.PAGES);
         // Test pages not found
         String page404 = "https://deviup.com.br:3001/api/lembrete/2";
         this.web404 = new WebPage(page404);
         webCrawlerInstance.graph.insertVertex(web404);
-        webCrawlerInstance.start();
+        //webCrawlerInstance.start();
     }
 
     /**

@@ -24,7 +24,7 @@ public class MyDiGraphTest {
     private final List<Edge<String, String>> edges;
 
     public MyDiGraphTest() {
-        this.digraph = new DigraphEdgeList<>();
+        this.digraph = new MyDigraph<>();
         this.vertex = new ArrayList<>();
         this.edges = new ArrayList<>();
     }

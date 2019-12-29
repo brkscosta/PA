@@ -43,7 +43,7 @@ public class HomeController {
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
                 model.setNumPages(numPages);
-                model.chosseSearchType(new SearchPages(model));
+                model.setSearchType(new SearchPages(model));
                 if(model.getNumPages() > 0)
                     view.setColorRootPage(model.getRootWebPage());
                 view.updateGraph();
@@ -52,7 +52,7 @@ public class HomeController {
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
                 model.setNumPages(numPages);
-                model.chosseSearchType(new SearchDepth(model));
+                model.setSearchType(new SearchDepth(model));
                 //view.setColorRootPage(model.getRootWebPage());
                 break;
             default:

@@ -269,7 +269,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
                 StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException, CloneNotSupportedException {
             
-            this.webPage = new Vertex<>();
+            //this.webPage = new Vertex<>();
             //this.webPage.element() = STILL IN WORK
             
             //this.graphMemento = new MyDigraph<>();

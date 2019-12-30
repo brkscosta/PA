@@ -54,6 +54,7 @@ import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.brunomnsilva.smartgraph.graph.Edge;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
 
@@ -71,7 +72,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     LoggerWriter logW = LoggerWriter.getInstance();
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-    public SmartGraphPanel<WebPage, Link> graphView;
+    public SmartGraphPanel<WebPage, Link> graphView; // Why this attribute is public? We need to continue with class encapsulation so I will make a new get method
     //public SmartGraphPanel<String, String> graphView;
 
     //Menu  
@@ -114,6 +115,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     private static final String INITAL_VALUE = "10";
     private Scene scene;
+    
+    // Graph interface
+    private boolean hasClickedEdges = false; 
+    //private Edge<Link, WebPage> edgeClicked;
+    SmartGraphEdge<Link, WebPage> edgeClicked;
 
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
@@ -124,9 +130,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.scene = new Scene(window, 1500, 700);
         this.initializeComponents();
 
-        update(model, null);
+        update(model, null); // this is needed? We already introduced the model.graph inside the new instance of this.graphView... They will always be the same in the constructor
     }
 
+    // Setup interface view
     private void initializeComponents() {
 
         //Set up menu bar
@@ -278,14 +285,18 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         WebCrawler obsModel = (WebCrawler) o; // Model
         
         if (o instanceof WebCrawler) {
+            // Não será preciso fazer update se não houver páginas
             if (obsModel.countWebPages() > 0) {
                 graphView.update();
             }
            
             // TESTING IF THE GRAPH WAS UPDATE BEFORE THE VIEW UPDATED. TODOOOOO 
-            if(obsModel.isFinished == true)
+            if(obsModel.isFinished == true){
                 graphView.update();
                 obsModel.isFinished = false;
+            }
+            
+            // Will happen 2 updates with this test graphView.update()
         }
     }
 
@@ -331,11 +342,13 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void setTriggersButtons(HomeController controller) {
-
+        
+        // Quit app
         this.mFileItemExit.setOnAction((ActionEvent event) -> {
             controller.exitApp();
         });
 
+        // Apply DAO - TODO
         this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
             System.out.println("Export file");
         });
@@ -344,6 +357,8 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             System.out.println("Import File");
         });
 
+        
+        // Apply Memento - Undo
         this.mEditUndo.setOnAction((ActionEvent event) -> {
             controller.undoAction();
         });
@@ -356,27 +371,56 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             System.out.println("Clear graph");
         }));
 
+        // Show the graph
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
-            //graphView.update();
         });
 
-        graphView.setVertexDoubleClickAction(graphVertex -> {
+        this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
             //want fun? uncomment below with automatic layout
             controller.removePage(graphVertex);
             //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
-            graphView.setAutomaticLayout(true);
-            graphView.update();
+            //this.graphView.setAutomaticLayout(true); WHY THIS IS NEEDED? I COMMENTED
+            this.graphView.update();
         });
 
-        graphView.setEdgeDoubleClickAction(graphEdge -> {
+        // Double click in one edge. 
+        // It will have to toogle between edges. It can't be possible to have more than one clicked edge at the same time. 
+        // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
+        // It can be possible to double click one edge, change the color and give the description and if we double click again it changes the color again to the older one and doens0t print it's description.
+        this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
             //dynamically change the style when clicked
-            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
-            graphView.update();
+            if(this.hasClickedEdges){
+                
+                // Check if the clicked edge is the same as the edge passed as an argument
+                if(graphEdge.getUnderlyingEdge() == this.edgeClicked){
+                    // Change the color to the default
+                    graphEdge.setStyle(""); // TODO
+                    this.hasClickedEdges = false;
+                } else{
+                    // Change the color of the old edgeClicked to the default
+                    this.edgeClicked.setStyle(""); // TODO
+                    
+                    // Assign to the edgeClicked a new value
+                    this.edgeClicked = graphEdge;
+                    this.edgeClicked.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+                    
+                }
+            } else{
+                this.hasClickedEdges = true;
+                
+                // Assign to the edgeClicked a new value
+                this.edgeClicked = graphEdge;
+                graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+            }
+            
+            this.graphView.update();
         });
 
+        
+        // Try to catch the ENTER key event
         EventHandler<KeyEvent> enterKeyEventHandler;
 
         enterKeyEventHandler = (KeyEvent event) -> {

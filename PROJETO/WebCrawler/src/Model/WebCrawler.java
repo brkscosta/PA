@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import Patterns.Memento.IOriginator;
 import Patterns.Memento.IMemento;
 import Patterns.Stategy.ISearchCriteria;
+import Views.HomeView.StopCriteria;
 
 @SuppressWarnings("null")
 /**
@@ -33,7 +34,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     private LoggerWriter logger = LoggerWriter.getInstance();
 
     private ISearchCriteria searchCriteria; // 
-    
     
     // Pertinent variables to the DiGraph structure:
     private String startURL = ""; // main root url

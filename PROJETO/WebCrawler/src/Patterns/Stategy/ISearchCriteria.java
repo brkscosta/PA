@@ -11,9 +11,7 @@ import Model.WebPage;
  *
  * @author BRKsCosta
  */
-public interface IBreakCriteria {
-    
-    public Iterable<WebPage> serchPages(WebPage webPage);
-    
-    
+public interface ISearchCriteria {
+
+    public Iterable<WebPage> searchPages(WebPage webPage);
 }

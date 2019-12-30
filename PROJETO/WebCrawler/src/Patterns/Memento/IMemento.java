@@ -17,4 +17,5 @@ public interface IMemento {
      * @return  the description. 
      */
     public String getDescription();
+    
 }

@@ -38,7 +38,14 @@ public class HomeController {
 
     public void startSearch(String criteria, int numPages)
             throws WebCrawlerException, IOException {
+        
+        model.buildWebCrawler(criteria, numPages);
+        view.updateGraph();
+        caretaker.requestSave();
+        
         switch (criteria) {
+            
+            // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de código:
             case "BFS":
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
@@ -58,7 +65,7 @@ public class HomeController {
             default:
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
-                model.itertive(model.getRootWebPage().element());
+                model.iterative(model.getRootWebPage().element());
                 //view.setColorRootPage(model.getRootWebPage());
                 caretaker.requestSave();
                 break;

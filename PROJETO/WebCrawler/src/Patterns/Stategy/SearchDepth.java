@@ -12,7 +12,7 @@ import Model.WebPage;
  *
  * @author BRKsCosta 
  */
-public class SearchDepth implements IBreakCriteria {
+public class SearchDepth implements ISearchCriteria {
     
     private WebCrawler model;
     
@@ -21,10 +21,7 @@ public class SearchDepth implements IBreakCriteria {
     }
 
     @Override
-    public Iterable<WebPage> serchPages(WebPage webPage) {
+    public Iterable<WebPage> searchPages(WebPage webPage) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
-
-  
-
 }

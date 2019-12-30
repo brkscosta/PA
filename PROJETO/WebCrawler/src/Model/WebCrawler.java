@@ -10,13 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Observable;
 import Patterns.Singleton.LoggerWriter;
-import Patterns.Stategy.IBreakCriteria;
 import java.util.Date;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Patterns.Memento.IOriginator;
 import Patterns.Memento.IMemento;
+import Patterns.Stategy.ISearchCriteria;
 
 @SuppressWarnings("null")
 /**
@@ -32,26 +32,30 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
-    private IBreakCriteria searchCriteria; // 
+    private ISearchCriteria searchCriteria; // 
     
+    
+    // Pertinent variables to the DiGraph structure:
     private String startURL = ""; // main root url
-    public Graph<WebPage, Link> graph;
-    private int countHttpsLinks;
-    private int countPageNotFound;
-    public WebPage rootWebPage;
-    private StopCriteria stopCriteriaChoosed;
+    public WebPage rootWebPage; // main root WebPage
+    private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, ITERATIVE.
     private List<WebPage> pagesList = new ArrayList<>();
+    
+    public Graph<WebPage, Link> graph;
+    
+    // Statistics
+    private int countHttpsLinks = 0;
+    private int countPageNotFound = 0;
     private int numPages = 0;
     public boolean isFinished = false;
 
-    public WebCrawler() {
-        this.countHttpsLinks = 0;
-        this.countPageNotFound = 0;
-        this.graph = new MyDigraph<>();
+    
+    // 2 Constructors
+    public WebCrawler(WebCrawler webCrawler){
+        this.graph = webCrawler.getGraph();
     }
-
-    public enum StopCriteria {
-        PAGES, DEPTH, ITERATIVE;
+    public WebCrawler() {
+        this(new MyDigraph<>());
     }
     
     // Getters 
@@ -87,6 +91,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     public String getStartURL() {
         return startURL;
     }
+    
+    public Graph<WebPage, Link> getGraph(){
+        return this.graph;
+    }
 
     // Setters
     public void setNumPages(int numPages) {
@@ -113,12 +121,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         this.startURL = startURL;
     }
     
-    public void setSearchType(IBreakCriteria criteria) {
+    public void setSearchType(ISearchCriteria criteria) {
         this.searchCriteria = criteria;
         this.start();
     }
 
     // Methods with WebPage's
+    
     public WebPage createWebPage() throws IOException {
         return new WebPage(startURL);
     }
@@ -132,7 +141,34 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         notifyObservers();
     }
 
-
+    public void buildWebCrawler(String criteria, int numPages){
+        // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de código:
+            case "BFS":
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.setNumPages(numPages);
+                model.setSearchType(new SearchPages(model));
+                if(model.getNumPages() > 0)
+                    view.setColorRootPage(model.getRootWebPage());
+                view.updateGraph();
+                break;
+            case "DFS":
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.setNumPages(numPages);
+                model.setSearchType(new SearchDepth(model));
+                //view.setColorRootPage(model.getRootWebPage());
+                break;
+            default:
+                model.setStartURL(view.getInputURL());
+                model.setRootWebPage(model.createWebPage());
+                model.iterative(model.getRootWebPage().element());
+                //view.setColorRootPage(model.getRootWebPage());
+                caretaker.requestSave();
+                break;
+        }
+    }
+    
     /**
      * This method start the crow of a website
      *
@@ -141,7 +177,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
 
         Iterable<WebPage> it;
 
-        it = searchCriteria.serchPages(rootWebPage);
+        it = searchCriteria.searchPages(rootWebPage);
         setChanged();
         notifyObservers();
 
@@ -152,7 +188,21 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
 
     }
+    
+    // Build iterative WebCrawler 
+    public Iterable<WebPage> iterative(WebPage rootWebPage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    // Iterative method's
+    public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot){
+        // Começar a inserir uma nova sub-árvore apartir deste vértice
+        
+        
+    }
 
+    
+    // Necessario este print??????? TODO
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
@@ -203,18 +253,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         }
         return false;
     }
-
-    public Iterable<WebPage> itertive(WebPage rootWebPage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     /**
      * Counter of links
      *
      * @return Number of links (Edges)
      */
     public int countLinks() {
-
         return graph.numEdges();
     }
 
@@ -247,6 +292,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     public void restore(IMemento savedState) {
 
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
+        
+        // Use all the state inside the argument savedState
         this.graph = save.graphMemento;
         this.isFinished = true; // Just for testing, TODO
 

@@ -62,6 +62,11 @@ import javafx.scene.paint.Paint;
  * @author BRKsCosta
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
+    
+    // Enum for searchCriteria
+    public enum StopCriteria {
+        PAGES, DEPTH, ITERATIVE;
+    }
 
     LoggerWriter logW = LoggerWriter.getInstance();
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
@@ -120,7 +125,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.initializeComponents();
 
         update(model, null);
-
     }
 
     private void initializeComponents() {
@@ -269,18 +273,20 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void update(Observable o, Object o1) {
-        WebCrawler obsModel = (WebCrawler) o;
+        
+        // TODO . Talvez introduzir um try catch para que o programa nao rebente ao fazer casting??
+        WebCrawler obsModel = (WebCrawler) o; // Model
+        
         if (o instanceof WebCrawler) {
-            
             if (obsModel.countWebPages() > 0) {
                 graphView.update();
             }
            
+            // TESTING IF THE GRAPH WAS UPDATE BEFORE THE VIEW UPDATED. TODOOOOO 
             if(obsModel.isFinished == true)
                 graphView.update();
                 obsModel.isFinished = false;
         }
-
     }
 
     @Override

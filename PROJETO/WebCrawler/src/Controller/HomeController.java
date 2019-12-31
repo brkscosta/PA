@@ -53,6 +53,7 @@ public class HomeController {
                     view.updateGraph();
                 }
                 break;
+
             case "DFS":
                 model.setStartURL(view.getInputURL());
                 model.setRootWebPage(model.createWebPage());
@@ -78,16 +79,17 @@ public class HomeController {
         return model.getRootWebPage();
     }
 
-    public void importFiles() {
-        this.view.importFile();
-    }
-
     public void clearErrors() {
         this.view.clearError();
     }
 
-    public void exportFiles() {
-        this.view.exportFile();
+    public void importFiles() {
+        this.view.importFile();
+    }
+
+    public void exportFile(String fileType) {
+        System.out.println("Controller get all links: " + model.getAllLinks());
+        System.out.println("Controller file type: " + fileType);
     }
 
     public void undoAction() {

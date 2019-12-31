@@ -1,5 +1,6 @@
 package Model;
 
+import static Patterns.FactoryMVC.FactoryMVC.view;
 import Patterns.Singleton.LoggerWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -34,22 +35,24 @@ public class WebPage {
      * Build a new object of this type
      *
      * @param url Base URL to search
-     * @throws java.io.IOException
      */
-    public WebPage(String url) throws IOException {
+    public WebPage(String url) {
         this.listIncidentsWebPages = new LinkedList<>();
         // Instantiate the personalUrl
         this.personalURL = url;
+        try {
+            // Create a connection to the url
+            Connection connection = Jsoup.connect(this.personalURL).
+                    userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21").
+                    timeout(10000);
+            // Get the status code
+            this.statusCode = this.getStatusCode();
 
-        // Create a connection to the url
-        Connection connection = Jsoup.connect(this.personalURL).
-                userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21").
-                timeout(10000);
-
-        // Get the status code
-        this.statusCode = this.getStatusCode();
-
-        insertStatusCodeTitle(connection);
+            insertStatusCodeTitle(connection);
+        } catch (IllegalArgumentException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
+        }
 
     }
 
@@ -108,16 +111,20 @@ public class WebPage {
      * Get status code from WebPage
      *
      * @return Return the status code in a integer
-     * @throws MalformedURLException
-     * @throws IOException
      */
-    public final int getStatusCode() throws MalformedURLException, IOException {
-        URL url = new URL(this.personalURL);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
+    public final int getStatusCode() {
+        try {
+            URL url = new URL(this.personalURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
-        return connection.getResponseCode();
+            return connection.getResponseCode();
+        } catch (IOException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
+        }
+        return 0;
     }
 
     /**
@@ -191,7 +198,7 @@ public class WebPage {
             }
             return link;
         } catch (MalformedURLException ex) {
-             LoggerWriter.getInstance().writeToLog(ex.getMessage());
+            LoggerWriter.getInstance().writeToLog(ex.getMessage());
             return null;
         }
     }

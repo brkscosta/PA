@@ -13,6 +13,7 @@ import Patterns.Singleton.LoggerWriter;
 import Patterns.Stategy.IBreakCriteria;
 import java.util.Date;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,20 +39,15 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     private List<WebPage> pagesList = new ArrayList<>();
     private int numPages = 0;
     public boolean isFinished = false;
-
+            
     public WebCrawler() {
         this.countHttpsLinks = 0;
         this.countPageNotFound = 0;
         this.graph = new MyDigraph<>();
     }
 
-    public void clearGraph() {
-        this.graph = null;
-        this.graph = new MyDigraph<>();
-        this.isFinished = true;
-
-        setChanged();
-        notifyObservers(this.graph);
+    public List<WebPage> getPagesList() {
+        return pagesList;
     }
 
     public LoggerWriter getLogger() {
@@ -60,6 +56,14 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
     public int getNumPages() {
         return numPages;
+    }
+    
+    public Collection<Edge<Link, WebPage>> getAllLinks(){
+        return graph.edges();
+    }
+    
+    public void setPagesList(List<WebPage> pagesList) {
+        this.pagesList = pagesList;
     }
 
     public void setNumPages(int numPages) {
@@ -105,6 +109,14 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
     public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
         this.stopCriteriaChoosed = stopCriteriaChoosed;
+    }
+
+    public void clearGraph() {
+        this.graph = new MyDigraph<>();
+        this.isFinished = true;
+
+        setChanged();
+        notifyObservers(this.graph);
     }
 
     public void removePage(Vertex<WebPage> underlyingVertex) {

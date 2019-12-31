@@ -15,7 +15,7 @@ public interface IHomeOperations extends Observer {
     
     String getInputURL();
     void importFile();
-    void exportFile();
+    void exportFile(HomeController controller);
     void exitApp();
     void clearError();
     void showError(String errorMsg);

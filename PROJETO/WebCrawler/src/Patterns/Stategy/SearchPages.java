@@ -34,14 +34,13 @@ public class SearchPages implements IBreakCriteria {
             throws WebCrawlerException {
 
         try {
-            List<WebPage> pagesList = new ArrayList<>();
             // Contar numero de WebPages contadas
             int countMaxVisitedPage = 0;
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
             if (model.getNumPages() == 0) {
-                return pagesList;
+                return model.getPagesList();
             }
             
             if (model.checkIfHasWebPage(webPage) == false) {
@@ -50,7 +49,7 @@ public class SearchPages implements IBreakCriteria {
             }
             
             webPagesToVisit.add(webPage);
-            pagesList.add(webPage);
+            model.getPagesList().add(webPage);
             
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;
@@ -67,7 +66,7 @@ public class SearchPages implements IBreakCriteria {
                 for (Link link : allIncidentWebLinks) {
                     
                     if (countMaxVisitedPage == model.getNumPages()) {
-                        return pagesList;
+                        return model.getPagesList();
                     }
                     
                     countHttpsLinks += model.countHttpsProtocols(link.getLinkName());
@@ -78,7 +77,7 @@ public class SearchPages implements IBreakCriteria {
                     
                     countPageNotFound += model.getPagesNotFound(webPageInserting);
                     
-                    pagesList.add(webPageInserting);
+                    model.getPagesList().add(webPageInserting);
                     webPagesToVisit.add(webPageInserting);
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
@@ -91,7 +90,7 @@ public class SearchPages implements IBreakCriteria {
                 System.out.println("]\n");
             }
 
-            return pagesList;
+            return model.getPagesList();
         } catch (IOException ex) {
             model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
         }

@@ -20,8 +20,8 @@ public class Main {
         Book b3 = new Book("12349", "CBD for dummies", "José Manuel", 2019);
         
        
-        //BookDAO dao = new BookDAOSerialization();
-        BookDAO dao = new BookDAOSerializationMultiple();
+        BookDAO dao = new BookDAOSerialization();
+        //BookDAO dao = new BookDAOSerializationMultiple();
         
         dao.save(b1);
         dao.save(b2);

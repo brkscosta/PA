@@ -52,6 +52,10 @@ import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.StageStyle;
@@ -63,10 +67,9 @@ import javafx.stage.StageStyle;
 public class Home extends VBox implements IHomeOperations {
 
     LoggerWriter logW = LoggerWriter.getInstance();
-    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-    SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
+    // SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     public SmartGraphPanel<WebPage, Link> graphView;
-    //public SmartGraphPanel<String, String> graphView;
     private WebCrawler model;
 
     //Menu  
@@ -101,7 +104,7 @@ public class Home extends VBox implements IHomeOperations {
 
     //Labels
     private Label lblStatistics;
-    private Label labelErros;
+    private Label lblInfo;
     private Label lblCriteria;
     private Label lblAnotherThing;
     private Label lblWebCrawler;
@@ -112,7 +115,6 @@ public class Home extends VBox implements IHomeOperations {
 
     public Home(WebCrawler model) {
         this.model = model;
-        this.strategy = new SmartCircularSortedPlacementStrategy();
         //this.graphView = new SmartGraphPanel(g, strategy);
         this.graphView = new SmartGraphPanel<>(model.graph, strategy);
         BorderPane window = new BorderPane(Home.this);
@@ -217,7 +219,8 @@ public class Home extends VBox implements IHomeOperations {
 
         //Graph interface
         SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
-        graphView.setAutomaticLayout(true);
+        this.lblWebCrawler = new Label("WebCrawler");
+        this.graphView.setAutomaticLayout(true);
         this.splitPane = new SplitPane();
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
@@ -225,11 +228,11 @@ public class Home extends VBox implements IHomeOperations {
         //Config HBox Bootom
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
-        this.labelErros = new Label("Erros Aqui");
-        this.lblAnotherThing = new Label("Outra Coisa");
+        this.lblInfo = new Label("Bem Vindo!");
+        this.lblAnotherThing = new Label("");
         this.bottomHBox = new HBox();
         HBox.setHgrow(panelBottom, Priority.ALWAYS);
-        this.bottomHBox.getChildren().addAll(labelErros, panelBottom, lblAnotherThing);
+        this.bottomHBox.getChildren().addAll(lblInfo, panelBottom /*, lblAnotherThing*/);
         bottomHBox.setStyle("-fx-background-color: #867B71;");
 
         /*Creates layout*/
@@ -264,7 +267,7 @@ public class Home extends VBox implements IHomeOperations {
     public void update(Observable o, Object o1) {
         WebCrawler obsModel = (WebCrawler) o;
         this.model = obsModel;
-        
+
         if (obsModel.countWebPages() > 0) {
             graphView.update();
         }
@@ -292,8 +295,8 @@ public class Home extends VBox implements IHomeOperations {
     }
 
     @Override
-    public void exportFile() {
-        System.out.println("Views.Home.exportFile()");
+    public void exportFile(HomeController controller) {
+        chooseFileType(controller);
     }
 
     @Override
@@ -305,7 +308,7 @@ public class Home extends VBox implements IHomeOperations {
 
     @Override
     public void clearError() {
-        this.labelErros.setText("");
+        this.lblInfo.setText("");
     }
 
     @Override
@@ -316,6 +319,7 @@ public class Home extends VBox implements IHomeOperations {
         alert.setContentText(errorMsg);
         alert.initStyle(StageStyle.TRANSPARENT);
         alert.showAndWait();
+        exitApp();
     }
 
     @Override
@@ -326,7 +330,7 @@ public class Home extends VBox implements IHomeOperations {
         });
 
         this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
-            System.out.println("Export file");
+            exportFile(controller);
         });
 
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
@@ -356,8 +360,6 @@ public class Home extends VBox implements IHomeOperations {
 
             controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
-
-            graphView.setAutomaticLayout(true);
             graphView.update();
         });
 
@@ -399,15 +401,15 @@ public class Home extends VBox implements IHomeOperations {
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
             if (rdBtnBreadthFirst.isSelected()) {
 
-                lblAnotherThing.setText("Selecionou BFS");
+                lblInfo.setText("Selecionou BFS");
                 controller.startSearch("BFS", parseInt);
 
             } else if (rdBtnDepth.isSelected()) {
-                lblAnotherThing.setText("Selecionou DFS");
+                lblInfo.setText("Selecionou DFS");
                 controller.startSearch("DFS", parseInt);
 
             } else {
-                lblAnotherThing.setText("Selecionou Iterativo");
+                lblInfo.setText("Selecionou Iterativo");
                 controller.startSearch("Iterative", parseInt);
 
             }
@@ -459,6 +461,25 @@ public class Home extends VBox implements IHomeOperations {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
+        exitApp();
+    }
+
+    private void chooseFileType(HomeController controller) {
+        List<String> choices = new ArrayList<>();
+        choices.add("Text");
+        choices.add("JSON");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Text", choices);
+        dialog.initStyle(StageStyle.UTILITY);
+        dialog.setTitle("Exportar");
+        dialog.setHeaderText("Por favor, selecione um formato.");
+        dialog.setContentText("Formato:");
+
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            controller.exportFile(result.get());
+        }
     }
 
     @Override

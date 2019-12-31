@@ -13,8 +13,11 @@ import Patterns.Stategy.SearchDepth;
 import Patterns.Stategy.SearchPages;
 import Views.*;
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  *
@@ -29,6 +32,7 @@ public class HomeController {
     public HomeController(WebCrawler model, Home view, CareTaker caretaker) throws IOException {
         this.view = view;
         this.model = model;
+
         //Create new state of model
         this.caretaker = caretaker;
 
@@ -44,9 +48,10 @@ public class HomeController {
                 model.setRootWebPage(model.createWebPage());
                 model.setNumPages(numPages);
                 model.chosseSearchType(new SearchPages(model));
-                if(model.getNumPages() > 0)
-                    view.setColorRootPage(model.getRootWebPage());
-                view.updateGraph();
+                if (model.getNumPages() > 0) {
+                    //view.setColorRootPage(model.getRootWebPage());
+                    view.updateGraph();
+                }
                 break;
             case "DFS":
                 model.setStartURL(view.getInputURL());
@@ -74,7 +79,7 @@ public class HomeController {
     }
 
     public void importFiles() {
-        //TODO
+        this.view.importFile();
     }
 
     public void clearErrors() {
@@ -82,22 +87,33 @@ public class HomeController {
     }
 
     public void exportFiles() {
-        //TODO
         this.view.exportFile();
     }
 
     public void undoAction() {
         if (!caretaker.canUndo()) {
-            view.showError("No more undos are available.");
+            view.showError("Sem undos disponíveis.");
         }
         caretaker.requestRestore();
         view.updateGraph();
     }
 
-    public void removePage(SmartGraphVertex<WebPage> graphVertex) {
-        this.model.removePage(graphVertex.getUnderlyingVertex());
-        caretaker.requestSave();
-        view.updateGraph();
+    public void openWebPage(String url) {
+
+        try {
+            Desktop.getDesktop().browse(new URL(url).toURI());
+        } catch (MalformedURLException ex) {
+            model.getLogger().writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
+        } catch (URISyntaxException | IOException ex) {
+            model.getLogger().writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
+        }
+
+    }
+
+    public void clearGraph() {
+        model.clearGraph();
     }
 
     @Override

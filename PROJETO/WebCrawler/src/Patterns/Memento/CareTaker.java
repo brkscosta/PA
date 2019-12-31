@@ -28,7 +28,6 @@ public class CareTaker {
     
     /**
      * Requests the originator memento state and stores it.
-     * @param urlInput
      */
     public void requestSave() {
         //memento = originator.save();

@@ -6,12 +6,12 @@
 package Views;
 
 import Controller.HomeController;
-
+import java.util.Observer;
 /**
  *
  * @author BRKsCosta
  */
-public interface IHomeOperations {
+public interface IHomeOperations extends Observer {
     
     String getInputURL();
     void importFile();

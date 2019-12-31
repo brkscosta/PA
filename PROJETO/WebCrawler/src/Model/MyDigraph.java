@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Model;
 
 import com.brunomnsilva.smartgraph.graph.Digraph;
@@ -17,28 +12,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of a digraph that adheres to the {@link Digraph} interface.
+ * Implementation of a Digraph that adheres to the {@link Digraph} interface.
  * <br>
  * Does not allow duplicates of stored elements through <b>equals</b> criteria.
  * <br>
  * @param <V> Type of element stored at a vertex
  * @param <E> Type of element stored at an edge
  * 
- * @author brunomnsilva
+ * @author BRKsCosta
  */
 public class MyDigraph<V, E> implements Digraph<V, E> {
 
-     /* inner classes are defined at the end of the class, so are the auxiliary methods 
-     */
-    private final Map<V, Vertex<V>> vertices;
-    private final Map<E, Edge<E, V>> edges;
+    private Map<V, Vertex<V>> vertices;
+    private Map<E, Edge<E, V>> edges;
 
     public MyDigraph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
     }
-    
-    
+
+    /**
+     * Return all edges stored in a {@param inbound} vertex.
+     * @param inbound The inbound vertex
+     * @return A collection of incident edges of this vertex
+     * @throws InvalidVertexException 
+     */
     @Override
     public synchronized Collection<Edge<E, V>> incidentEdges(Vertex<V> inbound) throws InvalidVertexException {
         checkVertex(inbound);
@@ -53,6 +51,12 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         return incidentEdges;
     }
     
+    /**
+     * Return all outbound edges stored on vertex
+     * @param outbound The outbound edge
+     * @return A collection of edges
+     * @throws InvalidVertexException 
+     */
     @Override
     public synchronized Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
         checkVertex(outbound);
@@ -66,7 +70,14 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         }
         return outboundEdges;
     }
-
+    
+    /**
+     * Given tow vertex this method return if are adjacent. If it share the same edge
+     * @param outbound The outbound vertex
+     * @param inbound The inbound vertex
+     * @return True or false
+     * @throws InvalidVertexException 
+     */
     @Override
     public boolean areAdjacent(Vertex<V> outbound, Vertex<V> inbound) throws InvalidVertexException {
         //we allow loops, so we do not check if outbound == inbound
@@ -81,7 +92,16 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         }
         return false;
     }
-
+    
+    /**
+     * 
+     * @param outbound The outbound vertex
+     * @param inbound The inbound vertex
+     * @param edgeElement The edge to insert
+     * @return The new edge
+     * @throws InvalidVertexException
+     * @throws InvalidEdgeException 
+     */
     @Override
     public synchronized Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
         if (existsEdgeWith(edgeElement)) {
@@ -97,7 +117,16 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return newEdge;
     }
-
+    
+    /**
+     * Insert a new edge on graph
+     * @param outboundElement The outbound vertex
+     * @param inboundElement The inbound vertex
+     * @param edgeElement The edge
+     * @return Return the new edge inserted
+     * @throws InvalidVertexException
+     * @throws InvalidEdgeException 
+     */
     @Override
     public synchronized Edge<E, V> insertEdge(V outboundElement, V inboundElement, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
         if (existsEdgeWith(edgeElement)) {
@@ -120,17 +149,29 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return newEdge;
     }
-
+    
+    /**
+     * Count all vertex stored on graph
+     * @return A integer number
+     */
     @Override
     public int numVertices() {
         return vertices.size();
     }
-
+    
+    /**
+     * Count all edges stored on graph
+     * @return A integer number
+     */
     @Override
     public int numEdges() {
         return edges.size();
     }
-
+    
+    /**
+     * Return all vertex
+     * @return A collection of vertex
+     */
     @Override
     public synchronized Collection<Vertex<V>> vertices() {
         List<Vertex<V>> list = new ArrayList<>();
@@ -139,7 +180,11 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         });
         return list;
     }
-
+    
+    /**
+     * Return all edges
+     * @return A collection of edges
+     */
     @Override
     public synchronized Collection<Edge<E, V>> edges() {
         List<Edge<E, V>> list = new ArrayList<>();
@@ -148,7 +193,14 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         });
         return list;
     }
-
+    /**
+     * Return the opposite vertex
+     * @param v The actual vertex
+     * @param e The edge stored on a vertex
+     * @return Return the opposite vertex
+     * @throws InvalidVertexException
+     * @throws InvalidEdgeException 
+     */
     @Override
     public synchronized Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         checkVertex(v);
@@ -165,7 +217,12 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         }
 
     }
-
+    /**
+     * Inserts a new vertex on graph
+     * @param vElement The element to insert
+     * @return Return the new vertex to be removed
+     * @throws InvalidVertexException 
+     */
     @Override
     public synchronized Vertex<V> insertVertex(V vElement) throws InvalidVertexException {
         if (existsVertexWith(vElement)) {
@@ -178,7 +235,13 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return newVertex;
     }
-
+    
+    /**
+     * Return an vertex
+     * @param v The vertex to be removed
+     * @return Return the vertex to be removed
+     * @throws InvalidVertexException 
+     */
     @Override
     public synchronized V removeVertex(Vertex<V> v) throws InvalidVertexException {
         checkVertex(v);
@@ -197,7 +260,13 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return element;
     }
-
+    
+    /**
+     * Remove an edge
+     * @param e The edge to be removed
+     * @return Return the element removed
+     * @throws InvalidEdgeException 
+     */
     @Override
     public synchronized E removeEdge(Edge<E, V> e) throws InvalidEdgeException {
         checkEdge(e);
@@ -207,7 +276,14 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return element;
     }
-
+    
+     /**
+     * Replace the vertex for another
+     * @param v The current vertex to be replaced
+     * @param newElement The new vertex
+     * @return Return the old vertex
+     * @throws InvalidEdgeException 
+     */
     @Override
     public V replace(Vertex<V> v, V newElement) throws InvalidVertexException {
         if (existsVertexWith(newElement)) {
@@ -221,7 +297,14 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return oldElement;
     }
-
+    
+    /**
+     * 
+     * @param e The current edge
+     * @param newElement The new edge
+     * @return Return the old edge
+     * @throws InvalidEdgeException 
+     */
     @Override
     public E replace(Edge<E, V> e, E newElement) throws InvalidEdgeException {
         if (existsEdgeWith(newElement)) {
@@ -235,7 +318,12 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return oldElement;
     }
-
+    
+    /**
+     * Get the value stored on vertex
+     * @param vElement The element to be checked
+     * @return Value stored on element
+     */
     private MyVertex vertexOf(V vElement) {
         for (Vertex<V> v : vertices.values()) {
             if (v.element().equals(vElement)) {
@@ -244,15 +332,29 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         }
         return null;
     }
-
+    
+    /**
+     * Check is exist the vertex on graph
+     * @param vElement The vertex to be checked
+     * @return True or false
+     */
     private boolean existsVertexWith(V vElement) {
         return vertices.containsKey(vElement);
     }
-
+    
+    /**
+     * Check is exist the edge on graph
+     * @param edgeElement The edge to be checked
+     * @return True or false
+     */
     private boolean existsEdgeWith(E edgeElement) {
         return edges.containsKey(edgeElement);
     }
     
+    /**
+     * Show all vertices and edges elements
+     * @return Vertex and edges
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(
@@ -270,25 +372,40 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
         return sb.toString();
     }
     
+    /**
+     * This is a inner class that represents the vertex. It depends of a generic data
+     * type V.
+     */
     private class MyVertex implements Vertex<V> {
-
+        
         V element;
-
+        
         public MyVertex(V element) {
             this.element = element;
         }
-
+        /**
+         * Return the concrete element object
+         * @return Return the real representation of the type.
+         */
         @Override
         public V element() {
             return this.element;
         }
-
+        
+        /**
+         * Print the vertex.
+         * @return Printed vertex
+         */
         @Override
         public String toString() {
             return "Vertex{" + element + '}';
         }
     }
-
+    
+    /**
+     * This is a inner class that defines the Edge it depends of two generic 
+     * data type E represent the edge and V represent the concrete vertex.
+     */
     private class MyEdge implements Edge<E, V> {
 
         E element;
@@ -300,16 +417,30 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
             this.vertexOutbound = vertexOutbound;
             this.vertexInbound = vertexInbound;
         }
-
+        
+        /**
+         * Return the concrete element independent of the type.
+         * @return Return the concrete element.
+         */
         @Override
         public E element() {
             return this.element;
         }
-
+        
+        /**
+         * Check if already contains the same object on inbound or outbound vertex
+         * @param v The vertex in concrete
+         * @return True or false
+         */
         public boolean contains(Vertex<V> v) {
             return (vertexOutbound == v || vertexInbound == v);
         }
-
+        
+        /**
+         * Return an array of vertex stored in the edge
+         * @return a Array with two positions <code>[0] Inbound vertex</code>
+         * <code>[1] Outbound vertex</code>.
+         */
         @Override
         public Vertex<V>[] vertices() {
             Vertex[] vertices = new Vertex[2];
@@ -318,17 +449,29 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
             return vertices;
         }
-
+        
+        /**
+         * Print the edge
+         * @return A formatted string
+         */
         @Override
         public String toString() {
             return "Edge{{" + element + "}, vertexOutbound=" + vertexOutbound.toString()
                     + ", vertexInbound=" + vertexInbound.toString() + '}';
         }
         
+        /**
+         * Get the outbound vertex
+         * @return Return the outbound vertex
+         */
         public Vertex<V> getOutbound() {
             return vertexOutbound;
         }
         
+        /**
+         * Get the inbound vertex
+         * @return Return the inbound vertex
+         */
         public Vertex<V> getInbound() {
             return vertexInbound;
         }
@@ -337,8 +480,8 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
     /**
      * Checks whether a given vertex is valid and belongs to this graph
      *
-     * @param v
-     * @return
+     * @param v The vertex to be checked
+     * @return The vertex passed by parameter
      * @throws InvalidVertexException
      */
     private MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
@@ -357,7 +500,13 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
 
         return vertex;
     }
-
+    
+    /**
+     * Checks whether a given edge is valid and belongs to this graph
+     * @param e The edge to be checked
+     * @return The edge passed by parameter
+     * @throws InvalidEdgeException 
+     */
     private MyEdge checkEdge(Edge<E, V> e) throws InvalidEdgeException {
         if(e == null) throw new InvalidEdgeException("Null edge.");
         

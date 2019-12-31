@@ -5,8 +5,6 @@ import Patterns.Memento.Memento;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedList;
-import java.util.Queue;
 import com.brunomnsilva.smartgraph.graph.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,15 +18,12 @@ import java.util.logging.Logger;
 
 @SuppressWarnings("null")
 /**
- * Model to be created to build de graph <code>Vertex</code>
- * {@link Graph.Vertex} is the type WebPage and <code>Edge</code>
- * {@link Graph.Edge} is the type of Link
- *
- * Use the methods setChanged() and notifyObservers()
+ * Model to be created to build de graph Link <code>Vertex</code> WebPage and
+ * <code>Edge</code> Use the methods setChanged() and notifyObservers()
  *
  * @author BRKsCosta and Daniel Cordeiro
  */
-public class WebCrawler extends Observable implements Originator, Serializable, Cloneable {
+public class WebCrawler extends Observable implements Originator, Serializable {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
@@ -48,13 +43,21 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
         this.countHttpsLinks = 0;
         this.countPageNotFound = 0;
         this.graph = new MyDigraph<>();
+    }
 
+    public void clearGraph() {
+        this.graph = null;
+        this.graph = new MyDigraph<>();
+        this.isFinished = true;
+
+        setChanged();
+        notifyObservers(this.graph);
     }
 
     public LoggerWriter getLogger() {
         return logger;
     }
-    
+
     public int getNumPages() {
         return numPages;
     }
@@ -137,16 +140,16 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
     public void start() {
 
         Iterable<WebPage> it;
-
         it = searchCriteria.serchPages(rootWebPage);
-        setChanged();
-        notifyObservers();
 
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.countPageNotFound);
         print(" »»»»» Ligações HTTPS (%d) «««««", this.countHttpsLinks);
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
+
+        setChanged();
+        notifyObservers();
 
     }
 
@@ -189,7 +192,6 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
      * Checks if exists already a webPage like the param inside the webPage
      *
      * @param webPage we want to check
-     * @param graph
      * @return if exists the webPage
      */
     public boolean checkIfHasWebPage(WebPage webPage) {
@@ -230,7 +232,7 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
         try {
             return new WebCrawlerMemento(graph, countHttpsLinks, countPageNotFound,
                     stopCriteriaChoosed, pagesList);
-        } catch (IOException | CloneNotSupportedException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -259,7 +261,7 @@ public class WebCrawler extends Observable implements Originator, Serializable, 
 
         public WebCrawlerMemento(Graph<WebPage, Link> graphMemento,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
-                StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException, CloneNotSupportedException {
+                StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException {
             this.graphMemento = graphMemento;
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;

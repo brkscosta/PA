@@ -31,7 +31,8 @@ public class Main extends Application {
         stage.sizeToScene();
         stage.setTitle("Web Crawler");
         stage.setResizable(false);
-        stage.getIcons().add(new Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
+        stage.getIcons().add(new 
+        Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         stage.setScene(FactoryMVC.createMVCApp());
         stage.show();
         FactoryMVC.view.graphView.init();

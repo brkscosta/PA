@@ -15,7 +15,6 @@ import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
 import java.util.Observable;
-import java.util.Observer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,22 +49,25 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
 import Patterns.Singleton.LoggerWriter;
-import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author BRKsCosta
  */
-public class Home extends VBox implements Observer, IHomeOperations {
+public class Home extends VBox implements IHomeOperations {
 
     LoggerWriter logW = LoggerWriter.getInstance();
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     public SmartGraphPanel<WebPage, Link> graphView;
     //public SmartGraphPanel<String, String> graphView;
+    private WebCrawler model;
 
     //Menu  
     private MenuBar menuBar;
@@ -109,16 +111,17 @@ public class Home extends VBox implements Observer, IHomeOperations {
     private Scene scene;
 
     public Home(WebCrawler model) {
-
+        this.model = model;
         this.strategy = new SmartCircularSortedPlacementStrategy();
         //this.graphView = new SmartGraphPanel(g, strategy);
-        this.graphView = new SmartGraphPanel(model.graph, strategy);
+        this.graphView = new SmartGraphPanel<>(model.graph, strategy);
         BorderPane window = new BorderPane(Home.this);
         window.setCenter(Home.this);
         this.scene = new Scene(window, 1500, 700);
+
         this.initializeComponents();
 
-        update(model, null);
+        update(this.model, null);
 
     }
 
@@ -260,16 +263,17 @@ public class Home extends VBox implements Observer, IHomeOperations {
     @Override
     public void update(Observable o, Object o1) {
         WebCrawler obsModel = (WebCrawler) o;
-        if (o instanceof WebCrawler) {
-            
-            if (obsModel.countWebPages() > 0) {
-                graphView.update();
-            }
-           
-            if(obsModel.isFinished == true)
-                graphView.update();
-                obsModel.isFinished = false;
+        this.model = obsModel;
+        
+        if (obsModel.countWebPages() > 0) {
+            graphView.update();
         }
+
+        if (obsModel.isFinished == true) {
+            graphView.update();
+        }
+
+        obsModel.isFinished = false;
 
     }
 
@@ -306,10 +310,11 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void showError(String errorMsg) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Alguma coisa não está certa...");
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Alerta");
+        alert.setHeaderText("Oooops, vamos com calma..");
         alert.setContentText(errorMsg);
+        alert.initStyle(StageStyle.TRANSPARENT);
         alert.showAndWait();
     }
 
@@ -337,6 +342,7 @@ public class Home extends VBox implements Observer, IHomeOperations {
         });
 
         this.mEditClearGraph.setOnAction(((event) -> {
+            controller.clearGraph();
             System.out.println("Clear graph");
         }));
 
@@ -347,17 +353,19 @@ public class Home extends VBox implements Observer, IHomeOperations {
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-            //want fun? uncomment below with automatic layout
-            controller.removePage(graphVertex);
-            //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
+
+            controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
+            graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
+
             graphView.setAutomaticLayout(true);
             graphView.update();
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
+
             //dynamically change the style when clicked
-            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+            graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 4;");
             graphView.update();
         });
 
@@ -414,12 +422,47 @@ public class Home extends VBox implements Observer, IHomeOperations {
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
 
+    public void updateGraph() {
+        graphView.update();
+    }
+
+    public void showErrorStackTraceException(String msg) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Exception");
+        alert.setHeaderText("Hmmm, algo não está bom");
+        alert.initStyle(StageStyle.UTILITY);
+        Exception ex = new WebCrawlerException(msg);
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
+    }
+
     @Override
     public String toString() {
         return "View: " + Home.class;
-    }
-
-    public void updateGraph() {
-        graphView.update();
     }
 }

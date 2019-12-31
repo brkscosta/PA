@@ -9,7 +9,6 @@ import Controller.HomeController;
 import Model.WebCrawler;
 import Patterns.Memento.CareTaker;
 import Views.Home;
-import com.brunomnsilva.smartgraph.graphview.SmartStylableNode;
 import java.io.IOException;
 import javafx.scene.Scene;
 

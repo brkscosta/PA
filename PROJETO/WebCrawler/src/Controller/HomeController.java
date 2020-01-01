@@ -36,48 +36,25 @@ public class HomeController {
         model.addObserver(view); // Subscribe the model
     }
 
-    public void startSearch(String criteria, int numPages)
+    public void startSearch(HomeView.StopCriteria criteria, int numPages)
             throws WebCrawlerException, IOException {
         
-        model.buildWebCrawler(criteria, numPages);
-        view.updateGraph();
-        caretaker.requestSave();
+        // Init the WebCrawler
+        model.buildWebCrawler(criteria, numPages, view.getInputURL());
         
-        switch (criteria) {
-            
-            // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de código:
-            case "BFS":
-                model.setStartURL(view.getInputURL());
-                model.setRootWebPage(model.createWebPage());
-                model.setNumPages(numPages);
-                model.setSearchType(new SearchPages(model));
-                if(model.getNumPages() > 0)
+        // Update the view
+        //view.updateGraph(); // Why update here? If when model WebCrawler is updated it send a message to the Observer HomeView
+        
+        // Set color to the root
+        if(model.getNumPages() > 0)
                     view.setColorRootPage(model.getRootWebPage());
-                view.updateGraph();
-                break;
-            case "DFS":
-                model.setStartURL(view.getInputURL());
-                model.setRootWebPage(model.createWebPage());
-                model.setNumPages(numPages);
-                model.setSearchType(new SearchDepth(model));
-                //view.setColorRootPage(model.getRootWebPage());
-                break;
-            default:
-                model.setStartURL(view.getInputURL());
-                model.setRootWebPage(model.createWebPage());
-                model.iterative(model.getRootWebPage().element());
-                //view.setColorRootPage(model.getRootWebPage());
-                caretaker.requestSave();
-                break;
-        }
+        
+        // Save a new Memento
+        caretaker.requestSave();
     }
 
     public void exitApp() {
         this.view.exitApp();
-    }
-
-    public Vertex<WebPage> getRootPage() {
-        return model.getRootWebPage();
     }
 
     public void importFiles() {
@@ -99,13 +76,17 @@ public class HomeController {
             view.showError("No more undos are available.");
         }
         caretaker.requestRestore();
-        view.updateGraph();
     }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         this.model.removePage(graphVertex.getUnderlyingVertex());
         caretaker.requestSave();
         view.updateGraph();
+    }
+    
+    // This method will 
+    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot){
+        model.insertNewSubWebPageCrawler(subRoot.getUnderlyingVertex());
     }
 
     @Override

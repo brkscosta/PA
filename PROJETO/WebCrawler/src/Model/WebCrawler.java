@@ -17,6 +17,10 @@ import java.util.logging.Logger;
 import Patterns.Memento.IOriginator;
 import Patterns.Memento.IMemento;
 import Patterns.Stategy.ISearchCriteria;
+import Patterns.Stategy.SearchDepth;
+import Patterns.Stategy.SearchIterative;
+import Patterns.Stategy.SearchPages;
+import Views.HomeView;
 import Views.HomeView.StopCriteria;
 
 @SuppressWarnings("null")
@@ -36,10 +40,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     private ISearchCriteria searchCriteria; // 
     
     // Pertinent variables to the DiGraph structure:
-    private String startURL = ""; // main root url
-    public WebPage rootWebPage; // main root WebPage
+    private WebPage rootWebPage;
+    private Vertex<WebPage> rootVertex; // This is the better way. Store the Vertex<WebPage> 
     private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, ITERATIVE.
-    private List<WebPage> pagesList = new ArrayList<>();
+    private List<WebPage> pagesList = new ArrayList<>(); // this is used for???? 
     
     public Graph<WebPage, Link> graph;
     
@@ -51,8 +55,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
 
     
     // 2 Constructors
-    public WebCrawler(WebCrawler webCrawler){
-        this.graph = webCrawler.getGraph();
+    public WebCrawler(Graph graph){
+        this.graph = graph;
     }
     public WebCrawler() {
         this(new MyDigraph<>());
@@ -121,6 +125,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         this.startURL = startURL;
     }
     
+    public void setRootVertex(Vertex<WebPage> rootVertex){
+        this.rootVertex = rootVertex;
+    }
+    
     public void setSearchType(ISearchCriteria criteria) {
         this.searchCriteria = criteria;
         this.start();
@@ -128,9 +136,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
 
     // Methods with WebPage's
     
-    public WebPage createWebPage() throws IOException {
+    // Why the method to simply create a new WebCrawler object?
+    /*public WebPage createWebPage() throws IOException {
         return new WebPage(startURL);
-    }
+    }*/
 
     public void removePage(Vertex<WebPage> underlyingVertex) {
         graph.removeVertex(underlyingVertex);
@@ -138,10 +147,32 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         isFinished = true;
 
         setChanged();
-        notifyObservers();
+        notifyObservers(this.graph);
     }
 
-    public void buildWebCrawler(String criteria, int numPages){
+    public void buildWebCrawler(HomeView.StopCriteria criteria, int numPages, String inputUrl) throws IOException{
+        
+        // Assign values 
+        
+        this.rootWebPage = new WebPage(inputUrl);
+        graph.insertVertex(this.rootWebPage);
+        
+        this.numPages = numPages;
+        
+        switch(criteria){
+            case PAGES:
+                this.searchCriteria = new SearchPages(this);
+                break;
+            case DEPTH:
+                this.searchCriteria = new SearchDepth(this);
+                break;
+            default: // Iterative
+                this.searchCriteria = new SearchIterative(this);
+                break;
+        }
+                
+        
+        /*
         // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de código:
             case "BFS":
                 model.setStartURL(view.getInputURL());
@@ -166,7 +197,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
                 //view.setColorRootPage(model.getRootWebPage());
                 caretaker.requestSave();
                 break;
-        }
+        */
     }
     
     /**
@@ -199,6 +230,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         // Começar a inserir uma nova sub-árvore apartir deste vértice
         
         
+        // TODO - notify observers
+        setChanged();
+        notifyObservers();
     }
 
     

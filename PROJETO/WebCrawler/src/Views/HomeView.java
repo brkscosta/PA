@@ -118,8 +118,9 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     
     // Graph interface
     private boolean hasClickedEdges = false; 
-    //private Edge<Link, WebPage> edgeClicked;
     SmartGraphEdge<Link, WebPage> edgeClicked;
+    SmartGraphVertex<WebPage> vertexClicked;
+    
 
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
@@ -356,7 +357,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
             System.out.println("Import File");
         });
-
         
         // Apply Memento - Undo
         this.mEditUndo.setOnAction((ActionEvent event) -> {
@@ -376,8 +376,14 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             selectSearchType(controller);
         });
 
+        this.graphView.setOnMouseClicked(graphVertex -> {
+            
+        });
+        
+        // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
+            graphVertex.
             //want fun? uncomment below with automatic layout
             controller.removePage(graphVertex);
             //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");
@@ -416,6 +422,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
             }
             
+            // Refresh color's
             this.graphView.update();
         });
 
@@ -448,20 +455,18 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {
+             // Get the numPages
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
+            
             if (rdBtnBreadthFirst.isSelected()) {
-
                 lblAnotherThing.setText("Selecionou BFS");
-                controller.startSearch("BFS", parseInt);
-
+                controller.startSearch(HomeView.StopCriteria.PAGES, parseInt);
             } else if (rdBtnDepth.isSelected()) {
                 lblAnotherThing.setText("Selecionou DFS");
-                controller.startSearch("DFS", parseInt);
-
+                controller.startSearch(HomeView.StopCriteria.DEPTH, parseInt);
             } else {
                 lblAnotherThing.setText("Selecionou Iterativo");
-                controller.startSearch("Iterative", parseInt);
-
+                controller.startSearch(HomeView.StopCriteria.ITERATIVE, parseInt);
             }
         } catch (IOException ex) {
             LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
@@ -479,7 +484,4 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         return "View: " + HomeView.class;
     }
 
-    public void updateGraph() {
-        graphView.update();
-    }
 }

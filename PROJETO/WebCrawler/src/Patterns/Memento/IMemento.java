@@ -3,17 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Patterns.Stategy;
-
-import Model.WebPage;
+package Patterns.Memento;
 
 /**
  *
  * @author BRKsCosta
  */
-public interface IBreakCriteria {
+public interface IMemento {
     
-    public Iterable<WebPage> serchPages(WebPage webPage);
-    
+    /**
+     * Provide a description for a memento.
+     * 
+     * @return  the description. 
+     */
+    public String getDescription();
     
 }

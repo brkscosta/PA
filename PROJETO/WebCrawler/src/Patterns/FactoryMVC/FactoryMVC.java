@@ -8,25 +8,25 @@ package Patterns.FactoryMVC;
 import Controller.HomeController;
 import Model.WebCrawler;
 import Patterns.Memento.CareTaker;
-import Views.Home;
+import Views.HomeView;
+import com.brunomnsilva.smartgraph.graphview.SmartStylableNode;
 import java.io.IOException;
 import javafx.scene.Scene;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta 
  */
 public class FactoryMVC {
     
-    public static Home view;
+    public static HomeView view;
     public static HomeController controller;
     public static Scene createMVCApp() throws IOException {
-
+        
         WebCrawler model = new WebCrawler();
-        view = new Home(model);
-        CareTaker careTaker = new CareTaker(model);
+        view = new HomeView(model);
+        CareTaker careTaker = new CareTaker(model); 
         controller = new HomeController(model, view, careTaker);
         return view.getScene();
     }
-
 }

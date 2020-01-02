@@ -3,18 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Patterns.Memento;
+package Patterns.Stategy;
+
+import Model.WebPage;
 
 /**
  *
  * @author BRKsCosta
  */
-public interface Memento {
-    
-    /**
-     * Provide a description for a memento.
-     * 
-     * @return  the description. 
-     */
-    public String getDescription();
+public interface ISearchCriteria {
+
+    public Iterable<WebPage> searchPages(WebPage webPage);
 }

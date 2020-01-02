@@ -1,7 +1,5 @@
 package Model;
 
-import Patterns.Memento.Originator;
-import Patterns.Memento.Memento;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +8,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Observable;
 import Patterns.Singleton.LoggerWriter;
-import Patterns.Stategy.IBreakCriteria;
 import java.util.Date;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Patterns.Memento.IOriginator;
+import Patterns.Memento.IMemento;
+import Patterns.Stategy.ISearchCriteria;
+import Patterns.Stategy.SearchDepth;
+import Patterns.Stategy.SearchIterative;
+import Patterns.Stategy.SearchPages;
+import Views.HomeView;
+import Views.HomeView.StopCriteria;
 
 @SuppressWarnings("null")
 /**
@@ -28,28 +33,32 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
-    private IBreakCriteria searchCriteria;
+    private ISearchCriteria searchCriteria; //
 
-    private String startURL = "";
+    // Pertinent variables to the DiGraph structure:
+    private WebPage rootWebPage;
+    private Vertex<WebPage> rootVertex; // This is the better way. Store the Vertex<WebPage>
+    private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, ITERATIVE.
+    private List<WebPage> pagesList = new ArrayList<>(); // this is used for????
+
     public Graph<WebPage, Link> graph;
-    private int countHttpsLinks;
-    private int countPageNotFound;
-    public WebPage rootWebPage;
-    private StopCriteria stopCriteriaChoosed;
-    private List<WebPage> pagesList = new ArrayList<>();
+
+    // Statistics
+    private int countHttpsLinks = 0;
+    private int countPageNotFound = 0;
     private int numPages = 0;
     public boolean isFinished = false;
-            
+
+    // 2 Constructors
+    public WebCrawler(Graph graph) {
+        this.graph = graph;
+    }
+
     public WebCrawler() {
-        this.countHttpsLinks = 0;
-        this.countPageNotFound = 0;
-        this.graph = new MyDigraph<>();
+        this(new MyDigraph<>());
     }
 
-    public List<WebPage> getPagesList() {
-        return pagesList;
-    }
-
+    // Getters
     public LoggerWriter getLogger() {
         return logger;
     }
@@ -57,59 +66,70 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     public int getNumPages() {
         return numPages;
     }
-    
-    public Collection<Edge<Link, WebPage>> getAllLinks(){
-        return graph.edges();
-    }
-    
-    public void setPagesList(List<WebPage> pagesList) {
-        this.pagesList = pagesList;
-    }
-
-    public void setNumPages(int numPages) {
-        this.numPages = numPages;
-    }
-
-    public WebPage createWebPage() throws IOException {
-        return new WebPage(startURL);
-    }
 
     public int getCountHttpsLinks() {
         return countHttpsLinks;
-    }
-
-    public void setCountHttpsLinks(int countHttpsLinks) {
-        this.countHttpsLinks = countHttpsLinks;
     }
 
     public int getCountPageNotFound() {
         return countPageNotFound;
     }
 
-    public void setCountPageNotFound(int countPageNotFound) {
-        this.countPageNotFound = countPageNotFound;
+    public StopCriteria getStopCriteriaChoosed() {
+        return stopCriteriaChoosed;
     }
 
     public Vertex<WebPage> getRootWebPage() {
+        System.out.println("TESTEEEEEE -> " + graph);
         for (Vertex<WebPage> v : graph.vertices()) {
-            if (v.element().equals(rootWebPage)) {
+            if (v.element().equals(this.rootWebPage)) {
                 return v;
             }
         }
         return null;
     }
 
-    public void setRootWebPage(WebPage rootWebPage) {
-        this.rootWebPage = rootWebPage;
+    public Graph<WebPage, Link> getGraph() {
+        return this.graph;
     }
 
-    public StopCriteria getStopCriteriaChoosed() {
-        return stopCriteriaChoosed;
+    // Setters
+    public void setNumPages(int numPages) {
+        this.numPages = numPages;
+    }
+
+    public void setCountHttpsLinks(int countHttpsLinks) {
+        this.countHttpsLinks = countHttpsLinks;
+    }
+
+    public void setCountPageNotFound(int countPageNotFound) {
+        this.countPageNotFound = countPageNotFound;
     }
 
     public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
         this.stopCriteriaChoosed = stopCriteriaChoosed;
     }
+
+    public void setRootWebPage(WebPage rootWebPage) {
+        this.rootWebPage = rootWebPage;
+    }
+
+    public void setRootVertex(Vertex<WebPage> rootVertex) {
+        this.rootVertex = rootVertex;
+    }
+
+    public void setSearchType(ISearchCriteria criteria) {
+        this.searchCriteria = criteria;
+        this.start();
+    }
+
+    // Methods with WebPage's
+
+    // Why the method to simply create a new WebCrawler object?
+    /*
+     * public WebPage createWebPage() throws IOException { return new
+     * WebPage(startURL); }
+     */
 
     public void clearGraph() {
         this.graph = new MyDigraph<>();
@@ -125,24 +145,48 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         isFinished = true;
 
         setChanged();
-        notifyObservers();
+        notifyObservers(this.graph);
     }
 
-    public enum StopCriteria {
-        PAGES, DEPTH, ITERATIVE;
-    }
+    public void buildWebCrawler(HomeView.StopCriteria criteria, int numPages, String inputUrl) throws IOException {
 
-    public String getStartURL() {
-        return startURL;
-    }
+        // Assign values
 
-    public void setStartURL(String startURL) {
-        this.startURL = startURL;
-    }
+        this.rootWebPage = new WebPage(inputUrl);
+        graph.insertVertex(this.rootWebPage);
 
-    public void chosseSearchType(IBreakCriteria criteria) {
-        this.searchCriteria = criteria;
+        this.numPages = numPages;
+
+        switch (criteria) {
+        case PAGES:
+            this.searchCriteria = new SearchPages(this);
+            break;
+        case DEPTH:
+            this.searchCriteria = new SearchDepth(this);
+            break;
+        default: // Iterative
+            this.searchCriteria = new SearchIterative(this);
+            break;
+        }
+
         this.start();
+
+        /*
+         * // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de
+         * código: case "BFS": model.setStartURL(view.getInputURL());
+         * model.setRootWebPage(model.createWebPage()); model.setNumPages(numPages);
+         * model.setSearchType(new SearchPages(model)); if(model.getNumPages() > 0)
+         * view.setColorRootPage(model.getRootWebPage()); view.updateGraph(); break;
+         * case "DFS": model.setStartURL(view.getInputURL());
+         * model.setRootWebPage(model.createWebPage()); model.setNumPages(numPages);
+         * model.setSearchType(new SearchDepth(model));
+         * //view.setColorRootPage(model.getRootWebPage()); break; default:
+         * model.setStartURL(view.getInputURL());
+         * model.setRootWebPage(model.createWebPage());
+         * model.iterative(model.getRootWebPage().element());
+         * //view.setColorRootPage(model.getRootWebPage()); caretaker.requestSave();
+         * break;
+         */
     }
 
     /**
@@ -152,7 +196,8 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     public void start() {
 
         Iterable<WebPage> it;
-        it = searchCriteria.serchPages(rootWebPage);
+
+        it = searchCriteria.searchPages(rootWebPage);
 
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
@@ -165,6 +210,22 @@ public class WebCrawler extends Observable implements Originator, Serializable {
 
     }
 
+    // Build iterative WebCrawler
+    public Iterable<WebPage> iterative(WebPage rootWebPage) {
+        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+                                                                       // Tools | Templates.
+    }
+
+    // Iterative method's
+    public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) {
+        // Começar a inserir uma nova sub-árvore apartir deste vértice
+
+        // TODO - notify observers
+        setChanged();
+        notifyObservers();
+    }
+
+    // Necessario este print??????? TODO
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
@@ -215,17 +276,12 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         return false;
     }
 
-    public Iterable<WebPage> itertive(WebPage rootWebPage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * Counter of links
      *
      * @return Number of links (Edges)
      */
     public int countLinks() {
-
         return graph.numEdges();
     }
 
@@ -239,11 +295,13 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         return graph.numVertices();
     }
 
+    // Implement all IOriginator methods
     @Override
-    public Memento save() {
+    public IMemento save() {
+        // Creates a new private Memento Object and returns it
         try {
-            return new WebCrawlerMemento(graph, countHttpsLinks, countPageNotFound,
-                    stopCriteriaChoosed, pagesList);
+            return new WebCrawlerMemento(this.rootWebPage, countHttpsLinks, countPageNotFound, stopCriteriaChoosed,
+                    pagesList);
         } catch (IOException ex) {
             Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -252,43 +310,76 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     }
 
     @Override
-    public void restore(Memento savedState) {
+    public void restore(IMemento savedState) {
 
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
-        this.graph = save.graphMemento;
-        this.isFinished = true;
+
+        // Use all the state inside the argument savedState
+        this.rootWebPage = save.getRootWebPage();
+        this.isFinished = true; // Just for testing, TODO
 
         setChanged();
         notifyObservers();
     }
 
-    private class WebCrawlerMemento implements Memento {
+    // Private Memento with all the states and getters and setters needed
+    private class WebCrawlerMemento implements IMemento {
 
-        private Graph<WebPage, Link> graphMemento;
+        // private Graph<WebPage, Link> graphMemento;
+        private WebPage rootWebPage;
         private int countHttpsLinksMemento;
         private int countPageNotFoundMemento;
         private Date createdAt;
         private List<WebPage> pageListMemento;
         private StopCriteria stopCriteriaChoosed;
 
-        public WebCrawlerMemento(Graph<WebPage, Link> graphMemento,
+        public WebCrawlerMemento(WebPage rootWebPage,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
                 StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException {
-            this.graphMemento = graphMemento;
+            
+            //this.webPage = new Vertex<>();
+            //this.webPage.element() = STILL IN WORK
+            
+            //this.graphMemento = new MyDigraph<>();
+            //this.graphMemento = graphMemento; // Aqui temos de por o Vertice WebPage. Não vamos puder ter 
+            
+            this.rootWebPage = rootWebPage;
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;
             this.stopCriteriaChoosed = stopCriteriaChoosed;
             this.pageListMemento = new ArrayList<>(pageList);
             this.createdAt = new Date();
+        }
 
+        // Getters
+        public WebPage getRootWebPage() {
+            return this.rootWebPage;
+        }
+
+        public int getCountHttpsLinksMemento() {
+            return countHttpsLinksMemento;
+        }
+
+        public int getCountPageNotFoundMemento() {
+            return countPageNotFoundMemento;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
+        }
+
+        public List<WebPage> getPageListMemento() {
+            return pageListMemento;
+        }
+
+        public StopCriteria getStopCriteriaChoosed() {
+            return stopCriteriaChoosed;
         }
 
         @Override
         public String getDescription() {
-            return String.format("WebCrawler Memento created at %s",
-                    createdAt.toString());
+            return String.format("WebCrawler Memento created at %s", createdAt.toString());
         }
-
     }
 
 }

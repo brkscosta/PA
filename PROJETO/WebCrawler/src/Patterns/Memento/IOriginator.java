@@ -9,20 +9,20 @@ package Patterns.Memento;
  *
  * @author BRKsCosta
  */
-public interface Originator {
+public interface IOriginator {
     
      /**
      * Request of memento for current state.
      * 
      * @return      the memento state 
      */
-    public Memento save();
+    public IMemento save();
     
     /**
      * Request to change state for this memento.
      * 
      * @param savedState    the memento state to restore
      */
-    public void restore(Memento savedState);
+    public void restore(IMemento savedState);
     
 }

@@ -16,7 +16,7 @@ import javafx.stage.StageStyle;
  * @author BRKsCosta
  */
 public class Main extends Application {
-
+    
     /**
      * @param args the command line arguments
      */
@@ -26,7 +26,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage ignored) throws Exception {
-
+        
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.sizeToScene();
         stage.setTitle("Web Crawler");
@@ -37,5 +37,4 @@ public class Main extends Application {
         stage.show();
         FactoryMVC.view.graphView.init();
     }
-
 }

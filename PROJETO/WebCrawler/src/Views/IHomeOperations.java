@@ -19,7 +19,6 @@ public interface IHomeOperations extends Observer {
     void exitApp();
     void clearError();
     void showError(String errorMsg);
-    
     void setTriggersButtons(HomeController controller);
     
 }

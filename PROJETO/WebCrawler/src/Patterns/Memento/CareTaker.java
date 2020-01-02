@@ -13,16 +13,16 @@ import java.util.Stack;
  */
 public class CareTaker {
     
-    private Originator originator;
+    private IOriginator originator;
 
-    private Stack<Memento> mementos = new Stack<>();
+    private Stack<IMemento> mementos = new Stack<>();
 
     /**
      * Creates a caretaker for a specific originator.
      * 
      * @param originator originator to care about 
      */
-    public CareTaker(Originator originator) {
+    public CareTaker(IOriginator originator) {
         this.originator = originator;
     }
     
@@ -30,8 +30,7 @@ public class CareTaker {
      * Requests the originator memento state and stores it.
      */
     public void requestSave() {
-        //memento = originator.save();
-        Memento save = originator.save();
+        IMemento save = originator.save();
         System.out.println(save.getDescription());
         mementos.push(save);
     }
@@ -42,8 +41,7 @@ public class CareTaker {
     public void requestRestore() {
         if(!canUndo()) return;
         
-        //originator.restore(memento);
-        Memento save = mementos.pop();
+        IMemento save = mementos.pop();
         originator.restore(save);
     }
     
@@ -53,14 +51,13 @@ public class CareTaker {
      * @return  true if possible 
      */
     public boolean canUndo() {
-        //return memento !=  null;
         return !mementos.isEmpty();
     }
 
     @Override
     public String toString() {
         String output = "SAVED STATES: \n";
-        for (Memento m : mementos) {
+        for (IMemento m : mementos) {
             output += m.getDescription() + "\n";
         }
         return output;

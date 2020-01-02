@@ -230,5 +230,4 @@ public class WebPage {
     public Queue<Link> getListIncidentsWebPages() {
         return listIncidentsWebPages;
     }
-
 }

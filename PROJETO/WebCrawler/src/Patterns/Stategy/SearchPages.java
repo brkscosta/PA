@@ -19,7 +19,7 @@ import java.util.Queue;
  *
  * @author BRKsCosta
  */
-public class SearchPages implements IBreakCriteria {
+public class SearchPages implements ISearchCriteria {
 
     private WebCrawler model;
     private int countHttpsLinks = 0;
@@ -30,7 +30,7 @@ public class SearchPages implements IBreakCriteria {
     }
     
     @Override
-    public Iterable<WebPage> serchPages(WebPage webPage)
+    public Iterable<WebPage> searchPages(WebPage webPage)
             throws WebCrawlerException {
 
         try {

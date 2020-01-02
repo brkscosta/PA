@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 public class HomeController {
 
-    public final HomeView view;
+    public final HomeView view; // Make it private -> create a getter method
     private final WebCrawler model;
     private final CareTaker caretaker;
 
@@ -32,7 +32,7 @@ public class HomeController {
         //Create new state of model
         this.caretaker = caretaker;
         
-        view.setTriggersButtons(HomeController.this);
+        view.setTriggersButtons(this);
         model.addObserver(view); // Subscribe the model
     }
 
@@ -44,6 +44,7 @@ public class HomeController {
         
         // Update the view
         //view.updateGraph(); // Why update here? If when model WebCrawler is updated it send a message to the Observer HomeView
+        view.update(model, this);
         
         // Set color to the root
         if(model.getNumPages() > 0)
@@ -81,7 +82,7 @@ public class HomeController {
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         this.model.removePage(graphVertex.getUnderlyingVertex());
         caretaker.requestSave();
-        view.updateGraph();
+        //view.updateGraph();
     }
     
     // This method will 

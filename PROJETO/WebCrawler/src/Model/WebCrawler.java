@@ -84,16 +84,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     }
     
     public Vertex<WebPage> getRootWebPage() {
+        System.out.println("TESTEEEEEE -> " + graph);
         for (Vertex<WebPage> v : graph.vertices()) {
-            if (v.element().equals(rootWebPage)) {
+            if (v.element().equals(this.rootWebPage)) {
                 return v;
             }
         }
         return null;
-    }
-    
-    public String getStartURL() {
-        return startURL;
     }
     
     public Graph<WebPage, Link> getGraph(){
@@ -119,10 +116,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     
     public void setRootWebPage(WebPage rootWebPage) {
         this.rootWebPage = rootWebPage;
-    }
-    
-    public void setStartURL(String startURL) {
-        this.startURL = startURL;
     }
     
     public void setRootVertex(Vertex<WebPage> rootVertex){
@@ -152,7 +145,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
 
     public void buildWebCrawler(HomeView.StopCriteria criteria, int numPages, String inputUrl) throws IOException{
         
-        // Assign values 
+        // Assign values
         
         this.rootWebPage = new WebPage(inputUrl);
         graph.insertVertex(this.rootWebPage);
@@ -170,7 +163,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
                 this.searchCriteria = new SearchIterative(this);
                 break;
         }
-                
+        
+        this.start();
         
         /*
         // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de código:
@@ -313,7 +307,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     public IMemento save() {
         // Creates a new private Memento Object and returns it
         try {
-            return new WebCrawlerMemento(graph, countHttpsLinks, countPageNotFound,
+            return new WebCrawlerMemento(this.rootWebPage, countHttpsLinks, countPageNotFound,
                     stopCriteriaChoosed, pagesList);
         } catch (IOException | CloneNotSupportedException ex) {
             Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,7 +322,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
         
         // Use all the state inside the argument savedState
-        this.graph = save.graphMemento;
+        this.rootWebPage = save.getRootWebPage();
         this.isFinished = true; // Just for testing, TODO
 
         setChanged();
@@ -339,14 +333,14 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
     private class WebCrawlerMemento implements IMemento {
 
         //private Graph<WebPage, Link> graphMemento;
-        private Vertex<WebPage> webPage;
+        private WebPage rootWebPage;
         private int countHttpsLinksMemento;
         private int countPageNotFoundMemento;
         private Date createdAt;
         private List<WebPage> pageListMemento;
         private StopCriteria stopCriteriaChoosed;
 
-        public WebCrawlerMemento(Vertex<WebPage> webPage,
+        public WebCrawlerMemento(WebPage rootWebPage,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
                 StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException, CloneNotSupportedException {
             
@@ -355,6 +349,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
             
             //this.graphMemento = new MyDigraph<>();
             //this.graphMemento = graphMemento; // Aqui temos de por o Vertice WebPage. Não vamos puder ter 
+            
+            this.rootWebPage = rootWebPage;
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;
             this.stopCriteriaChoosed = stopCriteriaChoosed;
@@ -363,8 +359,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable,
         }
         
         // Getters
-        public Graph<WebPage, Link> getGraphMemento() {        
-            return graphMemento;
+        public WebPage getRootWebPage(){
+            return this.rootWebPage;
         }
 
         public int getCountHttpsLinksMemento() {

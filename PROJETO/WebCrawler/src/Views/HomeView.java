@@ -71,7 +71,8 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     LoggerWriter logW = LoggerWriter.getInstance();
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-    SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
+    private SmartPlacementStrategy strategy;
     public SmartGraphPanel<WebPage, Link> graphView; // Why this attribute is public? We need to continue with class encapsulation so I will make a new get method
     //public SmartGraphPanel<String, String> graphView;
 
@@ -125,7 +126,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
         //this.graphView = new SmartGraphPanel(g, strategy);
-        this.graphView = new SmartGraphPanel(model.graph, strategy);
+        this.graphView = new SmartGraphPanel<>(model.graph, strategy);
         BorderPane window = new BorderPane(HomeView.this);
         window.setCenter(HomeView.this);
         this.scene = new Scene(window, 1500, 700);
@@ -375,15 +376,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-
-        this.graphView.setOnMouseClicked(graphVertex -> {
-            
-        });
         
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-            graphVertex.
+            
             //want fun? uncomment below with automatic layout
             controller.removePage(graphVertex);
             //graphVertex.setStyle("-fx-fill: #D06809; -fx-stroke: black;");

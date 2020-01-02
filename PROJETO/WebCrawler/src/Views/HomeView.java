@@ -122,8 +122,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     private Scene scene;
 
     // Graph interface
-    private boolean hasClickedEdges = false;
-    SmartGraphEdge<Link, WebPage> edgeClicked;
+    SmartGraphEdge<Link, WebPage> edgeClicked = null;
     SmartGraphVertex<WebPage> vertexClicked;
 
     public HomeView(WebCrawler model) {
@@ -397,31 +396,31 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
         // It can be possible to double click one edge, change the color and give the description and if we double click again it changes the color again to the older one and doens0t print it's description.
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
-            System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
-
+            System.out.println("EDGE -1");
             //dynamically change the style when clicked
-            if (this.hasClickedEdges) {
-
+            if (this.edgeClicked != null){
+                System.out.println("EDGE 0");
                 // Check if the clicked edge is the same as the edge passed as an argument
                 if (graphEdge.getUnderlyingEdge() == this.edgeClicked) {
                     // Change the color to the default
-                    graphEdge.setStyle(""); // TODO
-                    this.hasClickedEdges = false;
+                    graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
+                    this.edgeClicked = null;
+                    
+                    System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
-                    this.edgeClicked.setStyle(""); // TODO
+                    this.edgeClicked.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
 
                     // Assign to the edgeClicked a new value
                     this.edgeClicked = graphEdge;
                     this.edgeClicked.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
-
+                    System.out.println("EDGE 2");
                 }
             } else {
-                this.hasClickedEdges = true;
-
                 // Assign to the edgeClicked a new value
                 this.edgeClicked = graphEdge;
                 graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
+                System.out.println("EDGE 3");
             }
 
             // Refresh color's

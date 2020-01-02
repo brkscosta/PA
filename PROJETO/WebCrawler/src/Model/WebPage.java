@@ -25,7 +25,7 @@ import org.jsoup.HttpStatusException;
  */
 public class WebPage {
 
-    LoggerWriter logger = LoggerWriter.getInstance();
+    private LoggerWriter logger = LoggerWriter.getInstance();
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -71,8 +71,9 @@ public class WebPage {
                     this.titleName = Integer.toString(getStatusCode());
                     break;
             }
-        } catch (IOException e) {
-            LoggerWriter.getInstance().writeToLog(e.getMessage());
+        } catch (IOException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
         }
     }
 
@@ -170,7 +171,8 @@ public class WebPage {
         } catch (HttpStatusException ex) {
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
-                LoggerWriter.getInstance().writeToLog(ex.getMessage());
+                logger.writeToLog(ex.getMessage());
+                view.showErrorStackTraceException(ex.getMessage());
             }
             return listIncidentsWebPages;
         }
@@ -198,7 +200,8 @@ public class WebPage {
             }
             return link;
         } catch (MalformedURLException ex) {
-            LoggerWriter.getInstance().writeToLog(ex.getMessage());
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
             return null;
         }
     }

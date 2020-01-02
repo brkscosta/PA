@@ -8,8 +8,9 @@ package Patterns.DAO;
 import Model.Link;
 import Model.WebPage;
 import static Patterns.DAO.WebCrawlerJson.FILENAME;
+import static Patterns.FactoryMVC.FactoryMVC.view;
+import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Edge;
-import java.awt.print.Book;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,7 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -26,14 +26,16 @@ import java.util.List;
  */
 public class WebCrawlerFile implements IWebCrawlerDAO {
 
+    private LoggerWriter logger = LoggerWriter.getInstance();
+
     public static final String FILENAME = "Webcrawler.txt";
 
     private Collection<Edge<Link, WebPage>> inMemory;
 
     public WebCrawlerFile() {
-        this.inMemory =  new ArrayList(); 
+        this.inMemory = new ArrayList();
     }
-    
+
     @Override
     public void saveAll() {
         this.saveFile();
@@ -41,7 +43,7 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
 
     @Override
     public Collection<Edge<Link, WebPage>> readAll() {
-       return inMemory;
+        return inMemory;
     }
 
     private void saveFile() {
@@ -54,8 +56,9 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
             out.close();
 
             fileOut.close();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
         }
     }
 
@@ -77,8 +80,9 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
 
             fileIn.close();
 
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException | ClassNotFoundException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
         }
     }
 

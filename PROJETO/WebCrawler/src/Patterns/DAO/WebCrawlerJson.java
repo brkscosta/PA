@@ -8,6 +8,8 @@ package Patterns.DAO;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import static Patterns.FactoryMVC.FactoryMVC.view;
+import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Edge;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +29,7 @@ import java.util.List;
 public class WebCrawlerJson implements IWebCrawlerDAO {
 
     public static final String FILENAME = "Webcrawler.json";
-
+    private LoggerWriter logger = LoggerWriter.getInstance();
     private Collection<Edge<Link, WebPage>> inMemory;
 
     public WebCrawlerJson() {
@@ -49,8 +51,9 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
             out.close();
 
             fileOut.close();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
         }
     }
 
@@ -72,8 +75,9 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
 
             fileIn.close();
 
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException | ClassNotFoundException ex) {
+            logger.writeToLog(ex.getMessage());
+            view.showErrorStackTraceException(ex.getMessage());
         }
     }
 

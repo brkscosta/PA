@@ -9,10 +9,9 @@ import Patterns.Memento.CareTaker;
 import Model.WebCrawlerException;
 import Model.WebCrawler;
 import Model.WebPage;
-import Patterns.Stategy.SearchDepth;
-import Patterns.Stategy.SearchPages;
 import Views.*;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,31 +28,32 @@ public class HomeController {
     private final WebCrawler model;
     private final CareTaker caretaker;
 
-    public HomeController(WebCrawler model, HomeView view, CareTaker caretaker) throws IOException {
+    public HomeController(WebCrawler model, HomeView view, CareTaker caretaker) {
         this.view = view;
         this.model = model;
 
         //Create new state of model
         this.caretaker = caretaker;
-        
-        view.setTriggersButtons(this);
-        model.addObserver(view); // Subscribe the model
+
+        this.view.setTriggersButtons(this);
+        model.addObserver(this.view); // Subscribe the model
     }
 
     public void startSearch(HomeView.StopCriteria criteria, int numPages)
             throws WebCrawlerException, IOException {
-        
+
         // Init the WebCrawler
         model.buildWebCrawler(criteria, numPages, view.getInputURL());
-        
+
         // Update the view
         //view.updateGraph(); // Why update here? If when model WebCrawler is updated it send a message to the Observer HomeView
         view.update(model, this);
-        
+
         // Set color to the root
-        if(model.getNumPages() > 0)
-                    view.setColorRootPage(model.getRootWebPage());
-        
+        if (model.getNumPages() > 0) {
+            view.setColorRootPage(model.getRootWebPage());
+        }
+
         // Save a new Memento
         caretaker.requestSave();
     }
@@ -64,6 +64,7 @@ public class HomeController {
 
     public Vertex<WebPage> getRootPage() {
         return model.getRootWebPage();
+    }
 
     public void clearErrors() {
         this.view.clearError();
@@ -86,7 +87,6 @@ public class HomeController {
         caretaker.requestRestore();
     }
 
-
     public void openWebPage(String url) {
 
         try {
@@ -102,16 +102,17 @@ public class HomeController {
     }
 
     public void clearGraph() {
-        model.clearGraph();}
+        model.clearGraph();
+    }
 
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         this.model.removePage(graphVertex.getUnderlyingVertex());
         caretaker.requestSave();
         //view.updateGraph();
     }
-    
+
     // This method will 
-    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot){
+    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot) {
         model.insertNewSubWebPageCrawler(subRoot.getUnderlyingVertex());
     }
 

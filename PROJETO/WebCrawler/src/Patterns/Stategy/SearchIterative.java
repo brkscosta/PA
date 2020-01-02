@@ -15,14 +15,14 @@ import Model.WebPage;
 public class SearchIterative implements ISearchCriteria {
 
     private WebCrawler model;
-    
+
     public SearchIterative(WebCrawler model) {
         this.model = model;
     }
-    
+
     @Override
     public Iterable<WebPage> searchPages(WebPage webPage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

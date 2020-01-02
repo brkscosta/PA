@@ -10,17 +10,17 @@ import java.util.Observable;
 import Patterns.Singleton.LoggerWriter;
 import java.util.Date;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Patterns.Memento.IOriginator;
 import Patterns.Memento.IMemento;
+import Patterns.Memento.IOriginator;
 import Patterns.Stategy.ISearchCriteria;
 import Patterns.Stategy.SearchDepth;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView;
 import Views.HomeView.StopCriteria;
+import java.util.Collection;
 
 @SuppressWarnings("null")
 /**
@@ -29,7 +29,7 @@ import Views.HomeView.StopCriteria;
  *
  * @author BRKsCosta and Daniel Cordeiro
  */
-public class WebCrawler extends Observable implements Originator, Serializable {
+public class WebCrawler extends Observable implements IOriginator, Serializable {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
@@ -61,6 +61,14 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     // Getters
     public LoggerWriter getLogger() {
         return logger;
+    }
+
+    public Collection<Edge<Link, WebPage>> getAllLinks() {
+        return graph.edges();
+    }
+
+    public List<WebPage> getPagesList() {
+        return pagesList;
     }
 
     public int getNumPages() {
@@ -124,13 +132,11 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     }
 
     // Methods with WebPage's
-
     // Why the method to simply create a new WebCrawler object?
     /*
      * public WebPage createWebPage() throws IOException { return new
      * WebPage(startURL); }
      */
-
     public void clearGraph() {
         this.graph = new MyDigraph<>();
         this.isFinished = true;
@@ -151,22 +157,21 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     public void buildWebCrawler(HomeView.StopCriteria criteria, int numPages, String inputUrl) throws IOException {
 
         // Assign values
-
         this.rootWebPage = new WebPage(inputUrl);
         graph.insertVertex(this.rootWebPage);
 
         this.numPages = numPages;
 
         switch (criteria) {
-        case PAGES:
-            this.searchCriteria = new SearchPages(this);
-            break;
-        case DEPTH:
-            this.searchCriteria = new SearchDepth(this);
-            break;
-        default: // Iterative
-            this.searchCriteria = new SearchIterative(this);
-            break;
+            case PAGES:
+                this.searchCriteria = new SearchPages(this);
+                break;
+            case DEPTH:
+                this.searchCriteria = new SearchDepth(this);
+                break;
+            default: // Iterative
+                this.searchCriteria = new SearchIterative(this);
+                break;
         }
 
         this.start();
@@ -213,7 +218,7 @@ public class WebCrawler extends Observable implements Originator, Serializable {
     // Build iterative WebCrawler
     public Iterable<WebPage> iterative(WebPage rootWebPage) {
         throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        // Tools | Templates.
     }
 
     // Iterative method's
@@ -336,13 +341,11 @@ public class WebCrawler extends Observable implements Originator, Serializable {
         public WebCrawlerMemento(WebPage rootWebPage,
                 int countHttpsLinksMemento, int countPageNotFoundMemento,
                 StopCriteria stopCriteriaChoosed, List<WebPage> pageList) throws IOException {
-            
+
             //this.webPage = new Vertex<>();
             //this.webPage.element() = STILL IN WORK
-            
             //this.graphMemento = new MyDigraph<>();
             //this.graphMemento = graphMemento; // Aqui temos de por o Vertice WebPage. Não vamos puder ter 
-            
             this.rootWebPage = rootWebPage;
             this.countHttpsLinksMemento = countHttpsLinksMemento;
             this.countPageNotFoundMemento = countPageNotFoundMemento;

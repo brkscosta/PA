@@ -13,7 +13,6 @@ import Model.WebPage;
 import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
-import com.sun.prism.paint.Color;
 import java.io.IOException;
 import java.util.Observable;
 import javafx.application.Platform;
@@ -51,16 +50,24 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
 import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graph.Edge;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observer;
+import java.util.Optional;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author BRKsCosta
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
-    
+
     // Enum for searchCriteria
     public enum StopCriteria {
         PAGES, DEPTH, ITERATIVE;
@@ -113,12 +120,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     private static final String INITAL_VALUE = "10";
     private Scene scene;
-    
+
     // Graph interface
-    private boolean hasClickedEdges = false; 
+    private boolean hasClickedEdges = false;
     SmartGraphEdge<Link, WebPage> edgeClicked;
     SmartGraphVertex<WebPage> vertexClicked;
-    
 
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
@@ -130,7 +136,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
         this.initializeComponents();
 
-        update(this.model, null);
+        update(model, null);
 
     }
 
@@ -191,13 +197,13 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.rdBtnIterative = new RadioButton("Iterativo");
         this.rdBtnIterative.setToggleGroup(group);
         this.rdBtnIterative.setSelected(false);
-        
+
         //Left Layout
         this.anchorPaneLeft = new AnchorPane();
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000,
                 Integer.parseInt(INITAL_VALUE)));
         spinner.setEditable(true);
-        
+
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -214,8 +220,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         AnchorPane.setRightAnchor(items, 10.0);
         this.anchorPaneLeft.getChildren().add(items);
         //END LEFT LAYOUT
-        
-        
+
         // Statistics on rigth pane
         this.lblStatistics = new Label("Estatísticas");
         this.anchorPaneRigth = new AnchorPane();
@@ -225,17 +230,17 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         AnchorPane.setRightAnchor(vboxChart, 80.0);
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
-        
+
         //Center pane graph will shows here
         VBox boxScroll = new VBox();
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
-        
+
         //Graph interface
         SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
         graphView.setAutomaticLayout(true);
-        
+
         this.splitPane = new SplitPane();
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
@@ -243,8 +248,8 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         //Config HBox Bootom
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
-        this.labelErros = new Label("Erros Aqui");
-        this.labelErros.setTextFill(Paint.valueOf("#ff6961"));
+        this.lblInfo = new Label("Bem-Vindo!");
+        this.lblInfo.setTextFill(Paint.valueOf("#ff6961"));
         this.lblAnotherThing = new Label("Outra Coisa");
         this.bottomHBox = new HBox();
         HBox.setHgrow(panelBottom, Priority.ALWAYS);
@@ -281,22 +286,22 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     @Override
     public void update(Observable o, Object o1) {
-        
+
         // TODO . Talvez introduzir um try catch para que o programa nao rebente ao fazer casting??
         WebCrawler obsModel = (WebCrawler) o; // Model
-        
+
         if (o instanceof WebCrawler) {
             // Não será preciso fazer update se não houver páginas
             if (obsModel.countWebPages() > 0) {
                 graphView.update();
             }
-           
+
             // TESTING IF THE GRAPH WAS UPDATE BEFORE THE VIEW UPDATED. TODOOOOO 
-            if(obsModel.isFinished == true){
+            if (obsModel.isFinished == true) {
                 graphView.update();
                 obsModel.isFinished = false;
             }
-            
+
             // Will happen 2 updates with this test graphView.update()
         }
     }
@@ -340,12 +345,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         alert.setContentText(errorMsg);
         alert.initStyle(StageStyle.TRANSPARENT);
         alert.showAndWait();
-        exitApp();
     }
 
     @Override
     public void setTriggersButtons(HomeController controller) {
-        
+
         // Quit app
         this.mFileItemExit.setOnAction((ActionEvent event) -> {
             controller.exitApp();
@@ -359,7 +363,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
             System.out.println("Import File");
         });
-        
+
         // Apply Memento - Undo
         this.mEditUndo.setOnAction((ActionEvent event) -> {
             controller.undoAction();
@@ -368,7 +372,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.mEditRedo.setOnAction((ActionEvent event) -> {
             redoGraph();
         });
-        
+
         this.mEditClearGraph.setOnAction(((event) -> {
             controller.clearGraph();
             System.out.println("Clear graph");
@@ -378,7 +382,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-        
+
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
@@ -396,35 +400,34 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
 
             //dynamically change the style when clicked
-            if(this.hasClickedEdges){
-                
+            if (this.hasClickedEdges) {
+
                 // Check if the clicked edge is the same as the edge passed as an argument
-                if(graphEdge.getUnderlyingEdge() == this.edgeClicked){
+                if (graphEdge.getUnderlyingEdge() == this.edgeClicked) {
                     // Change the color to the default
                     graphEdge.setStyle(""); // TODO
                     this.hasClickedEdges = false;
-                } else{
+                } else {
                     // Change the color of the old edgeClicked to the default
                     this.edgeClicked.setStyle(""); // TODO
-                    
+
                     // Assign to the edgeClicked a new value
                     this.edgeClicked = graphEdge;
                     this.edgeClicked.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
-                    
+
                 }
-            } else{
+            } else {
                 this.hasClickedEdges = true;
-                
+
                 // Assign to the edgeClicked a new value
                 this.edgeClicked = graphEdge;
                 graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
             }
-            
+
             // Refresh color's
             this.graphView.update();
         });
 
-        
         // Try to catch the ENTER key event
         EventHandler<KeyEvent> enterKeyEventHandler;
 
@@ -453,9 +456,9 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {
-             // Get the numPages
+            // Get the numPages
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
-            
+
             if (rdBtnBreadthFirst.isSelected()) {
                 lblAnotherThing.setText("Selecionou BFS");
                 controller.startSearch(HomeView.StopCriteria.PAGES, parseInt);

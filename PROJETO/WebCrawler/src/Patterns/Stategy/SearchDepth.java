@@ -10,18 +10,18 @@ import Model.WebPage;
 
 /**
  *
- * @author BRKsCosta 
+ * @author BRKsCosta
  */
 public class SearchDepth implements ISearchCriteria {
-    
+
     private WebCrawler model;
-    
+
     public SearchDepth(WebCrawler model) {
         this.model = model;
     }
 
     @Override
     public Iterable<WebPage> searchPages(WebPage webPage) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

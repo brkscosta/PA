@@ -10,9 +10,7 @@ import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**

@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * Class that represents de <code>Edge<V, E></code> on graph.
  *
- * @author BRKsCosta Class that represents de Edge {@link Graph.Edge} on graph.
+ * Class that represents de Edge on graph.
  *
  * @author BRKsCosta
  */
-public class Link{
+public class Link {
 
     private String linkName = "";
     private List<String> array = new ArrayList();
@@ -27,6 +27,10 @@ public class Link{
         removeDuplicates(linkName);
     }
     
+    /**
+     * This method remove duplicated links
+     * @param name The concrete link
+     */
     private void removeDuplicates(String name) {
         for (Iterator<String> iterator = array.iterator(); iterator.hasNext();) {
             String value = iterator.next();
@@ -37,7 +41,7 @@ public class Link{
             }
         }
     }
-    
+
     /**
      * Get the URL
      *

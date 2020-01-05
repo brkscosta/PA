@@ -20,14 +20,14 @@ import org.jsoup.HttpStatusException;
 /**
  * Class that represents the <code>Vertex</code> on graph.
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro.
  *
  */
 public class WebPage {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
     private int depth = 0;
-    private boolean isLastOfALevel = false; 
+    private boolean isLastOfALevel = false;
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -38,7 +38,6 @@ public class WebPage {
      *
      * @param url Base URL to search
      */
-    
     // This constructor is used only for depth criteria build
     public WebPage(String url) {
         this.listIncidentsWebPages = new LinkedList<>();
@@ -60,6 +59,13 @@ public class WebPage {
 
     }
 
+    /**
+     * This method insert the title of the webpage in case if the response of
+     * the page is 200 OK or 404 - Not Found.
+     *
+     * @param connection Receives object of the type Connection
+     * {@link org.jsoup}
+     */
     private void insertStatusCodeTitle(Connection connection) {
         try {
             switch (statusCode) {
@@ -82,10 +88,18 @@ public class WebPage {
     }
 
     // Getters
-    public int getDepth(){
+    /**
+     * This method get the depth
+     * @return A number
+     */
+    public int getDepth() {
         return this.depth;
     }
-
+    
+    /**
+     * Get the if is the last of the level
+     * @return True or False
+     */
     public boolean getIsLastOfALevel() {
         return this.isLastOfALevel;
     }
@@ -98,7 +112,7 @@ public class WebPage {
     public String getTitleName() {
         return titleName;
     }
-    
+
     /**
      * Get WebPage personal URL
      *
@@ -128,15 +142,28 @@ public class WebPage {
         return 0;
     }
     
+    /**
+     * Return all incidents WebPages in a queue {@link java.util.Queue}.
+     * 
+     * @return A queue with all incident pages.
+     */
     public Queue<Link> getListIncidentsWebPages() {
         return listIncidentsWebPages;
     }
     
+    /**
+     * Return all incident pages connected to the current WebPage
+     * 
+     * @param personalLink The URL of the WebPage
+     * @return A queue with all WebPages.
+     * @throws WebCrawlerException
+     * @throws IOException 
+     */
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
         System.out.println("TESTE AO ERRO - " + personalLink);
         try {
             System.out.println("TESTE AO ERRO - ENTROU");
-            
+
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
                 throw new WebCrawlerException("URL não pode ser vazio ou nulo");
@@ -145,7 +172,7 @@ public class WebPage {
             System.out.println("tamanho dos links ----> ");
             Document doc = Jsoup.connect(personalLink).get();
             Elements links = doc.select("a[href]");
-            
+
             for (Element link : links) {
                 String href = link.attr("abs:href");
                 String newHref = processLink(href, personalLink);
@@ -169,20 +196,32 @@ public class WebPage {
             return listIncidentsWebPages;
         }
     }
-    
+
     // Setters
-    public void setDepth(int depth){
+    /**
+     * Set the a depth number
+     * @param depth A number
+     */
+    public void setDepth(int depth) {
         this.depth = depth;
     }
 
+    /**
+     * Set with true or false if the last of level.
+     * @param isLastOfALevel True or False
+     */
     public void setIsLastOfALevel(boolean isLastOfALevel) {
         this.isLastOfALevel = isLastOfALevel;
     }
     
+    /**
+     * Set the status code
+     * @param status A number
+     */
     public void setStatusCode(int status) {
         this.statusCode = status;
     }
-    
+
     /**
      * Set personal page URL
      *
@@ -201,9 +240,7 @@ public class WebPage {
         this.titleName = titleName;
     }
 
-    
     // Other methods
-    
     /**
      * Process different types of URL
      *
@@ -253,5 +290,4 @@ public class WebPage {
         return "Title: " + titleName + " Code = " + this.statusCode + "\n";
     }
 
-    
 }

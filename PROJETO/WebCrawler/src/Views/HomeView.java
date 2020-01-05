@@ -66,7 +66,11 @@ import javafx.stage.StageStyle;
 
 /**
  *
- * @author BRKsCosta
+ * This class is responsible to show own UI. Extends from a VBox from javaFX
+ * and implements the interfaces Observer (notified by model {@link Model.WebCrawler}
+ * and behaviors {@link Views.IHomeOperations} of the view .
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
 
@@ -139,12 +143,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         update(model, null);
 
     }
-    
+
     // Getters
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
-    
+
     // Setters
     public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
         this.graphView = graphView;
@@ -309,12 +313,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphView.update();
                 obsModel.isFinished = false;
             }
-            
+
             //this.graphView.update();
             // Will happen 2 updates with this test graphView.update()
         }
     }
-    
+
     // IHomeOperations methods
     @Override
     public String getInputURL() {
@@ -388,27 +392,25 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-        
-        
-        
+
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
 
-            if(this.inIterativeMode){
+            if (this.inIterativeMode) {
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
                 } catch (IOException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }else{
+            } else {
                 controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             }
-            
+
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-        
+
         // Double click in one edge. 
         // It will have to toogle between edges. It can't be possible to have more than one clicked edge at the same time. 
         // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
@@ -416,14 +418,14 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("EDGE -1");
             //dynamically change the style when clicked
-            if (this.edgeClicked != null){
+            if (this.edgeClicked != null) {
                 System.out.println("EDGE 0");
                 // Check if the clicked edge is the same as the edge passed as an argument
                 if (graphEdge.getUnderlyingEdge() == this.edgeClicked) {
                     // Change the color to the default
                     graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
                     this.edgeClicked = null;
-                    
+
                     System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
@@ -469,12 +471,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
     }
-    
+
     // TODO
     private void redoGraph() {
         System.out.println("Views.Home.redoGraph()");
     }
-    
+
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {

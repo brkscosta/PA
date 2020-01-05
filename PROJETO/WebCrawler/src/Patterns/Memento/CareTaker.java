@@ -8,8 +8,13 @@ package Patterns.Memento;
 import java.util.Stack;
 
 /**
- *
- * @author BRKsCosta
+ * This class is responsible to save the state of the concrete class that we 
+ * want to store. Delegate a instance from the originator {@link Model.WebCrawler}.
+ * 
+ * @see Patterns.Memento.IOriginator
+ * @see Patterns.Memento.IMemento
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public class CareTaker {
     

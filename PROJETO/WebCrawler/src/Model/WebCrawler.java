@@ -18,16 +18,15 @@ import Patterns.Stategy.ISearchCriteria;
 import Patterns.Stategy.SearchDepth;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
-import Views.HomeView;
 import Views.HomeView.StopCriteria;
 import java.util.Collection;
 
 @SuppressWarnings("null")
 /**
  * Model to be created to build de graph Link <code>Vertex</code> WebPage and
- * <code>Edge</code> Use the methods setChanged() and notifyObservers()
+ * <code>Edge</code> Use the methods setChanged() and notifyObservers().
  *
- * @author BRKsCosta and Daniel Cordeiro
+ * @author BRKsCosta and danicelcordeiro
  */
 public class WebCrawler extends Observable implements IOriginator, Serializable {
 
@@ -70,25 +69,44 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     public List<WebPage> getPagesList() {
         return pagesList;
     }
-
+    
+    /**
+     * Get the number criteria
+     * @return A number
+     */
     public int getNumCriteria() {
         return numCriteria;
     }
-
+    
+    /**
+     * Get the number of pages HTTPS links founded.
+     * @return A number
+     */
     public int getCountHttpsLinks() {
         return countHttpsLinks;
     }
-
+    
+    /**
+     * Get the number of pages not found
+     * @return A number
+     */
     public int getCountPageNotFound() {
         return countPageNotFound;
     }
-
+    
+    /**
+     * Get the stop criteria.
+     * @return Return a ENUM.
+     */
     public StopCriteria getStopCriteriaChoosed() {
         return stopCriteriaChoosed;
     }
-
+    
+    /**
+     * Get the root WebPage on the graph
+     * @return A vertex of the type WebPage.
+     */
     public Vertex<WebPage> getRootWebPage() {
-        System.out.println("TESTEEEEEE -> " + graph);
         for (Vertex<WebPage> v : graph.vertices()) {
             if (v.element().equals(this.rootWebPage)) {
                 return v;
@@ -96,43 +114,68 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         }
         return null;
     }
-
+    
+    /**
+     * Get a instance of the graph
+     * @return A instance of the graph
+     */
     public Graph<WebPage, Link> getGraph() {
         return this.graph;
     }
 
     // Setters
+    
+    /**
+     * Set the number of web pages to how criteria
+     * @param numCriteria A number
+     */
     public void setNumCriteria(int numCriteria) {
         this.numCriteria = numCriteria;
     }
-
+    
+    /**
+     * Set the count of HTTPS pages
+     * @param countHttpsLinks A number
+     */
     public void setCountHttpsLinks(int countHttpsLinks) {
         this.countHttpsLinks = countHttpsLinks;
     }
 
+    /**
+     * Set the pages not found
+     * @param countPageNotFound A number
+     */
     public void setCountPageNotFound(int countPageNotFound) {
         this.countPageNotFound = countPageNotFound;
     }
-
+    
+    /**
+     * Set a stop criteria
+     * @param stopCriteriaChoosed A ENUM of the type StopCriteria
+     */
     public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
         this.stopCriteriaChoosed = stopCriteriaChoosed;
     }
-
+    
+    /**
+     * Set the root webpage
+     * @param rootWebPage A object of the type webpage
+     */
     public void setRootWebPage(WebPage rootWebPage) {
         this.rootWebPage = rootWebPage;
     }
-
+    
+    /**
+     * Set the root vertex from the graph
+     * @param rootVertex A vertex
+     */
     public void setRootVertex(Vertex<WebPage> rootVertex) {
         this.rootVertex = rootVertex;
     }
 
-    /* NOT BEING USED
-    public void setSearchType(ISearchCriteria criteria) {
-        this.searchCriteria = criteria;
-        this.start();
-    }*/
-
-    // Methods with WebPage's
+    /**
+     * Clear the graph instance
+     */
     public void clearGraph() {
         this.graph = new MyDigraph<>();
         this.isFinished = true;
@@ -140,7 +183,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         setChanged();
         notifyObservers(this.graph);
     }
-
+    
+    /**
+     * Remove a specific webpage on the graph
+     * @param underlyingVertex A vertex.
+     */
     public void removePage(Vertex<WebPage> underlyingVertex) {
         graph.removeVertex(underlyingVertex);
         pagesList.remove(underlyingVertex.element());
@@ -149,7 +196,15 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         setChanged();
         notifyObservers(this.graph);
     }
-
+    
+    /**
+     * This method is responsible to select a type of search to the WebPages
+     * 
+     * @param criteria The type of search
+     * @param numCriteria The stop criteria
+     * @param inputUrl The page to search
+     * @throws IOException 
+     */
     public void buildWebCrawler(StopCriteria criteria, int numCriteria, String inputUrl) throws IOException {
 
         // Assign values
@@ -175,7 +230,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.searchPagesAndPrint(this.rootWebPage);
     }
     
-    // Iterative method's
+    /**
+     * The aux method to iterative mode that insert the new web pages when the 
+     * user click.
+     * 
+     * @param subRoot The parent node 
+     * @throws IOException 
+     */
     public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) throws IOException {
         // Começar a inserir uma nova sub-árvore apartir deste vértice
 
@@ -190,11 +251,15 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         
         this.searchPagesAndPrint(subRoot.element());
 
-        // TODO - notify observers
+        // notify observers
         setChanged();
         notifyObservers();
     }
     
+    /**
+     * This method helps to see the pages that was generated.
+     * @param rootWebPage A object of the type WebPage
+     */
     private void searchPagesAndPrint(WebPage rootWebPage){
         Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
         
@@ -208,12 +273,17 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers();
     }
     
+    /**
+     * This method is to print in a specif format.
+     * @param msg The string
+     * @param args Multiple type and parameters.
+     */
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
 
     /**
-     * Count https protocols
+     * Count HTTPS protocols
      *
      * @param startURL site URL
      * @return Number of pages founded
@@ -244,7 +314,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Checks if exists already a webPage like the param inside the webPage
+     * Checks if exists already a webPage like the parameter inside the webPage
      *
      * @param webPage we want to check
      * @return if exists the webPage
@@ -290,7 +360,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return null;
 
     }
-
+    
     @Override
     public void restore(IMemento savedState) {
 

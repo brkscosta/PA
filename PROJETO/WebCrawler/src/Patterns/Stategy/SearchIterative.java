@@ -13,8 +13,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *
- * @author danielcordeiro
+ * This class is responsible to search pages with the user interaction.
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public class SearchIterative implements ISearchCriteria {
 

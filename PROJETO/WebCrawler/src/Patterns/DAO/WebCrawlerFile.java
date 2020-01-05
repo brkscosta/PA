@@ -21,8 +21,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *
- * @author BRKsCosta
+ * This class is to generate a new file of the type <b>text</b> by 
+ * java serialization. Implements a interface the make operation to save and 
+ * load the file.
+ * 
+ * @see Patterns.DAO.IWebCrawlerDAO
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerFile implements IWebCrawlerDAO {
 
@@ -35,17 +40,27 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
     public WebCrawlerFile() {
         this.inMemory = new ArrayList();
     }
-
+    
+    /**
+     * Save all data to a file text.
+     */
     @Override
     public void saveAll() {
         this.saveFile();
     }
-
+    
+    /**
+     * Read the collection in memory.
+     * @return Collection of edges
+     */
     @Override
     public Collection<Edge<Link, WebPage>> readAll() {
         return inMemory;
     }
-
+    
+    /**
+     * Save the concrete file
+     */
     private void saveFile() {
         try {
             FileOutputStream fileOut
@@ -61,7 +76,10 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
             view.showErrorStackTraceException(ex.getMessage());
         }
     }
-
+    
+    /**
+     * Load the concrete file.
+     */
     private void loadFile() {
         try {
 

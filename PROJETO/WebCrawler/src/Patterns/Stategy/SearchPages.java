@@ -14,8 +14,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *
- * @author BRKsCosta
+ * This class is a strategy to search all pages in breadth-first.
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public class SearchPages implements ISearchCriteria {
 

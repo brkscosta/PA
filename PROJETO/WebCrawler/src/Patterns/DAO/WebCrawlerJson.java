@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerJson implements IWebCrawlerDAO {
 

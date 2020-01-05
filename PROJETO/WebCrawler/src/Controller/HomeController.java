@@ -20,7 +20,7 @@ import java.net.URL;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class HomeController {
 

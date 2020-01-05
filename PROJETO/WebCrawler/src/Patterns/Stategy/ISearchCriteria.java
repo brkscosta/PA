@@ -9,7 +9,7 @@ import Model.WebPage;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public interface ISearchCriteria {
 

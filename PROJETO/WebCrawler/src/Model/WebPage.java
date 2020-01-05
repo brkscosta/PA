@@ -20,7 +20,7 @@ import org.jsoup.HttpStatusException;
 /**
  * Class that represents the <code>Vertex</code> on graph.
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  *
  */
 public class WebPage {

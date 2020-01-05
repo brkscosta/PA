@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public final class LoggerWriter {
 

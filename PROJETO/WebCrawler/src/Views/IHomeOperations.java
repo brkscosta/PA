@@ -9,7 +9,7 @@ import Controller.HomeController;
 import java.util.Observer;
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public interface IHomeOperations extends Observer {
     

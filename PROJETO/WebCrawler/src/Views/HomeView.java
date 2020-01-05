@@ -66,7 +66,7 @@ import javafx.stage.StageStyle;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
 

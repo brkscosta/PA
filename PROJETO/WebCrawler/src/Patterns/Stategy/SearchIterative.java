@@ -15,7 +15,7 @@ import java.util.Queue;
 
 /**
  *
- * @author danielcordeiro
+ * @author BRKsCosta and danielcordeiro
  */
 public class SearchIterative implements ISearchCriteria {
 

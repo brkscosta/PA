@@ -15,7 +15,7 @@ import java.util.Queue;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class SearchDepth implements ISearchCriteria {
 

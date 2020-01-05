@@ -14,7 +14,7 @@ import org.junit.Before;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerTest {
 

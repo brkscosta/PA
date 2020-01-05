@@ -7,7 +7,7 @@ package Model;
 
 /**
  *
- * @author brkscosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerException extends RuntimeException {
 

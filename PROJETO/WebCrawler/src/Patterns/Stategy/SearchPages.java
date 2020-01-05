@@ -16,7 +16,7 @@ import java.util.Queue;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class SearchPages implements ISearchCriteria {
 

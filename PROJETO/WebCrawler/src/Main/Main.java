@@ -13,7 +13,7 @@ import javafx.stage.StageStyle;
 
 /**
  *
- * @author BRKsCosta
+ * 
  */
 public class Main extends Application {
     

@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebPageTest {
 

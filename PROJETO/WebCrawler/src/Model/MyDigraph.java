@@ -19,7 +19,7 @@ import java.util.Map;
  * @param <V> Type of element stored at a vertex
  * @param <E> Type of element stored at an edge
  * 
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class MyDigraph<V, E> implements Digraph<V, E> {
 

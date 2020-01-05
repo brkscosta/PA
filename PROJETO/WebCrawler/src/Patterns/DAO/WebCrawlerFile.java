@@ -22,7 +22,7 @@ import java.util.Collection;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerFile implements IWebCrawlerDAO {
 

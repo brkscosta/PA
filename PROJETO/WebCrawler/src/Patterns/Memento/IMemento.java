@@ -7,7 +7,7 @@ package Patterns.Memento;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public interface IMemento {
     

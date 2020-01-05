@@ -15,7 +15,7 @@ import javafx.scene.Scene;
 
 /**
  *
- * @author BRKsCosta 
+ * @author BRKsCosta and danielcordeiro
  */
 public class FactoryMVC {
     

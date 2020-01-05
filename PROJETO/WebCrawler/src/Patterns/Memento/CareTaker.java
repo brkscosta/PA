@@ -9,7 +9,7 @@ import java.util.Stack;
 
 /**
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class CareTaker {
     

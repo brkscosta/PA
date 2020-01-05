@@ -27,7 +27,7 @@ import java.util.Collection;
  * Model to be created to build de graph Link <code>Vertex</code> WebPage and
  * <code>Edge</code> Use the methods setChanged() and notifyObservers()
  *
- * @author BRKsCosta and Daniel Cordeiro
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawler extends Observable implements IOriginator, Serializable {
 

@@ -26,6 +26,8 @@ import org.jsoup.HttpStatusException;
 public class WebPage {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
+    private int depth = 0;
+    private boolean isLastOfALevel = false; 
     private String titleName = "";
     private String personalURL = "";
     private final Queue<Link> listIncidentsWebPages;
@@ -36,6 +38,8 @@ public class WebPage {
      *
      * @param url Base URL to search
      */
+    
+    // This constructor is used only for depth criteria build
     public WebPage(String url) {
         this.listIncidentsWebPages = new LinkedList<>();
         // Instantiate the personalUrl
@@ -77,8 +81,13 @@ public class WebPage {
         }
     }
 
-    public void setStatusCode(int status) {
-        this.statusCode = status;
+    // Getters
+    public int getDepth(){
+        return this.depth;
+    }
+
+    public boolean getIsLastOfALevel() {
+        return isLastOfALevel;
     }
 
     /**
@@ -89,16 +98,7 @@ public class WebPage {
     public String getTitleName() {
         return titleName;
     }
-
-    /**
-     * Set personal page URL
-     *
-     * @param personalURL The URL to search
-     */
-    public void setPersonalURL(String personalURL) {
-        this.personalURL = personalURL;
-    }
-
+    
     /**
      * Get WebPage personal URL
      *
@@ -127,26 +127,15 @@ public class WebPage {
         }
         return 0;
     }
-
-    /**
-     * Set a title name
-     *
-     * @param titleName String title name to set
-     */
-    public void setTitleName(String titleName) {
-        this.titleName = titleName;
+    
+    public Queue<Link> getListIncidentsWebPages() {
+        return listIncidentsWebPages;
     }
-
-    /**
-     * Find all links on WebPage
-     *
-     * @param personalLink Personal WebPage link
-     * @return List of all links found
-     * @throws WebCrawlerException
-     * @throws IOException
-     */
+    
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
+        System.out.println("TESTE AO ERRO - " + personalLink);
         try {
+            System.out.println("TESTE AO ERRO - ENTROU");
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
                 throw new WebCrawlerException("URL não pode ser vazio ou nulo");
@@ -169,6 +158,7 @@ public class WebPage {
             return listIncidentsWebPages;
 
         } catch (HttpStatusException ex) {
+            System.out.println("TESTE AO ERRO - RIP");
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
                 logger.writeToLog(ex.getMessage());
@@ -177,7 +167,41 @@ public class WebPage {
             return listIncidentsWebPages;
         }
     }
+    
+    // Setters
+    public void setDepth(int depth){
+        this.depth = depth;
+    }
 
+    public void setIsLastOfALevel(boolean isLastOfALevel) {
+        this.isLastOfALevel = isLastOfALevel;
+    }
+    
+    public void setStatusCode(int status) {
+        this.statusCode = status;
+    }
+    
+    /**
+     * Set personal page URL
+     *
+     * @param personalURL The URL to search
+     */
+    public void setPersonalURL(String personalURL) {
+        this.personalURL = personalURL;
+    }
+
+    /**
+     * Set a title name
+     *
+     * @param titleName String title name to set
+     */
+    public void setTitleName(String titleName) {
+        this.titleName = titleName;
+    }
+
+    
+    // Other methods
+    
     /**
      * Process different types of URL
      *
@@ -227,7 +251,5 @@ public class WebPage {
         return "Title: " + titleName + " Code = " + this.statusCode + "\n";
     }
 
-    public Queue<Link> getListIncidentsWebPages() {
-        return listIncidentsWebPages;
-    }
+    
 }

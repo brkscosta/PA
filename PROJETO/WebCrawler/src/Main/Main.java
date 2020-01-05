@@ -35,6 +35,6 @@ public class Main extends Application {
         Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
         stage.setScene(FactoryMVC.createMVCApp());
         stage.show();
-        FactoryMVC.view.graphView.init();
+        FactoryMVC.view.getGraphView().init();
     }
 }

@@ -46,7 +46,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     // Statistics
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
-    private int numPages = 0;
+    private int numCriteria = 0;
     public boolean isFinished = false;
 
     // 2 Constructors
@@ -71,8 +71,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return pagesList;
     }
 
-    public int getNumPages() {
-        return numPages;
+    public int getNumCriteria() {
+        return numCriteria;
     }
 
     public int getCountHttpsLinks() {
@@ -102,8 +102,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     // Setters
-    public void setNumPages(int numPages) {
-        this.numPages = numPages;
+    public void setNumCriteria(int numCriteria) {
+        this.numCriteria = numCriteria;
     }
 
     public void setCountHttpsLinks(int countHttpsLinks) {
@@ -126,10 +126,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.rootVertex = rootVertex;
     }
 
-    public void setSearchType(ISearchCriteria criteria) {
+    /*public void setSearchType(ISearchCriteria criteria) {
         this.searchCriteria = criteria;
         this.start();
-    }
+    }*/
 
     // Methods with WebPage's
     // Why the method to simply create a new WebCrawler object?
@@ -154,14 +154,16 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers(this.graph);
     }
 
-    public void buildWebCrawler(HomeView.StopCriteria criteria, int numPages, String inputUrl) throws IOException {
+    public void buildWebCrawler(HomeView.StopCriteria criteria, int numCriteria, String inputUrl) throws IOException {
 
         // Assign values
         this.rootWebPage = new WebPage(inputUrl);
-        graph.insertVertex(this.rootWebPage);
-
-        this.numPages = numPages;
-
+        this.numCriteria = numCriteria;
+        
+        if(this.numCriteria != 0){
+            this.graph.insertVertex(this.rootWebPage);
+        }
+        
         switch (criteria) {
             case PAGES:
                 this.searchCriteria = new SearchPages(this);
@@ -173,37 +175,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 this.searchCriteria = new SearchIterative(this);
                 break;
         }
-
-        this.start();
-
-        /*
-         * // Tentar usar o padrao Template, há codigo repetido e só muda uma linha de
-         * código: case "BFS": model.setStartURL(view.getInputURL());
-         * model.setRootWebPage(model.createWebPage()); model.setNumPages(numPages);
-         * model.setSearchType(new SearchPages(model)); if(model.getNumPages() > 0)
-         * view.setColorRootPage(model.getRootWebPage()); view.updateGraph(); break;
-         * case "DFS": model.setStartURL(view.getInputURL());
-         * model.setRootWebPage(model.createWebPage()); model.setNumPages(numPages);
-         * model.setSearchType(new SearchDepth(model));
-         * //view.setColorRootPage(model.getRootWebPage()); break; default:
-         * model.setStartURL(view.getInputURL());
-         * model.setRootWebPage(model.createWebPage());
-         * model.iterative(model.getRootWebPage().element());
-         * //view.setColorRootPage(model.getRootWebPage()); caretaker.requestSave();
-         * break;
-         */
-    }
-
-    /**
-     * This method start the crow of a website
-     *
-     */
-    public void start() {
-
-        Iterable<WebPage> it;
-
-        it = searchCriteria.searchPages(rootWebPage);
-
+        
+        Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
+        
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.countPageNotFound);
@@ -212,13 +186,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
         setChanged();
         notifyObservers();
-
-    }
-
-    // Build iterative WebCrawler
-    public Iterable<WebPage> iterative(WebPage rootWebPage) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
     }
 
     // Iterative method's

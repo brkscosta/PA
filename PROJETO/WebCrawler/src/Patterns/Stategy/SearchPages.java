@@ -37,7 +37,7 @@ public class SearchPages implements ISearchCriteria {
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
-            if (model.getNumPages() == 0) {
+            if (model.getNumCriteria() == 0) {
                 return model.getPagesList();
             }
             
@@ -63,7 +63,7 @@ public class SearchPages implements ISearchCriteria {
                 
                 for (Link link : allIncidentWebLinks) {
                     
-                    if (countMaxVisitedPage == model.getNumPages()) {
+                    if (countMaxVisitedPage == model.getNumCriteria()) {
                         return model.getPagesList();
                     }
                     

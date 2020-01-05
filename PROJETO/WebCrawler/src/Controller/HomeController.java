@@ -24,38 +24,50 @@ import java.net.URL;
  */
 public class HomeController {
 
-    public final HomeView view; // Make it private -> create a getter method
+    private final HomeView view; // Make it private -> create a getter method
     private final WebCrawler model;
     private final CareTaker caretaker;
 
     public HomeController(WebCrawler model, HomeView view, CareTaker caretaker) {
         this.view = view;
         this.model = model;
-
-        //Create new state of model
         this.caretaker = caretaker;
 
         this.view.setTriggersButtons(this);
-        model.addObserver(this.view); // Subscribe the model
+        this.model.addObserver(this.view); // Subscribe the model
     }
 
-    public void startSearch(HomeView.StopCriteria criteria, int numPages)
+    // Getters 
+    public HomeView getView() {
+        return view;
+    }
+
+    public WebCrawler getModel() {
+        return model;
+    }
+
+    public CareTaker getCaretaker() {
+        return caretaker;
+    }
+    
+    // Other methods
+    public void startSearch(HomeView.StopCriteria criteria, int numCriteria)
             throws WebCrawlerException, IOException {
 
         // Init the WebCrawler
-        model.buildWebCrawler(criteria, numPages, view.getInputURL());
+        this.model.buildWebCrawler(criteria, numCriteria, view.getInputURL());
 
         // Update the view
         //view.updateGraph(); // Why update here? If when model WebCrawler is updated it send a message to the Observer HomeView
-        view.update(model, this);
+        //this.view.update(model, this);
 
         // Set color to the root
-        if (model.getNumPages() > 0) {
-            view.setColorRootPage(model.getRootWebPage());
+        if (numCriteria > 0) {
+            this.view.setColorRootPage(this.model.getRootWebPage());
         }
 
         // Save a new Memento
-        caretaker.requestSave();
+        this.caretaker.requestSave();
     }
 
     public void exitApp() {

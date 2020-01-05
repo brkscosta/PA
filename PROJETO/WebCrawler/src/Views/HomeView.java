@@ -77,7 +77,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     private SmartPlacementStrategy strategy;
-    public SmartGraphPanel<WebPage, Link> graphView; // Why this attribute is public? We need to continue with class encapsulation so I will make a new get method
+    private SmartGraphPanel<WebPage, Link> graphView; // Why this attribute is public? We need to continue with class encapsulation so I will make a new get method
     //public SmartGraphPanel<String, String> graphView;
 
     //Menu  
@@ -138,10 +138,19 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         update(model, null);
 
     }
+    
+    // Getters
+    public SmartGraphPanel<WebPage, Link> getGraphView() {
+        return graphView;
+    }
+    
+    // Setters
+    public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
+        this.graphView = graphView;
+    }
 
     // Setup interface view
     private void initializeComponents() {
-
         //Set up menu bar
         this.menuFile = new Menu("File");
         this.mFileItemImportFile = new MenuItem("Import File");
@@ -220,7 +229,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.anchorPaneLeft.getChildren().add(items);
         //END LEFT LAYOUT
 
-        // Statistics on rigth pane
+        // Statistics on right pane
         this.lblStatistics = new Label("Estatísticas");
         this.anchorPaneRigth = new AnchorPane();
         VBox vboxChart = barChart();
@@ -259,7 +268,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         HomeView.setVgrow(splitPane, Priority.ALWAYS);
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
-
     }
 
     /**
@@ -283,6 +291,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         return vbox;
     }
 
+    // Observer method implemented
     @Override
     public void update(Observable o, Object o1) {
 
@@ -390,7 +399,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-
+        
         // Double click in one edge. 
         // It will have to toogle between edges. It can't be possible to have more than one clicked edge at the same time. 
         // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
@@ -477,6 +486,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         System.out.println("root? " + p);
         System.out.println("graphview ? " + graphView.getStylableVertex(p));
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
+        //this.updateGraph();
     }
 
     public void updateGraph() {

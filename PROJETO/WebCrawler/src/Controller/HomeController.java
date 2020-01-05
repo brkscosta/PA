@@ -24,7 +24,7 @@ import java.net.URL;
  */
 public class HomeController {
 
-    private final HomeView view; // Make it private -> create a getter method
+    private final HomeView view;
     private final WebCrawler model;
     private final CareTaker caretaker;
 
@@ -62,12 +62,12 @@ public class HomeController {
         //this.view.update(model, this);
 
         // Set color to the root
-        if (numCriteria > 0) {
+        /*if (numCriteria > 0) {
             this.view.setColorRootPage(this.model.getRootWebPage());
-        }
+        }*/
 
         // Save a new Memento
-        this.caretaker.requestSave();
+        //this.caretaker.requestSave();
     }
 
     public void exitApp() {
@@ -110,21 +110,21 @@ public class HomeController {
             model.getLogger().writeToLog(ex.getMessage());
             view.showErrorStackTraceException(ex.getMessage());
         }
-
     }
 
     public void clearGraph() {
         model.clearGraph();
     }
 
+    /* NOT BEING USED
     public void removePage(SmartGraphVertex<WebPage> graphVertex) {
         this.model.removePage(graphVertex.getUnderlyingVertex());
         caretaker.requestSave();
         //view.updateGraph();
-    }
+    }*/
 
     // This method will 
-    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot) {
+    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot) throws IOException {
         model.insertNewSubWebPageCrawler(subRoot.getUnderlyingVertex());
     }
 

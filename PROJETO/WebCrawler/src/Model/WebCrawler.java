@@ -37,11 +37,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     // Pertinent variables to the DiGraph structure:
     private WebPage rootWebPage;
-    private Vertex<WebPage> rootVertex; // This is the better way. Store the Vertex<WebPage>
+    private Vertex<WebPage> rootVertex;
     private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, ITERATIVE.
-    private List<WebPage> pagesList = new ArrayList<>(); // this is used for????
+    private List<WebPage> pagesList = new ArrayList<>();
 
-    public Graph<WebPage, Link> graph;
+    private Graph<WebPage, Link> graph;
 
     // Statistics
     private int countHttpsLinks = 0;
@@ -126,17 +126,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.rootVertex = rootVertex;
     }
 
-    /*public void setSearchType(ISearchCriteria criteria) {
+    /* NOT BEING USED
+    public void setSearchType(ISearchCriteria criteria) {
         this.searchCriteria = criteria;
         this.start();
     }*/
 
     // Methods with WebPage's
-    // Why the method to simply create a new WebCrawler object?
-    /*
-     * public WebPage createWebPage() throws IOException { return new
-     * WebPage(startURL); }
-     */
     public void clearGraph() {
         this.graph = new MyDigraph<>();
         this.isFinished = true;
@@ -154,13 +150,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers(this.graph);
     }
 
-    public void buildWebCrawler(HomeView.StopCriteria criteria, int numCriteria, String inputUrl) throws IOException {
+    public void buildWebCrawler(StopCriteria criteria, int numCriteria, String inputUrl) throws IOException {
 
         // Assign values
-        this.rootWebPage = new WebPage(inputUrl);
         this.numCriteria = numCriteria;
         
         if(this.numCriteria != 0){
+            this.rootWebPage = new WebPage(inputUrl);
             this.graph.insertVertex(this.rootWebPage);
         }
         
@@ -176,6 +172,30 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 break;
         }
         
+        this.searchPagesAndPrint(this.rootWebPage);
+    }
+    
+    // Iterative method's
+    public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) throws IOException {
+        // Começar a inserir uma nova sub-árvore apartir deste vértice
+
+        /*Vertex<WebPage> subRootFound = null;
+        
+        // Find the subRoot vertex inside the graph. It will always find because the event happened
+        for(Vertex<WebPage> vertex : this.graph.vertices()){
+            if(vertex.element() == subRoot.element()){
+                subRootFound = vertex;
+            }
+        }*/
+        
+        this.searchPagesAndPrint(subRoot.element());
+
+        // TODO - notify observers
+        setChanged();
+        notifyObservers();
+    }
+    
+    private void searchPagesAndPrint(WebPage rootWebPage){
         Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
         
         print("\n ========= Estatísticas ========= \n");
@@ -187,17 +207,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         setChanged();
         notifyObservers();
     }
-
-    // Iterative method's
-    public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) {
-        // Começar a inserir uma nova sub-árvore apartir deste vértice
-
-        // TODO - notify observers
-        setChanged();
-        notifyObservers();
-    }
-
-    // Necessario este print??????? TODO
+    
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }

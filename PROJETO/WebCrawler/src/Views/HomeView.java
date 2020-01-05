@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -77,8 +79,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
     //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     private SmartPlacementStrategy strategy;
-    private SmartGraphPanel<WebPage, Link> graphView; // Why this attribute is public? We need to continue with class encapsulation so I will make a new get method
-    //public SmartGraphPanel<String, String> graphView;
+    private SmartGraphPanel<WebPage, Link> graphView;
 
     //Menu  
     private MenuBar menuBar;
@@ -124,11 +125,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     // Graph interface
     SmartGraphEdge<Link, WebPage> edgeClicked = null;
     SmartGraphVertex<WebPage> vertexClicked;
+    private boolean inIterativeMode = false;
 
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
-        //this.graphView = new SmartGraphPanel(g, strategy);
-        this.graphView = new SmartGraphPanel<>(model.graph, strategy);
+        this.graphView = new SmartGraphPanel<>(model.getGraph(), strategy);
         BorderPane window = new BorderPane(HomeView.this);
         window.setCenter(HomeView.this);
         this.scene = new Scene(window, 1500, 700);
@@ -295,7 +296,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     @Override
     public void update(Observable o, Object o1) {
 
-        // TODO . Talvez introduzir um try catch para que o programa nao rebente ao fazer casting??
         WebCrawler obsModel = (WebCrawler) o; // Model
 
         if (o instanceof WebCrawler) {
@@ -309,18 +309,16 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphView.update();
                 obsModel.isFinished = false;
             }
-
+            
+            //this.graphView.update();
             // Will happen 2 updates with this test graphView.update()
         }
     }
-
+    
+    // IHomeOperations methods
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
-    }
-
-    private void redoGraph() {
-        System.out.println("Views.Home.redoGraph()");
     }
 
     @Override
@@ -390,12 +388,23 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-
+        
+        
+        
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
 
-            controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
+            if(this.inIterativeMode){
+                try {
+                    controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
+                } catch (IOException ex) {
+                    Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
+            }
+            
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
@@ -460,7 +469,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
     }
-
+    
+    // TODO
+    private void redoGraph() {
+        System.out.println("Views.Home.redoGraph()");
+    }
+    
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {
@@ -475,6 +489,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 controller.startSearch(HomeView.StopCriteria.DEPTH, parseInt);
             } else {
                 lblAnotherThing.setText("Selecionou Iterativo");
+                this.inIterativeMode = true;
                 controller.startSearch(HomeView.StopCriteria.ITERATIVE, parseInt);
             }
         } catch (IOException ex) {

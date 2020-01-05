@@ -29,7 +29,7 @@ public class WebCrawlerTest {
         // Test pages not found
         String page404 = "https://deviup.com.br:3001/api/lembrete/2";
         this.web404 = new WebPage(page404);
-        webCrawlerInstance.graph.insertVertex(web404);
+        webCrawlerInstance.getGraph().insertVertex(web404);
         //webCrawlerInstance.start();
     }
 

@@ -37,50 +37,55 @@ public class SearchPages implements ISearchCriteria {
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
-            if (model.getNumCriteria() == 0) {
-                return model.getPagesList();
+            if (this.model.getNumCriteria() == 0) {
+                return this.model.getPagesList();
             }
             
-            if (model.checkIfHasWebPage(webPage) == false) {
+            if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
-                model.graph.insertVertex(webPage);
+                this.model.getGraph().insertVertex(webPage);
             }
             
             webPagesToVisit.add(webPage);
-            model.getPagesList().add(webPage);
+            this.model.getPagesList().add(webPage);
             
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;
-            this.countHttpsLinks = model.countHttpsProtocols(webPage.getPersonalURL());
-            this.countPageNotFound = model.getPagesNotFound(webPage);
+            this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.countPageNotFound = this.model.getPagesNotFound(webPage);
             
             while (!webPagesToVisit.isEmpty()) {
                 WebPage visitedWebPage = webPagesToVisit.poll();
                 System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
                 
-                // Get all incident links for
-                Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
+                Queue<Link> allIncidentWebLinks;
+                if(visitedWebPage.getStatusCode() == 404){
+                    allIncidentWebLinks = new LinkedList();
+                }else{
+                    allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                }
                 
                 for (Link link : allIncidentWebLinks) {
                     
-                    if (countMaxVisitedPage == model.getNumCriteria()) {
-                        return model.getPagesList();
+                    if (countMaxVisitedPage == this.model.getNumCriteria()) {
+                        return this.model.getPagesList();
                     }
                     
-                    countHttpsLinks += model.countHttpsProtocols(link.getLinkName());
+                    countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
                     
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
-                    model.graph.insertVertex(webPageInserting);
+                    this.model.getGraph().insertVertex(webPageInserting);
                     
-                    countPageNotFound += model.getPagesNotFound(webPageInserting);
+                    countPageNotFound += this.model.getPagesNotFound(webPageInserting);
                     
-                    model.getPagesList().add(webPageInserting);
+                    this.model.getPagesList().add(webPageInserting);
                     webPagesToVisit.add(webPageInserting);
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
                     // Insert a new Link between WebPages
-                    model.graph.insertEdge(visitedWebPage, webPageInserting, link);
+                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
                     
                     // Increment countMaxVisitedPage by 1
                     countMaxVisitedPage++;

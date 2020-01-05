@@ -44,7 +44,7 @@ public class SearchDepth implements ISearchCriteria {
             
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
-                this.model.graph.insertVertex(webPage);
+                this.model.getGraph().insertVertex(webPage);
             }
             
             countLevelReached++;
@@ -55,26 +55,30 @@ public class SearchDepth implements ISearchCriteria {
             this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
             this.countPageNotFound = this.model.getPagesNotFound(webPage);
             
-            while (!webPagesToVisit.isEmpty()) {
+            while (!webPagesToVisit.isEmpty()){
                 
                 // Check if it is still in the wanted level 
                 if (countLevelReached == this.model.getNumCriteria()) {
                         return this.model.getPagesList();
                 }
                 
-                // TODO -> Check if the WebPage is visiting is the last of a level...
-                
                 // Picks a WebPage to visit
                 WebPage visitedWebPage = webPagesToVisit.poll();
                 System.out.println("Link da página root: " + visitedWebPage.getPersonalURL() + "\nIncident WebPages:\n[");
                 
-                // Get all incident links in the visited WebPage
-                Queue<Link> allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
+                Queue<Link> allIncidentWebLinks;
+                if(visitedWebPage.getStatusCode() == 404){
+                    System.out.println("SHIT");
+                    allIncidentWebLinks = new LinkedList();
+                }else{
+                    allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                }
                 
                 // This variable will help us to know when it reaches to the last element from the queue
                 int incidentLinksAdded = 0;
                 
-                for (Link link : allIncidentWebLinks) {
+                for (Link link : allIncidentWebLinks){
                     
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
@@ -86,7 +90,7 @@ public class SearchDepth implements ISearchCriteria {
                         countLevelReached++; // finished the BFS of this level
                     }
                     
-                    this.model.graph.insertVertex(webPageInserting);
+                    this.model.getGraph().insertVertex(webPageInserting);
                     this.model.getPagesList().add(webPageInserting);
                     webPagesToVisit.add(webPageInserting);
                     incidentLinksAdded++;
@@ -97,7 +101,7 @@ public class SearchDepth implements ISearchCriteria {
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
                     // Insert a new Link between WebPages
-                    this.model.graph.insertEdge(visitedWebPage, webPageInserting, link);
+                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
                 }
                 System.out.println("]\n");
             }

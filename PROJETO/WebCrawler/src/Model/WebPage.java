@@ -87,7 +87,7 @@ public class WebPage {
     }
 
     public boolean getIsLastOfALevel() {
-        return isLastOfALevel;
+        return this.isLastOfALevel;
     }
 
     /**
@@ -136,14 +136,16 @@ public class WebPage {
         System.out.println("TESTE AO ERRO - " + personalLink);
         try {
             System.out.println("TESTE AO ERRO - ENTROU");
+            
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
                 throw new WebCrawlerException("URL não pode ser vazio ou nulo");
             }
 
+            System.out.println("tamanho dos links ----> ");
             Document doc = Jsoup.connect(personalLink).get();
             Elements links = doc.select("a[href]");
-
+            
             for (Element link : links) {
                 String href = link.attr("abs:href");
                 String newHref = processLink(href, personalLink);

@@ -8,6 +8,7 @@ package Patterns.Stategy;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -44,20 +45,27 @@ public class SearchIterative implements ISearchCriteria {
             }
 
             for (Link link : allIncidentWebLinks) {
-
+                
                 countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
-
-                // Insert a new WebPage in the graph
-                WebPage webPageInserting = new WebPage(link.getLinkName());
-                this.model.getGraph().insertVertex(webPageInserting);
-
-                countPageNotFound += this.model.getPagesNotFound(webPageInserting);
-
-                this.model.getPagesList().add(webPageInserting);
-                System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
-
-                // Insert a new Link between WebPages
-                model.getGraph().insertEdge(webPage, webPageInserting, link);
+                
+                // This WebPage can already exists with that link
+                Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
+                
+                // Check if it exists already a WebPage with that link
+                if(vertexWebPageFound != null){
+                    // Insert a new Link between WebPages
+                    model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
+                    countPageNotFound += this.model.getPagesNotFound(vertexWebPageFound.element());
+                }else{
+                    // Insert a new WebPage in the graph
+                    WebPage webPageInserting = new WebPage(link.getLinkName());
+                    this.model.getGraph().insertVertex(webPageInserting);
+                    this.model.getPagesList().add(webPageInserting);
+                    model.getGraph().insertEdge(webPage, webPageInserting, link);
+                    System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
+                    
+                    countPageNotFound += this.model.getPagesNotFound(webPageInserting);
+                }
             }
             System.out.println("]\n");
             

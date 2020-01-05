@@ -389,8 +389,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             selectSearchType(controller);
         });
         
-        
-        
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());

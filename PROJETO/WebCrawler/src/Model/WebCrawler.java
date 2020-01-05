@@ -257,6 +257,15 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         }
         return false;
     }
+    
+    public Vertex<WebPage> getEqualWebPageVertex(String linkName){
+        for (Vertex<WebPage> page : graph.vertices()) {
+            if (page.element().getPersonalURL().equals(linkName)) {
+                return page;
+            }
+        }
+        return null;
+    }
 
     /**
      * Counter of links

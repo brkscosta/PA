@@ -12,6 +12,5 @@ import Model.WebPage;
  * @author BRKsCosta and danielcordeiro
  */
 public interface ISearchCriteria {
-
     public Iterable<WebPage> searchPages(WebPage webPage);
 }

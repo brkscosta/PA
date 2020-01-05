@@ -54,14 +54,13 @@ public class SearchIterative implements ISearchCriteria {
                 // Check if it exists already a WebPage with that link
                 if(vertexWebPageFound != null){
                     // Insert a new Link between WebPages
-                    model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
-                    countPageNotFound += this.model.getPagesNotFound(vertexWebPageFound.element());
+                    this.model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
                 }else{
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
                     this.model.getGraph().insertVertex(webPageInserting);
                     this.model.getPagesList().add(webPageInserting);
-                    model.getGraph().insertEdge(webPage, webPageInserting, link);
+                    this.model.getGraph().insertEdge(webPage, webPageInserting, link);
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
                     countPageNotFound += this.model.getPagesNotFound(webPageInserting);
@@ -69,9 +68,9 @@ public class SearchIterative implements ISearchCriteria {
             }
             System.out.println("]\n");
             
-            return model.getPagesList();
+            return this.model.getPagesList();
         } catch (IOException ex) {
-            model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
+            this.model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
         }
         return null;
     }

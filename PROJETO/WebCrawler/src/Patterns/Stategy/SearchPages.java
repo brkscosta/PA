@@ -9,6 +9,7 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -41,10 +42,11 @@ public class SearchPages implements ISearchCriteria {
                 return this.model.getPagesList();
             }
             
-            if (this.model.checkIfHasWebPage(webPage) == false) {
+            // TODO -> This is really needed? The root WebPage is always added before this call. So this will never happen I think. 
+            /*if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
                 this.model.getGraph().insertVertex(webPage);
-            }
+            }*/
             
             webPagesToVisit.add(webPage);
             this.model.getPagesList().add(webPage);
@@ -68,13 +70,35 @@ public class SearchPages implements ISearchCriteria {
                 
                 for (Link link : allIncidentWebLinks) {
                     
+                    // This WebPage can already exists with that link
+                    Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
+                    
                     if (countMaxVisitedPage == this.model.getNumCriteria()) {
                         return this.model.getPagesList();
                     }
                     
                     countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
                     
-                    // Insert a new WebPage in the graph
+                    // Check if it exists already a WebPage with that link
+                    if(vertexWebPageFound != null){
+                        // Insert a new Link between WebPages
+                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
+                    }else{
+                        // Insert a new WebPage in the graph
+                        WebPage webPageInserting = new WebPage(link.getLinkName());
+                        this.model.getGraph().insertVertex(webPageInserting);
+                        this.model.getPagesList().add(webPageInserting);
+                        webPagesToVisit.add(webPageInserting);
+                        System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
+                        model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+                        
+                        countPageNotFound += this.model.getPagesNotFound(webPageInserting);
+                        
+                        // Increment countMaxVisitedPage by 1
+                        countMaxVisitedPage++;
+                    }
+                    
+                    /*// Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
                     this.model.getGraph().insertVertex(webPageInserting);
                     
@@ -85,10 +109,7 @@ public class SearchPages implements ISearchCriteria {
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
                     // Insert a new Link between WebPages
-                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
-                    
-                    // Increment countMaxVisitedPage by 1
-                    countMaxVisitedPage++;
+                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);*/ 
                 }
                 System.out.println("]\n");
             }

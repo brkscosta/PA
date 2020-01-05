@@ -8,6 +8,7 @@ package Patterns.Stategy;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -42,11 +43,6 @@ public class SearchDepth implements ISearchCriteria {
             webPage.setDepth(1);
             webPage.setIsLastOfALevel(true);
             
-            if (this.model.checkIfHasWebPage(webPage) == false) {
-                // Insert the webPage in the graph
-                this.model.getGraph().insertVertex(webPage);
-            }
-            
             countLevelReached++;
             
             webPagesToVisit.add(webPage);
@@ -68,15 +64,32 @@ public class SearchDepth implements ISearchCriteria {
                 
                 // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
                 Queue<Link> allIncidentWebLinks;
+                
                 if(visitedWebPage.getStatusCode() == 404){
-                    System.out.println("SHIT");
                     allIncidentWebLinks = new LinkedList();
+                    // TODO -> SET COLOR TO THE 404 VERTEX'S
                 }else{
                     allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
                 }
                 
-                // This variable will help us to know when it reaches to the last element from the queue
+                // This variable will help us to know when it reaches to the last element from the queue allIncidentWebLinks
                 int incidentLinksAdded = 0;
+                
+                // Lets take out from the allIncidentWebLinks variable the links to exixting vertex's -> This will make sure that we clear a level for the unvisited vertices
+                for (Link link : allIncidentWebLinks){
+                    
+                    // This WebPage can already exists with that link
+                    Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
+                    if(vertexWebPageFound != null){
+                        // Insert a new Link between WebPages
+                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
+                        
+                        countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
+                        countPageNotFound += this.model.getPagesNotFound(vertexWebPageFound.element());
+                        
+                        allIncidentWebLinks.remove(link);
+                    }
+                }
                 
                 for (Link link : allIncidentWebLinks){
                     

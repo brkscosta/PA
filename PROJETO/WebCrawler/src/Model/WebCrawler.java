@@ -233,13 +233,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      */
     public void clearGraph() {
 
-        for (Edge<Link, WebPage> edge : this.graph.edges()) {
+        this.graph.edges().forEach((edge) -> {
             this.graph.removeEdge(edge);
-        }
+        });
 
-        for (Vertex<WebPage> webPage : this.graph.vertices()) {
+        this.graph.vertices().forEach((webPage) -> {
             this.graph.removeVertex(webPage);
-        }
+        });
 
         this.isFinished = true;
 

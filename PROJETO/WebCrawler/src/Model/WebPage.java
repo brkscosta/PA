@@ -151,6 +151,10 @@ public class WebPage {
         return listIncidentsWebPages;
     }
     
+    public int getNumberLinks() {
+        return listIncidentsWebPages.size();
+    }
+    
     /**
      * Return all incident pages connected to the current WebPage
      * 
@@ -160,7 +164,7 @@ public class WebPage {
      * @throws IOException 
      */
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
-        System.out.println("TESTE AO ERRO - " + personalLink);
+        
         try {
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {

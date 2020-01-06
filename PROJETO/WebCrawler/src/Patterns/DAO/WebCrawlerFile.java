@@ -47,7 +47,7 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
     private Map<String, List<String>> edgesMap;
 
     public WebCrawlerFile(WebCrawler model) {
-        this.inMemory = model.getAllLinks();
+        //this.inMemory = model.getAllLinks();
         this.edgesMap = new HashMap<>();
     }
 
@@ -79,7 +79,8 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
      */
     @Override
     public List<Edge<Link, WebPage>> readAll() {
-        return model.getAllLinks();
+        //return model.getAllLinks();
+        return null;
     }
 
     /**

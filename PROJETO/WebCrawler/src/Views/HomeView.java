@@ -10,7 +10,6 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
-import static Patterns.Factories.Factories.getAppStage;
 import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
@@ -51,7 +50,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
 import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -64,16 +62,9 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
 
 /**
- *
- * This class is responsible to show own UI. Extends from a VBox from javaFX and
- * implements the interfaces Observer (notified by model
- * {@link Model.WebCrawler} and behaviors {@link Views.IHomeOperations} of the
- * view .
  *
  * @author BRKsCosta and danielcordeiro
  */
@@ -84,21 +75,9 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         PAGES, DEPTH, ITERATIVE;
     }
 
-    public enum FileType {
-        DATA, JSON;
-
-        public FileType getFileType(String type) {
-            switch (type) {
-                case "DATA":
-                    return DATA;
-                case "JSON":
-                    return JSON;
-            }
-            return null;
-        }
-    }
-
     LoggerWriter logW = LoggerWriter.getInstance();
+    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
+    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     private SmartPlacementStrategy strategy;
     private SmartGraphPanel<WebPage, Link> graphView;
 
@@ -148,7 +127,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     SmartGraphVertex<WebPage> vertexClicked;
     private boolean inIterativeMode = false;
 
-    @SuppressWarnings("OverridableMethodCallInConstructor")
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
         this.graphView = new SmartGraphPanel<>(model.getGraph(), strategy);
@@ -161,32 +139,19 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         update(model, null);
 
     }
-
+    
     // Getters
-    /**
-     * Get the graph panel
-     *
-     * @return A SmartGraphPanel object
-     */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
-
+    
     // Setters
-    /**
-     * Set the SmartGraphPanel
-     *
-     * @param graphView A object SmartGraphPanel
-     */
     public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
         this.graphView = graphView;
     }
 
-    /**
-     * This method initialize all components present on the interface
-     */
+    // Setup interface view
     private void initializeComponents() {
-
         //Set up menu bar
         this.menuFile = new Menu("File");
         this.mFileItemImportFile = new MenuItem("Import File");
@@ -313,15 +278,15 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
      */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Páginas Web");
+        xAxis.setLabel("Devices");
         NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Número de Páginas");
+        yAxis.setLabel("Visits");
         BarChart barChart = new BarChart(xAxis, yAxis);
         XYChart.Series dataSeries1 = new XYChart.Series();
-        dataSeries1.setName("WebCrawler");
-        dataSeries1.getData().add(new XYChart.Data("Links HTTPS", 6));
-        dataSeries1.getData().add(new XYChart.Data("Não encontradas", 4));
-        dataSeries1.getData().add(new XYChart.Data("Visitadas", 10));
+        dataSeries1.setName("2014");
+        dataSeries1.getData().add(new XYChart.Data("Desktop", 567));
+        dataSeries1.getData().add(new XYChart.Data("Phone", 65));
+        dataSeries1.getData().add(new XYChart.Data("Tablet", 23));
         barChart.getData().add(dataSeries1);
         VBox vbox = new VBox(barChart);
         return vbox;
@@ -344,33 +309,21 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphView.update();
                 obsModel.isFinished = false;
             }
-
+            
             //this.graphView.update();
             // Will happen 2 updates with this test graphView.update()
         }
     }
-
+    
     // IHomeOperations methods
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
     }
-
+    
     @Override
     public void importFile(HomeController controller) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Abrir Ficheiro");
-        fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Data File", "*.data"),
-                new ExtensionFilter("Json File", "*.json"));
-        File selectedFile = fileChooser.showOpenDialog(getAppStage());
-        if (selectedFile != null) {
-            String fileName = selectedFile.getName();
-            String fileExtension = fileName.substring(fileName.lastIndexOf(".")
-                    + 1, selectedFile.getName().length());
-            controller.importFiles(fileExtension.toUpperCase());
-
-        }
+        System.out.println("Views.Home.importFile()");
     }
 
     @Override
@@ -414,7 +367,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         });
 
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
-            importFile(controller);
+            System.out.println("Import File");
         });
 
         // Apply Memento - Undo
@@ -435,25 +388,26 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-
+        
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
 
-            if (this.inIterativeMode) {
+            if(this.inIterativeMode){
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
+                    controller.getCaretaker().requestSave();
                 } catch (IOException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
+            }else{
                 controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             }
-
+            
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-
+        
         // Double click in one edge. 
         // It will have to toogle between edges. It can't be possible to have more than one clicked edge at the same time. 
         // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
@@ -461,14 +415,14 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("EDGE -1");
             //dynamically change the style when clicked
-            if (this.edgeClicked != null) {
+            if (this.edgeClicked != null){
                 System.out.println("EDGE 0");
                 // Check if the clicked edge is the same as the edge passed as an argument
                 if (graphEdge.getUnderlyingEdge() == this.edgeClicked) {
                     // Change the color to the default
                     graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
                     this.edgeClicked = null;
-
+                    
                     System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
@@ -514,12 +468,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
     }
-
+    
     // TODO
     private void redoGraph() {
         System.out.println("Views.Home.redoGraph()");
     }
-
+    
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {
@@ -591,10 +545,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     private void chooseFileType(HomeController controller) {
         List<String> choices = new ArrayList<>();
-        choices.add("DATA");
+        choices.add("Text");
         choices.add("JSON");
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("DATA", choices);
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Text", choices);
         dialog.initStyle(StageStyle.UTILITY);
         dialog.setTitle("Exportar");
         dialog.setHeaderText("Por favor, selecione um formato.");

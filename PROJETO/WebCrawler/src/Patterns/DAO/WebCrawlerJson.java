@@ -38,7 +38,7 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
     private Map<String, List<String>> edgesMap;
 
     public WebCrawlerJson(WebCrawler model) {
-        this.inMemory = model.getAllLinks();
+        //this.inMemory = model.getAllLinks();
         this.edgesMap = new HashMap<>();
     }
 

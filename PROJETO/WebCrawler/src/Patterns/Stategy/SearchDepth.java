@@ -8,6 +8,7 @@ package Patterns.Stategy;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ public class SearchDepth implements ISearchCriteria {
     private WebCrawler model;
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
+    private LoggerWriter logW = LoggerWriter.getInstance();
     
     public SearchDepth(WebCrawler model) {
         this.model = model;
@@ -47,6 +49,9 @@ public class SearchDepth implements ISearchCriteria {
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
                 this.model.getGraph().insertVertex(webPage);
+                logW.writeToLog(webPage.getTitleName() + " | "
+                        + webPage.getPersonalURL() + " | " + webPage.getTitleName()
+                        + " | " + webPage.getNumberLinks());
             }
             
             countLevelReached++;
@@ -116,6 +121,9 @@ public class SearchDepth implements ISearchCriteria {
                     
                     // Insert a new Link between WebPages
                     this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+                    logW.writeToLog(webPageInserting.getTitleName() + " | "
+                            + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
+                            + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
                 }
                 System.out.println("]\n");
             }

@@ -8,6 +8,7 @@ package Patterns.Stategy;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ public class SearchIterative implements ISearchCriteria {
     private WebCrawler model;
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
+    private LoggerWriter logW = LoggerWriter.getInstance();
     
     public SearchIterative(WebCrawler model) {
         this.model = model;
@@ -65,8 +67,8 @@ public class SearchIterative implements ISearchCriteria {
                     WebPage webPageInserting = new WebPage(link.getLinkName());
                     this.model.getGraph().insertVertex(webPageInserting);
                     this.model.getPagesList().add(webPageInserting);
-                    this.model.getGraph().insertEdge(webPage, webPageInserting, link); // This edges aren't needed to add for the list of edges added becasue if we remove one inbound/outbound vertex it will remove the edge
-                    
+                    this.model.getGraph().insertEdge(webPage, webPageInserting, link); 
+                  
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
                     countPageNotFound += this.model.getPagesNotFound(webPageInserting);

@@ -44,6 +44,7 @@ public class SearchIterative implements ISearchCriteria {
             Queue<Link> allIncidentWebLinks;
             
             if(webPage.getStatusCode() == 404){
+                this.model.getWebPagesNotFound().add(webPage);
                 allIncidentWebLinks = new LinkedList();
             }else{
                 allIncidentWebLinks = webPage.getAllIncidentWebPages(webPage.getPersonalURL());

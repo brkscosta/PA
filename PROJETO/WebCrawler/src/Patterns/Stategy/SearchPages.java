@@ -62,6 +62,7 @@ public class SearchPages implements ISearchCriteria {
                 // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
                 Queue<Link> allIncidentWebLinks;
                 if(visitedWebPage.getStatusCode() == 404){
+                    this.model.getWebPagesNotFound().add(webPage);
                     allIncidentWebLinks = new LinkedList();
                 }else{
                     allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());

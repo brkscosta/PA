@@ -481,9 +481,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
 
             if (rdBtnBreadthFirst.isSelected()) {
+                this.inIterativeMode = false;
                 lblAnotherThing.setText("Selecionou BFS");
                 controller.startSearch(HomeView.StopCriteria.PAGES, parseInt);
             } else if (rdBtnDepth.isSelected()) {
+                this.inIterativeMode = false;
                 lblAnotherThing.setText("Selecionou DFS");
                 controller.startSearch(HomeView.StopCriteria.DEPTH, parseInt);
             } else {

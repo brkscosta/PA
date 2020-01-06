@@ -104,9 +104,9 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
      */
     @Override
     public synchronized Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
-        if (existsEdgeWith(edgeElement)) {
+        /*if (existsEdgeWith(edgeElement)) {
             throw new InvalidEdgeException("There's already an edge with this element.");
-        }
+        }*/
 
         MyVertex outVertex = checkVertex(outbound);
         MyVertex inVertex = checkVertex(inbound);
@@ -129,9 +129,9 @@ public class MyDigraph<V, E> implements Digraph<V, E> {
      */
     @Override
     public synchronized Edge<E, V> insertEdge(V outboundElement, V inboundElement, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
-        if (existsEdgeWith(edgeElement)) {
+        /*if (existsEdgeWith(edgeElement)) {
             throw new InvalidEdgeException("There's already an edge with this element.");
-        }
+        }*/
 
         if (!existsVertexWith(outboundElement)) {
             throw new InvalidVertexException("No vertex contains " + outboundElement);

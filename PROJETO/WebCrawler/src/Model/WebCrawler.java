@@ -171,24 +171,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Set the edges added
-     *
-     * @param edgesAdded A list of edges
-     */
-    public void setEdgesAdded(List<Edge<Link, WebPage>> edgesAdded) {
-        this.edgesAdded = edgesAdded;
-    }
-
-    /**
-     * Set vertex added
-     *
-     * @param vertexsAdded A list of vertex added
-     */
-    public void setVertexsAdded(List<Vertex<WebPage>> vertexsAdded) {
-        this.vertexsAdded = vertexsAdded;
-    }
-
-    /**
      * Set the count of HTTPS pages
      *
      * @param countHttpsLinks A number

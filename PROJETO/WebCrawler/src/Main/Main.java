@@ -5,11 +5,9 @@
  */
 package Main;
 
-import Patterns.FactoryMVC.FactoryMVC;
+import static Patterns.Factories.Factories.showApp;
 import javafx.application.Application;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  *
@@ -25,16 +23,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage ignored) throws Exception {
-        
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.sizeToScene();
-        stage.setTitle("Web Crawler");
-        stage.setResizable(false);
-        stage.getIcons().add(new 
-        Image(Main.class.getResourceAsStream("/Resources/images/icon.png")));
-        stage.setScene(FactoryMVC.createMVCApp());
-        stage.show();
-        FactoryMVC.view.getGraphView().init();
+    public void start(Stage ignored) {
+        showApp();
     }
 }

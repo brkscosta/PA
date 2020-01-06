@@ -1,6 +1,6 @@
 package Model;
 
-import static Patterns.FactoryMVC.FactoryMVC.view;
+import static Patterns.Factories.Factories.*;
 import Patterns.Singleton.LoggerWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -54,7 +54,7 @@ public class WebPage {
             insertStatusCodeTitle(connection);
         } catch (IllegalArgumentException ex) {
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
         }
 
     }
@@ -83,7 +83,7 @@ public class WebPage {
             }
         } catch (IOException ex) {
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
         }
     }
 
@@ -137,7 +137,7 @@ public class WebPage {
             return connection.getResponseCode();
         } catch (IOException ex) {
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
         }
         return 0;
     }
@@ -162,8 +162,6 @@ public class WebPage {
     public Queue<Link> getAllIncidentWebPages(String personalLink) throws WebCrawlerException, IOException {
         System.out.println("TESTE AO ERRO - " + personalLink);
         try {
-            System.out.println("TESTE AO ERRO - ENTROU");
-
             //Check if page is not found
             if ("".equals(personalLink) || personalLink == null) {
                 throw new WebCrawlerException("URL não pode ser vazio ou nulo");
@@ -191,7 +189,7 @@ public class WebPage {
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
                 logger.writeToLog(ex.getMessage());
-                view.showErrorStackTraceException(ex.getMessage());
+                getView().showErrorStackTraceException(ex.getMessage());
             }
             return listIncidentsWebPages;
         }
@@ -264,7 +262,7 @@ public class WebPage {
             return link;
         } catch (MalformedURLException ex) {
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
             return null;
         }
     }

@@ -6,11 +6,12 @@
 package Patterns.DAO;
 
 import Model.Link;
+import Model.WebCrawler;
 import Model.WebPage;
-import static Patterns.DAO.WebCrawlerJson.FILENAME;
-import static Patterns.FactoryMVC.FactoryMVC.view;
+import static Patterns.Factories.Factories.*;
 import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Edge;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,45 +20,68 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * This class is to generate a new file of the type <b>text</b> by 
- * java serialization. Implements a interface the make operation to save and 
- * load the file.
- * 
+ * This class is to generate a new file of the type <b>text</b> by java
+ * serialization. Implements a interface the make operation to save and load the
+ * file.
+ *
  * @see Patterns.DAO.IWebCrawlerDAO
- * 
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerFile implements IWebCrawlerDAO {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
 
-    public static final String FILENAME = "Webcrawler.txt";
+    public static final String FILENAME = "Webcrawler.data";
 
-    private Collection<Edge<Link, WebPage>> inMemory;
+    private WebCrawler model;
 
-    public WebCrawlerFile() {
-        this.inMemory = new ArrayList();
+    private List<Edge<Link, WebPage>> inMemory;
+    private Map<String, List<String>> edgesMap;
+
+    public WebCrawlerFile(WebCrawler model) {
+        this.inMemory = model.getAllLinks();
+        this.edgesMap = new HashMap<>();
     }
-    
+
     /**
      * Save all data to a file text.
      */
     @Override
     public void saveAll() {
+
+        for (int i = 0; i < inMemory.size(); i++) {
+            Edge<Link, WebPage> edge = inMemory.get(i);
+            String key = edge.element().getLinkName();
+            List<String> value = new ArrayList<>();
+
+            for (Vertex<WebPage> vertice : edge.vertices()) {
+                value.add(vertice.element().toString());
+                edgesMap.put(key, value);
+            }
+
+        }
+        System.out.println("Edges Map:" + edgesMap);
         this.saveFile();
     }
-    
+
     /**
      * Read the collection in memory.
+     *
      * @return Collection of edges
      */
     @Override
-    public Collection<Edge<Link, WebPage>> readAll() {
-        return inMemory;
+    public List<Edge<Link, WebPage>> readAll() {
+        return model.getAllLinks();
     }
-    
+
     /**
      * Save the concrete file
      */
@@ -67,20 +91,22 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
                     = new FileOutputStream(FILENAME);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-            out.writeObject(inMemory);
+            out.writeObject(edgesMap);
             out.close();
 
             fileOut.close();
         } catch (IOException ex) {
+            Logger.getLogger(WebCrawlerFile.class.getName()).log(Level.SEVERE, null, ex);
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
         }
     }
-    
+
     /**
      * Load the concrete file.
      */
-    private void loadFile() {
+    @Override
+    public void loadFile() {
         try {
 
             File f = new File(FILENAME);
@@ -93,14 +119,14 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
                     = new FileInputStream(FILENAME);
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
-            inMemory = (Collection<Edge<Link, WebPage>>) in.readObject();
+            edgesMap = (Map<String, List<String>>) in.readObject();
             in.close();
 
             fileIn.close();
 
         } catch (IOException | ClassNotFoundException ex) {
             logger.writeToLog(ex.getMessage());
-            view.showErrorStackTraceException(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
         }
     }
 

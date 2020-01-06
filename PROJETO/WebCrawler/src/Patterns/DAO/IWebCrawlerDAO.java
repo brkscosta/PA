@@ -6,10 +6,8 @@
 package Patterns.DAO;
 
 import Model.Link;
-import Model.WebCrawler;
 import Model.WebPage;
 import com.brunomnsilva.smartgraph.graph.Edge;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,5 +27,10 @@ public interface IWebCrawlerDAO {
      *
      * @return All pages present inserted on graph
      */
-    public Collection<Edge<Link, WebPage>> readAll();
+    public List<Edge<Link, WebPage>> readAll();
+    
+    /**
+     * Read the file
+     */
+    public void loadFile();
 }

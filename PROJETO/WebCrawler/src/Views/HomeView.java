@@ -10,6 +10,7 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
+import static Patterns.Factories.Factories.getAppStage;
 import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
@@ -50,6 +51,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
 import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -62,14 +64,17 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
 
 /**
  *
- * This class is responsible to show own UI. Extends from a VBox from javaFX
- * and implements the interfaces Observer (notified by model {@link Model.WebCrawler}
- * and behaviors {@link Views.IHomeOperations} of the view .
- * 
+ * This class is responsible to show own UI. Extends from a VBox from javaFX and
+ * implements the interfaces Observer (notified by model
+ * {@link Model.WebCrawler} and behaviors {@link Views.IHomeOperations} of the
+ * view .
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
@@ -79,9 +84,21 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         PAGES, DEPTH, ITERATIVE;
     }
 
+    public enum FileType {
+        DATA, JSON;
+
+        public FileType getFileType(String type) {
+            switch (type) {
+                case "DATA":
+                    return DATA;
+                case "JSON":
+                    return JSON;
+            }
+            return null;
+        }
+    }
+
     LoggerWriter logW = LoggerWriter.getInstance();
-    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
     private SmartPlacementStrategy strategy;
     private SmartGraphPanel<WebPage, Link> graphView;
 
@@ -131,6 +148,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     SmartGraphVertex<WebPage> vertexClicked;
     private boolean inIterativeMode = false;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public HomeView(WebCrawler model) {
         this.strategy = new SmartCircularSortedPlacementStrategy();
         this.graphView = new SmartGraphPanel<>(model.getGraph(), strategy);
@@ -145,17 +163,30 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     }
 
     // Getters
+    /**
+     * Get the graph panel
+     *
+     * @return A SmartGraphPanel object
+     */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
 
     // Setters
+    /**
+     * Set the SmartGraphPanel
+     *
+     * @param graphView A object SmartGraphPanel
+     */
     public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
         this.graphView = graphView;
     }
 
-    // Setup interface view
+    /**
+     * This method initialize all components present on the interface
+     */
     private void initializeComponents() {
+
         //Set up menu bar
         this.menuFile = new Menu("File");
         this.mFileItemImportFile = new MenuItem("Import File");
@@ -282,15 +313,15 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
      */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Devices");
+        xAxis.setLabel("Páginas Web");
         NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Visits");
+        yAxis.setLabel("Número de Páginas");
         BarChart barChart = new BarChart(xAxis, yAxis);
         XYChart.Series dataSeries1 = new XYChart.Series();
-        dataSeries1.setName("2014");
-        dataSeries1.getData().add(new XYChart.Data("Desktop", 567));
-        dataSeries1.getData().add(new XYChart.Data("Phone", 65));
-        dataSeries1.getData().add(new XYChart.Data("Tablet", 23));
+        dataSeries1.setName("WebCrawler");
+        dataSeries1.getData().add(new XYChart.Data("Links HTTPS", 6));
+        dataSeries1.getData().add(new XYChart.Data("Não encontradas", 4));
+        dataSeries1.getData().add(new XYChart.Data("Visitadas", 10));
         barChart.getData().add(dataSeries1);
         VBox vbox = new VBox(barChart);
         return vbox;
@@ -326,8 +357,20 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     }
 
     @Override
-    public void importFile() {
-        System.out.println("Views.Home.importFile()");
+    public void importFile(HomeController controller) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir Ficheiro");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Data File", "*.data"),
+                new ExtensionFilter("Json File", "*.json"));
+        File selectedFile = fileChooser.showOpenDialog(getAppStage());
+        if (selectedFile != null) {
+            String fileName = selectedFile.getName();
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".")
+                    + 1, selectedFile.getName().length());
+            controller.importFiles(fileExtension.toUpperCase());
+
+        }
     }
 
     @Override
@@ -371,7 +414,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         });
 
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
-            System.out.println("Import File");
+            importFile(controller);
         });
 
         // Apply Memento - Undo
@@ -548,10 +591,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     private void chooseFileType(HomeController controller) {
         List<String> choices = new ArrayList<>();
-        choices.add("Text");
+        choices.add("DATA");
         choices.add("JSON");
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("Text", choices);
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("DATA", choices);
         dialog.initStyle(StageStyle.UTILITY);
         dialog.setTitle("Exportar");
         dialog.setHeaderText("Por favor, selecione um formato.");

@@ -14,7 +14,7 @@ import java.util.Observer;
 public interface IHomeOperations extends Observer {
     
     String getInputURL();
-    void importFile();
+    void importFile(HomeController controller);
     void exportFile(HomeController controller);
     void exitApp();
     void clearError();

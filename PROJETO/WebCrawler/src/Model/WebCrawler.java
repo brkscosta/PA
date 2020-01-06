@@ -42,8 +42,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     // Iterative variables
     private WebPage subRootWebPageChoosed;
     private List<WebPage> webPagesNotFound;
-    private List<Edge<Link, WebPage>> edgesAdded;
-    private List<Vertex<WebPage>> vertexsAdded;
 
     private WebPage previousSubRootWebPageChoosed; // Still seing if it is needed
 
@@ -110,14 +108,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return this.graph;
     }
 
-    public List<Edge<Link, WebPage>> getEdgesAdded() {
-        return edgesAdded;
-    }
-
-    public List<Vertex<WebPage>> getVertexsAdded() {
-        return vertexsAdded;
-    }
-
     public List<WebPage> getWebPagesNotFound() {
         return webPagesNotFound;
     }
@@ -145,14 +135,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     public void setSubRootWebPageChoosed(WebPage subRootWebPageChoosed) {
         this.subRootWebPageChoosed = subRootWebPageChoosed;
-    }
-
-    public void setEdgesAdded(List<Edge<Link, WebPage>> edgesAdded) {
-        this.edgesAdded = edgesAdded;
-    }
-
-    public void setVertexsAdded(List<Vertex<WebPage>> vertexsAdded) {
-        this.vertexsAdded = vertexsAdded;
     }
 
     public void setWebPagesNotFound(List<WebPage> webPagesNotFound) {
@@ -366,10 +348,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         setChanged();
         notifyObservers();
         
-        
-        
-        
-        
         // Use all the state inside the argument savedState
         //this.subRootWebPageChoosed = save.getRootWebPage();
         //this.isFinished = true; // Just for testing, TODO
@@ -394,7 +372,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         private int countPageNotFoundMemento;*/
         private WebPage rootWebPage;
         private final Graph<WebPage, Link> graph;
+        private List<WebPage> webPagesNotFound;
         private final Date createdAt;
+        
         //private List<WebPage> pageListMemento;
 
         public WebCrawlerMemento(Graph<WebPage, Link> graph, List<WebPage> webPagesNotFound, WebPage rootWebPage) throws IOException {
@@ -414,6 +394,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 this.graph.insertEdge(edge.vertices()[0], edge.vertices()[1], edge.element());
             });
             
+            this.webPagesNotFound = webPagesNotFound;
             this.rootWebPage = rootWebPage;
             this.createdAt = new Date();
 

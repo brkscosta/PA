@@ -20,6 +20,7 @@ import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView.StopCriteria;
 import java.util.Collection;
+import java.util.LinkedList;
 
 @SuppressWarnings("null")
 /**
@@ -39,6 +40,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     // Iterative variables
     private WebPage subRootWebPageChoosed;
+    private List<WebPage> webPagesNotFound;
     private List<Edge<Link, WebPage>> edgesAdded;
     private List<Vertex<WebPage>> vertexsAdded;
 
@@ -155,6 +157,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return vertexsAdded;
     }
 
+    public List<WebPage> getWebPagesNotFound() {
+        return webPagesNotFound;
+    }
+
     // Setters
     /**
      * Set the number of web pages to how criteria
@@ -244,7 +250,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.isFinished = true;
 
         setChanged();
-        notifyObservers(this.graph);
+        notifyObservers();
     }
 
     /**
@@ -275,7 +281,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 this.searchCriteria = new SearchIterative(this);
                 break;
         }
-
+        
+        this.webPagesNotFound = new LinkedList<>();
+        
         this.searchPagesAndPrint(this.rootWebPage);
     }
 
@@ -398,32 +406,36 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     @Override
     public IMemento save() {
         // Creates a new private Memento Object and returns it
-        return new WebCrawlerMemento(this.subRootWebPageChoosed,
-                this.edgesAdded, this.vertexsAdded);
+        try {
+            return new WebCrawlerMemento(this.graph, this.webPagesNotFound, this.rootWebPage);
+        } catch (IOException ex) {
+            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
     public void restore(IMemento savedState) {
 
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
+        
+        this.clearGraph();
 
-        // Use all the state inside the argument savedState
-        this.edgesAdded = save.getEdgesAdded();
-        this.vertexsAdded = save.getVertexsAdded();
+        for(Vertex<WebPage> webPage : save.getGraph().vertices()){
+           System.out.println("Vertex a inserir -> " + webPage.element().getPersonalURL());
+           this.graph.insertVertex(webPage.element());
+        }
+        
+        for(Edge<Link, WebPage> edge : save.getGraph().edges()){
+           System.out.println("Edge a inserir -> " + edge.element().getLinkName());
+           this.graph.insertEdge(edge.vertices()[0],edge.vertices()[1], edge.element());
+        }
+        
         this.isFinished = true; // Just for testing, TODO
-
-        for (Vertex<WebPage> webPage : save.getVertexsAdded()) {
-            System.out.println("Vertex a remover -> " + webPage.element().getPersonalURL());
-            this.graph.removeVertex(webPage);
-        }
-
-        for (Edge<Link, WebPage> edge : save.getEdgesAdded()) {
-            System.out.println("Edge a remover -> " + edge.element().getLinkName());
-            this.graph.removeEdge(edge);
-        }
-
+        
         setChanged();
         notifyObservers();
+        
     }
 
     /**
@@ -432,14 +444,24 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     private class WebCrawlerMemento implements IMemento {
 
         private WebPage rootWebPage;
-        private List<Edge<Link, WebPage>> edgesAdded;
-        private List<Vertex<WebPage>> vertexsAdded;
+        private final Graph<WebPage, Link> graph;
         private final Date createdAt;
+        private List<WebPage> webPagesNotFound;
 
-        public WebCrawlerMemento(WebPage rootWebPage, List<Edge<Link, WebPage>> edgesAdded, List<Vertex<WebPage>> vertexsAdded) {
+        public WebCrawlerMemento(Graph<WebPage, Link> graph, List<WebPage> webPagesNotFound, WebPage rootWebPage) throws IOException {
+     
+            this.graph = new MyDigraph<>();
+            
+            graph.vertices().forEach((vertex) -> {
+                this.graph.insertVertex(vertex.element());
+            });
+            
+            graph.edges().forEach((edge) -> {
+                this.graph.insertEdge(edge.vertices()[0], edge.vertices()[1], edge.element());
+            });
+
+            this.webPagesNotFound = new LinkedList<>(webPagesNotFound);
             this.rootWebPage = rootWebPage;
-            this.edgesAdded = edgesAdded;
-            this.vertexsAdded = vertexsAdded;
             this.createdAt = new Date();
         }
 
@@ -453,6 +475,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
             return this.rootWebPage;
         }
 
+        public List<WebPage> getPagesNotFound(){
+            return this.webPagesNotFound;
+        }
+
         /**
          * Get the create date
          *
@@ -461,23 +487,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         public Date getCreatedAt() {
             return this.createdAt;
         }
-
-        /**
-         * Get all edges added
-         *
-         * @return A list of edges
-         */
-        public List<Edge<Link, WebPage>> getEdgesAdded() {
-            return edgesAdded;
-        }
-
-        /**
-         * Get all vertex added
-         *
-         * @return A list of vertex
-         */
-        public List<Vertex<WebPage>> getVertexsAdded() {
-            return vertexsAdded;
+        
+        public Graph<WebPage, Link> getGraph(){
+            return this.graph;
         }
 
         @Override

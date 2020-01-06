@@ -8,6 +8,7 @@ package Patterns.Stategy;
 import Model.Link;
 import Model.WebCrawler;
 import Model.WebPage;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -31,16 +32,16 @@ public class SearchDepth implements ISearchCriteria {
     public Iterable<WebPage> searchPages(WebPage webPage) {
         try {
             // Variable that counts the number of links that are far away from root
-            int countLevelReached = 0;
+            int countLevelReached = -1;
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
-            if (this.model.getNumCriteria() == 0) {
+            if (this.model.getNumCriteria() == -1) {
                 return this.model.getPagesList();
             }
             
             // First of all set the depth level 1 to the webPage root and set the attribute that it is the last WebPage of the level 1, Obvious, it is the root!!
-            webPage.setDepth(1);
+            webPage.setDepth(0);
             webPage.setIsLastOfALevel(true);
             
             if (this.model.checkIfHasWebPage(webPage) == false) {
@@ -70,10 +71,20 @@ public class SearchDepth implements ISearchCriteria {
                 // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
                 Queue<Link> allIncidentWebLinks;
                 if(visitedWebPage.getStatusCode() == 404){
-                    System.out.println("SHIT");
+                    this.model.getWebPagesNotFound().add(webPage);
                     allIncidentWebLinks = new LinkedList();
                 }else{
                     allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                }
+                
+                for (Link link : allIncidentWebLinks){
+                    // This WebPage can already exists with that link
+                    Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
+                    
+                    if(vertexWebPageFound != null){
+                        // Remove this link from the list
+                        allIncidentWebLinks.remove(link);
+                    }
                 }
                 
                 // This variable will help us to know when it reaches to the last element from the queue

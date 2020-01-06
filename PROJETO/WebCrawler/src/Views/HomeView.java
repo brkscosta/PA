@@ -10,6 +10,7 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
+import static Patterns.Factories.Factories.getAppStage;
 import Patterns.Singleton.LoggerException;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
@@ -50,6 +51,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
 import Patterns.Singleton.LoggerWriter;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -62,10 +64,17 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
 
 /**
- *
+ * This class contains all implementation about the UI. Implement a behavioral 
+ * of the view and a observer to keep updated when model is changed.
+ * 
+ * @see Model.WebCrawler
+ * @see Views.IHomeOperations
+ * 
  * @author BRKsCosta and danielcordeiro
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
@@ -140,17 +149,25 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     }
     
-    // Getters
+    /**
+     * Get SmartGraphPanel
+     * @return A object SmartGraphPanel
+     */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
     
-    // Setters
+    /**
+     * Set the SmartGraphPanel
+     * @param graphView Object SmartGraphPanel
+     */
     public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
         this.graphView = graphView;
     }
 
-    // Setup interface view
+    /**
+     * Initialize all components present on UI.
+     */
     private void initializeComponents() {
         //Set up menu bar
         this.menuFile = new Menu("File");
@@ -274,7 +291,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     /**
      * This method build the bar chart
      *
-     * @return
+     * @return Return the statistics on chart
      */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
@@ -304,14 +321,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphView.update();
             }
 
-            // TESTING IF THE GRAPH WAS UPDATE BEFORE THE VIEW UPDATED. TODOOOOO 
             if (obsModel.isFinished == true) {
                 graphView.update();
                 obsModel.isFinished = false;
             }
-            
-            //this.graphView.update();
-            // Will happen 2 updates with this test graphView.update()
         }
     }
     
@@ -323,7 +336,19 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     
     @Override
     public void importFile(HomeController controller) {
-        System.out.println("Views.Home.importFile()");
+       FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir Ficheiro");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Data File", "*.data"),
+                new ExtensionFilter("Json File", "*.json"));
+        File selectedFile = fileChooser.showOpenDialog(getAppStage());
+        if (selectedFile != null) {
+            String fileName = selectedFile.getName();
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".")
+                    + 1, selectedFile.getName().length());
+            controller.importFiles(fileExtension.toUpperCase());
+
+        }
     }
 
     @Override
@@ -367,7 +392,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         });
 
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
-            System.out.println("Import File");
+            importFile(controller);
         });
 
         // Apply Memento - Undo
@@ -474,6 +499,13 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         System.out.println("Views.Home.redoGraph()");
     }
     
+    /**
+     * This method execute the search requested
+     * @param controller The controller object
+     * @throws LoggerException
+     * @throws WebCrawlerException
+     * @throws NumberFormatException 
+     */
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
         try {
@@ -495,18 +527,29 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
         }
     }
-
+    
+    /**
+     * Set the root webpage
+     * @param p The concrete vertex
+     */
     public void setColorRootPage(Vertex<WebPage> p) {
         System.out.println("root? " + p);
         System.out.println("graphview ? " + graphView.getStylableVertex(p));
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
         //this.updateGraph();
     }
-
+    
+    /**
+     * Update the graph view
+     */
     public void updateGraph() {
         graphView.update();
     }
-
+    
+    /**
+     * Show errors along the application
+     * @param msg The error message
+     */
     public void showErrorStackTraceException(String msg) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Exception");
@@ -542,13 +585,17 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         alert.showAndWait();
         exitApp();
     }
-
+    
+    /**
+     * Open the dialog to open the file
+     * @param controller The controller object
+     */
     private void chooseFileType(HomeController controller) {
         List<String> choices = new ArrayList<>();
-        choices.add("Text");
+        choices.add("DATA");
         choices.add("JSON");
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("Text", choices);
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("DATA", choices);
         dialog.initStyle(StageStyle.UTILITY);
         dialog.setTitle("Exportar");
         dialog.setHeaderText("Por favor, selecione um formato.");

@@ -18,7 +18,6 @@ import Patterns.Stategy.ISearchCriteria;
 import Patterns.Stategy.SearchDepth;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
-import Views.HomeView;
 import Views.HomeView.StopCriteria;
 import java.util.Collection;
 
@@ -66,36 +65,76 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     // Getters
+    /**
+     * Get a instance of the logger
+     *
+     * @return A Logger object
+     */
     public LoggerWriter getLogger() {
         return logger;
     }
 
-    public Collection<Edge<Link, WebPage>> getAllLinks() {
-        return graph.edges();
+    /**
+     * Get all links
+     *
+     * @return A collection of edges
+     */
+    public List<Edge<Link, WebPage>> getAllLinks() {
+        return (List<Edge<Link, WebPage>>) graph.edges();
     }
 
+    /**
+     * Get page list
+     *
+     * @return A list of pages
+     */
     public List<WebPage> getPagesList() {
         return pagesList;
     }
 
+    /**
+     * Get the number of pages
+     *
+     * @return A number
+     */
     public int getNumCriteria() {
         return numCriteria;
     }
 
+    /**
+     * Get HTTPS links
+     *
+     * @return A number
+     */
     public int getCountHttpsLinks() {
         return countHttpsLinks;
     }
 
+    /**
+     * Get count of pages not found
+     *
+     * @return A number
+     */
     public int getCountPageNotFound() {
         return countPageNotFound;
     }
 
+    /**
+     * Get stop criteria
+     *
+     * @return
+     */
     public StopCriteria getStopCriteriaChoosed() {
         return stopCriteriaChoosed;
     }
 
+    /**
+     * Get root web page
+     *
+     * @return The root web page
+     */
     public Vertex<WebPage> getRootWebPage() {
-        System.out.println("TESTEEEEEE -> " + graph);
+
         for (Vertex<WebPage> v : graph.vertices()) {
             if (v.element().equals(this.rootWebPage)) {
                 return v;
@@ -117,46 +156,82 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     // Setters
+    /**
+     * Set the number of web pages to how criteria
+     *
+     * @param numCriteria A number
+     */
     public void setNumCriteria(int numCriteria) {
         this.numCriteria = numCriteria;
     }
 
-    public void setCountHttpsLinks(int countHttpsLinks) {
-        this.countHttpsLinks = countHttpsLinks;
-    }
-
-    public void setCountPageNotFound(int countPageNotFound) {
-        this.countPageNotFound = countPageNotFound;
-    }
-
-    public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
-        this.stopCriteriaChoosed = stopCriteriaChoosed;
-    }
-
-    public void setRootWebPage(WebPage rootWebPage) {
-        this.rootWebPage = rootWebPage;
-    }
-
+    /**
+     * Set sub root pages choosed
+     *
+     * @param subRootWebPageChoosed A WebPage object
+     */
     public void setSubRootWebPageChoosed(WebPage subRootWebPageChoosed) {
         this.subRootWebPageChoosed = subRootWebPageChoosed;
     }
 
+    /**
+     * Set the edges added
+     *
+     * @param edgesAdded A list of edges
+     */
     public void setEdgesAdded(List<Edge<Link, WebPage>> edgesAdded) {
         this.edgesAdded = edgesAdded;
     }
 
+    /**
+     * Set vertex added
+     *
+     * @param vertexsAdded A list of vertex added
+     */
     public void setVertexsAdded(List<Vertex<WebPage>> vertexsAdded) {
         this.vertexsAdded = vertexsAdded;
     }
 
-    /* NOT BEING USED but should be because of the Strategy pattern
-    public void setSearchType(ISearchCriteria criteria) {
-        this.searchCriteria = criteria;
-        this.start();
-    }*/
-    // Methods with WebPage's
+    /**
+     * Set the count of HTTPS pages
+     *
+     * @param countHttpsLinks A number
+     */
+    public void setCountHttpsLinks(int countHttpsLinks) {
+        this.countHttpsLinks = countHttpsLinks;
+    }
+
+    /**
+     * Set the pages not found
+     *
+     * @param countPageNotFound A number
+     */
+    public void setCountPageNotFound(int countPageNotFound) {
+        this.countPageNotFound = countPageNotFound;
+    }
+
+    /**
+     * Set a stop criteria
+     *
+     * @param stopCriteriaChoosed A ENUM of the type StopCriteria
+     */
+    public void setStopCriteriaChoosed(StopCriteria stopCriteriaChoosed) {
+        this.stopCriteriaChoosed = stopCriteriaChoosed;
+    }
+
+    /**
+     * Set the root webpage
+     *
+     * @param rootWebPage A object of the type webpage
+     */
+    public void setRootWebPage(WebPage rootWebPage) {
+        this.rootWebPage = rootWebPage;
+    }
+
+    /**
+     * Clear the all elements in the graph.
+     */
     public void clearGraph() {
-        //this.graph = new MyDigraph<>();
 
         for (Edge<Link, WebPage> edge : this.graph.edges()) {
             this.graph.removeEdge(edge);
@@ -172,16 +247,14 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers(this.graph);
     }
 
-    public void removePage(Vertex<WebPage> underlyingVertex) {
-        graph.removeVertex(underlyingVertex);
-        pagesList.remove(underlyingVertex.element());
-        isFinished = true;
-
-        setChanged();
-        notifyObservers(this.graph);
-    }
-
-    public void buildWebCrawler(StopCriteria criteria, int numCriteria, String inputUrl) throws IOException {
+    /**
+     * This method is responsible to select a type of search to the WebPages
+     *
+     * @param criteria The type of search
+     * @param numCriteria The stop criteria
+     * @param inputUrl The page to search
+     */
+    public void buildWebCrawler(StopCriteria criteria, int numCriteria, String inputUrl) {
 
         // Assign values
         this.numCriteria = numCriteria;
@@ -206,25 +279,26 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.searchPagesAndPrint(this.rootWebPage);
     }
 
-    // Iterative method's
+    /**
+     * The aux method to iterative mode that insert the new web pages when the
+     * user click.
+     *
+     * @param subRoot The parent node
+     * @throws IOException
+     */
     public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) throws IOException {
 
         this.searchPagesAndPrint(subRoot.element());
 
-        // TODO - notify observers
         setChanged();
         notifyObservers();
     }
 
-    /*public void removeSubWebPageCrawler(WebPage subRootWebPage) {
-        // Remove all the subWebCrawler
-        this.graph.removeVertex(subRoot);
-        
-        // TODO - notify observers
-        setChanged();
-        notifyObservers();
-    }*/
-
+    /**
+     * This method helps to see the pages that was generated.
+     *
+     * @param rootWebPage A object of the type WebPage
+     */
     private void searchPagesAndPrint(WebPage rootWebPage) {
         Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
 
@@ -243,7 +317,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Count https protocols
+     * Count HTTPS protocols
      *
      * @param startURL site URL
      * @return Number of pages founded
@@ -263,9 +337,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      *
      * @param myWebPage
      * @return Counter of pages
-     * @throws IOException
      */
-    public int getPagesNotFound(WebPage myWebPage) throws IOException, WebCrawlerException {
+    public int getPagesNotFound(WebPage myWebPage) {
 
         if (myWebPage.getStatusCode() == 404) {
             return 1;
@@ -274,7 +347,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Checks if exists already a webPage like the param inside the webPage
+     * Checks if exists already a webPage like the parameter inside the webPage
      *
      * @param webPage we want to check
      * @return if exists the webPage
@@ -288,6 +361,12 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return false;
     }
 
+    /**
+     * Get if the link is equal the link web page
+     *
+     * @param linkName
+     * @return
+     */
     public Vertex<WebPage> getEqualWebPageVertex(String linkName) {
         for (Vertex<WebPage> page : graph.vertices()) {
             if (page.element().getPersonalURL().equals(linkName)) {
@@ -316,16 +395,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return graph.numVertices();
     }
 
-    // Implement all IOriginator methods
     @Override
     public IMemento save() {
         // Creates a new private Memento Object and returns it
-        try {
-            return new WebCrawlerMemento(this.subRootWebPageChoosed, this.edgesAdded, this.vertexsAdded);
-        } catch (IOException ex) {
-            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return new WebCrawlerMemento(this.subRootWebPageChoosed,
+                this.edgesAdded, this.vertexsAdded);
     }
 
     @Override
@@ -334,92 +408,83 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
 
         // Use all the state inside the argument savedState
-        //this.subRootWebPageChoosed = save.getRootWebPage();
         this.edgesAdded = save.getEdgesAdded();
         this.vertexsAdded = save.getVertexsAdded();
         this.isFinished = true; // Just for testing, TODO
-        
-        // Remove the subWebCrawler
-        /*for( Vertex<WebPage> webPage : this.graph.vertices()){
-            if(webPage.element() == save.getRootWebPage()){
-                this.graph.removeVertex(webPage);
-            }
-        }*/
-        
-        for(Vertex<WebPage> webPage : save.getVertexsAdded()){
-           System.out.println("Vertex a remover -> " + webPage.element().getPersonalURL());
-           this.graph.removeVertex(webPage);
+
+        for (Vertex<WebPage> webPage : save.getVertexsAdded()) {
+            System.out.println("Vertex a remover -> " + webPage.element().getPersonalURL());
+            this.graph.removeVertex(webPage);
         }
-        
-        for(Edge<Link, WebPage> edge : save.getEdgesAdded()){
-           System.out.println("Edge a remover -> " + edge.element().getLinkName());
-           this.graph.removeEdge(edge);
+
+        for (Edge<Link, WebPage> edge : save.getEdgesAdded()) {
+            System.out.println("Edge a remover -> " + edge.element().getLinkName());
+            this.graph.removeEdge(edge);
         }
-        
+
         setChanged();
         notifyObservers();
     }
 
-    // Private Memento with all the states and getters and setters needed
+    /**
+     * Private class to implement the memento
+     */
     private class WebCrawlerMemento implements IMemento {
 
-        // private Graph<WebPage, Link> graphMemento;
         private WebPage rootWebPage;
         private List<Edge<Link, WebPage>> edgesAdded;
         private List<Vertex<WebPage>> vertexsAdded;
-        /*private int countHttpsLinksMemento;
-        private int countPageNotFoundMemento;*/
         private final Date createdAt;
-        //private List<WebPage> pageListMemento;
 
-        public WebCrawlerMemento(WebPage rootWebPage, List<Edge<Link, WebPage>> edgesAdded, List<Vertex<WebPage>> vertexsAdded) throws IOException {
-            //this.webPage = new Vertex<>();
-            //this.webPage.element() = STILL IN WORK
-            //this.graphMemento = new MyDigraph<>();
-            //this.graphMemento = graphMemento; // Aqui temos de por o Vertice WebPage. Não vamos puder ter 
+        public WebCrawlerMemento(WebPage rootWebPage, List<Edge<Link, WebPage>> edgesAdded, List<Vertex<WebPage>> vertexsAdded) {
             this.rootWebPage = rootWebPage;
             this.edgesAdded = edgesAdded;
             this.vertexsAdded = vertexsAdded;
             this.createdAt = new Date();
-
-            /*this.countHttpsLinksMemento = countHttpsLinksMemento;
-            this.countPageNotFoundMemento = countPageNotFoundMemento;
-            this.stopCriteriaChoosed = stopCriteriaChoosed;
-            this.pageListMemento = new ArrayList<>(pageList);*/
         }
 
         // Getters
+        /**
+         * Get the root web page
+         *
+         * @return
+         */
         public WebPage getRootWebPage() {
             return this.rootWebPage;
         }
 
+        /**
+         * Get the create date
+         *
+         * @return
+         */
         public Date getCreatedAt() {
             return this.createdAt;
         }
 
+        /**
+         * Get all edges added
+         *
+         * @return A list of edges
+         */
         public List<Edge<Link, WebPage>> getEdgesAdded() {
             return edgesAdded;
         }
 
+        /**
+         * Get all vertex added
+         *
+         * @return A list of vertex
+         */
         public List<Vertex<WebPage>> getVertexsAdded() {
             return vertexsAdded;
         }
 
-        /*public int getCountHttpsLinksMemento() {
-            return this.countHttpsLinksMemento;
-        }
-        public int getCountPageNotFoundMemento() {
-            return this.countPageNotFoundMemento;
-        }
-        public List<WebPage> getPageListMemento() {
-            return this.pageListMemento;
-        }
-        public StopCriteria getStopCriteriaChoosed() {
-            return this.stopCriteriaChoosed;
-        }*/
         @Override
         public String getDescription() {
-            return String.format("WebCrawler Memento created at %s with the vertex %s", createdAt.toString(), this.rootWebPage.getPersonalURL());
+            return String.format("WebCrawler Memento created at %s with the "
+                    + "vertex %s", createdAt.toString(),
+                    this.rootWebPage.getPersonalURL());
         }
     }
 

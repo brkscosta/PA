@@ -13,7 +13,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *
+ * This class is a strategy to search pages by interactive mode
+ * 
  * @author BRKsCosta
  */
 public class SearchDepth implements ISearchCriteria {

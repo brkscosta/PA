@@ -6,14 +6,12 @@
 package Model;
 
 /**
- *
- * @author brkscosta
+ * This throw exception in run time
+ * @author brkscosta and danielcordeiro
  */
 public class WebCrawlerException extends RuntimeException {
 
     public WebCrawlerException(String string) {
         super(string);
     }
-    
-    
 }

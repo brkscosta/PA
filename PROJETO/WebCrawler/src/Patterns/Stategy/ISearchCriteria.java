@@ -8,10 +8,15 @@ package Patterns.Stategy;
 import Model.WebPage;
 
 /**
- *
+ * 
  * @author BRKsCosta
  */
 public interface ISearchCriteria {
-
+    
+    /**
+     * This algorithm search the pages in different type of stop criteria
+     * @param webPage A WebPage object
+     * @return A iterable collection containing all WebPages on the graph.
+     */
     public Iterable<WebPage> searchPages(WebPage webPage);
 }

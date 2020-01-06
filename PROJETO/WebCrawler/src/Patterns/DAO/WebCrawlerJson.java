@@ -34,11 +34,10 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
     public static final String FILENAME = "Webcrawler.json";
     private LoggerWriter logger = LoggerWriter.getInstance();
     private List<Edge<Link, WebPage>> inMemory;
-    private WebCrawler model;
     private Map<String, List<String>> edgesMap;
 
     public WebCrawlerJson(WebCrawler model) {
-        //this.inMemory = model.getAllLinks();
+        this.inMemory = model.getAllLinks();
         this.edgesMap = new HashMap<>();
     }
 
@@ -57,7 +56,10 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
         }
         this.saveFile();
     }
-
+    
+    /**
+     * Save to a file
+     */
     private void saveFile() {
 
         try {

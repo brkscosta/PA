@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +40,11 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
 
     public static final String FILENAME = "Webcrawler.data";
 
-    private WebCrawler model;
-
     private List<Edge<Link, WebPage>> inMemory;
     private Map<String, List<String>> edgesMap;
 
     public WebCrawlerFile(WebCrawler model) {
-        //this.inMemory = model.getAllLinks();
+        this.inMemory = model.getAllLinks();
         this.edgesMap = new HashMap<>();
     }
 
@@ -68,7 +65,7 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
             }
 
         }
-        System.out.println("Edges Map:" + edgesMap);
+
         this.saveFile();
     }
 
@@ -79,8 +76,7 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
      */
     @Override
     public List<Edge<Link, WebPage>> readAll() {
-        //return model.getAllLinks();
-        return null;
+        return inMemory;
     }
 
     /**

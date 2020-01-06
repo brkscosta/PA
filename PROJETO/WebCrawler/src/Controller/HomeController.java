@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- *
+ * This class is responsible to manager all the business logic
  * @author BRKsCosta and danielcordeiro
  */
 public class HomeController {
@@ -30,6 +30,7 @@ public class HomeController {
     private final WebCrawler model;
     private final CareTaker caretaker;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public HomeController(WebCrawler model, HomeView view, CareTaker caretaker) {
         this.view = view;
         this.model = model;

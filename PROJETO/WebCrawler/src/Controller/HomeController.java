@@ -53,10 +53,13 @@ public class HomeController {
     // Other methods
     public void startSearch(HomeView.StopCriteria criteria, int numCriteria)
             throws WebCrawlerException, IOException {
+        
+        // First clear all the graph
+        clearGraph();
 
         // Init the WebCrawler
         this.model.buildWebCrawler(criteria, numCriteria, view.getInputURL());
-
+        
         // Update the view
         //view.updateGraph(); // Why update here? If when model WebCrawler is updated it send a message to the Observer HomeView
         //this.view.update(model, this);
@@ -67,7 +70,7 @@ public class HomeController {
         }*/
 
         // Save a new Memento
-        //this.caretaker.requestSave();
+        this.caretaker.requestSave();
     }
 
     public void exitApp() {
@@ -126,6 +129,9 @@ public class HomeController {
     // This method will 
     public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot) throws IOException {
         model.insertNewSubWebPageCrawler(subRoot.getUnderlyingVertex());
+        
+        // Save a new Memento
+        //this.caretaker.requestSave();
     }
 
     @Override

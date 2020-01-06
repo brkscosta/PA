@@ -396,6 +396,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             if(this.inIterativeMode){
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
+                    controller.getCaretaker().requestSave();
                 } catch (IOException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }

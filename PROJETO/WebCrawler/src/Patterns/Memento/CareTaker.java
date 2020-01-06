@@ -31,7 +31,7 @@ public class CareTaker {
      */
     public void requestSave() {
         IMemento save = originator.save();
-        System.out.println(save.getDescription());
+        System.out.println("MEMENTO SAVED " + save.getDescription());
         mementos.push(save);
     }
     

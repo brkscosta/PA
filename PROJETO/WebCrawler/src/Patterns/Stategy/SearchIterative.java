@@ -33,8 +33,6 @@ public class SearchIterative implements ISearchCriteria {
         try {
             // For the memento
             this.model.setSubRootWebPageChoosed(webPage);
-            this.model.setEdgesAdded(new LinkedList<>());
-            this.model.setVertexsAdded(new LinkedList<>());
             
             this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
             this.countPageNotFound = this.model.getPagesNotFound(webPage);
@@ -61,11 +59,11 @@ public class SearchIterative implements ISearchCriteria {
                 // Check if it exists already a WebPage with that link
                 if(vertexWebPageFound != null){
                     // Insert a new Link between WebPages
-                    this.model.getEdgesAdded().add(this.model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link));                    
+                    this.model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
                 }else{
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
-                    this.model.getVertexsAdded().add(this.model.getGraph().insertVertex(webPageInserting));
+                    this.model.getGraph().insertVertex(webPageInserting);
                     this.model.getPagesList().add(webPageInserting);
                     this.model.getGraph().insertEdge(webPage, webPageInserting, link); // This edges aren't needed to add for the list of edges added becasue if we remove one inbound/outbound vertex it will remove the edge
                     

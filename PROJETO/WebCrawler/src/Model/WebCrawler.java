@@ -41,8 +41,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     // Iterative variables
     private WebPage subRootWebPageChoosed;
     private List<WebPage> webPagesNotFound;
-    private List<Edge<Link, WebPage>> edgesAdded;
-    private List<Vertex<WebPage>> vertexsAdded;
 
     private WebPage previousSubRootWebPageChoosed; // Still seing if it is needed
 
@@ -147,14 +145,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     public Graph<WebPage, Link> getGraph() {
         return this.graph;
-    }
-
-    public List<Edge<Link, WebPage>> getEdgesAdded() {
-        return edgesAdded;
-    }
-
-    public List<Vertex<WebPage>> getVertexsAdded() {
-        return vertexsAdded;
     }
 
     public List<WebPage> getWebPagesNotFound() {

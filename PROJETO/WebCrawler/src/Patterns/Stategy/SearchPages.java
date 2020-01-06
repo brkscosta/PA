@@ -9,7 +9,7 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
-import Patterns.Singleton.LoggerWriter;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -79,27 +79,35 @@ public class SearchPages implements ISearchCriteria {
                     }
 
                     countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
-
-                    // Insert a new WebPage in the graph
-                    WebPage webPageInserting = new WebPage(link.getLinkName());
-                    this.model.getGraph().insertVertex(webPageInserting);
-
-                    countPageNotFound += this.model.getPagesNotFound(webPageInserting);
-
-                    this.model.getPagesList().add(webPageInserting);
-
-                    webPagesToVisit.add(webPageInserting);
-                    System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
                     
-                    // Insert a new Link between WebPages
-                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
-                    
-                    logW.writeToLog(webPageInserting.getTitleName() + " | "
+                    // This WebPage can already exists with that link
+                    Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
+
+                    // Check if it exists already a WebPage with that link
+                    if(vertexWebPageFound != null){
+                        // Insert a new Link between WebPagess
+                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
+                    }else{
+                        // Insert a new WebPage in the graph
+                        WebPage webPageInserting = new WebPage(link.getLinkName());
+                        this.model.getGraph().insertVertex(webPageInserting);
+                        this.model.getPagesList().add(webPageInserting);
+                        webPagesToVisit.add(webPageInserting);
+                        
+                        // Insert a new Link between WebPages
+                        this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+
+                        logW.writeToLog(webPageInserting.getTitleName() + " | "
                             + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
                             + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
 
-                    // Increment countMaxVisitedPage by 1
-                    countMaxVisitedPage++;
+                        // Increment countMaxVisitedPage by 1
+                        countMaxVisitedPage++;
+                        
+                        System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
+                        
+                        countPageNotFound += this.model.getPagesNotFound(webPageInserting);
+                    }
                 }
                 System.out.println("]\n");
             }

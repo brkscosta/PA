@@ -84,6 +84,8 @@ public class SearchDepth implements ISearchCriteria {
                     if(vertexWebPageFound != null){
                         // Remove this link from the list
                         allIncidentWebLinks.remove(link);
+                        // Insert a new Link between WebPages
+                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
                     }
                 }
                 

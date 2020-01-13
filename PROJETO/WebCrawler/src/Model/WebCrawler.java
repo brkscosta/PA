@@ -19,7 +19,6 @@ import Patterns.Stategy.SearchDepth;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView.StopCriteria;
-import java.util.Collection;
 import java.util.LinkedList;
 
 @SuppressWarnings("null")

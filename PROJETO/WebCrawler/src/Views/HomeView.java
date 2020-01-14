@@ -494,8 +494,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
     }
     
-    // TODO
+    /**
+     * This method make redo action on graph
+     * 
+     */
     private void redoGraph() {
+        // TODO
         System.out.println("Views.Home.redoGraph()");
     }
     
@@ -538,7 +542,6 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         System.out.println("root? " + p);
         System.out.println("graphview ? " + graphView.getStylableVertex(p));
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
-        //this.updateGraph();
     }
     
     /**

@@ -171,7 +171,6 @@ public class WebPage {
                 throw new WebCrawlerException("URL não pode ser vazio ou nulo");
             }
 
-            System.out.println("tamanho dos links ----> ");
             Document doc = Jsoup.connect(personalLink).get();
             Elements links = doc.select("a[href]");
 
@@ -189,7 +188,6 @@ public class WebPage {
             return listIncidentsWebPages;
 
         } catch (HttpStatusException ex) {
-            System.out.println("TESTE AO ERRO - RIP");
             if (ex.getStatusCode() == 404) {
                 this.listIncidentsWebPages.offer(new Link(ex.getUrl()));
                 logger.writeToLog(ex.getMessage());

@@ -54,16 +54,15 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     private int numCriteria = 0;
     public boolean isFinished = false;
 
-    // 2 Constructors
     public WebCrawler(Graph graph) {
         this.graph = graph;
     }
-
+    
     public WebCrawler() {
         this(new MyDigraph<>());
     }
-
-    // Getters
+    
+    // <editor-fold defaultstate="collapsed" desc=" Getters ">
     /**
      * Get a instance of the logger
      *
@@ -133,7 +132,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @return The root web page
      */
     public Vertex<WebPage> getRootWebPage() {
-
+        
         for (Vertex<WebPage> v : graph.vertices()) {
             if (v.element().equals(this.rootWebPage)) {
                 return v;
@@ -141,16 +140,18 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         }
         return null;
     }
-
+    
     public Graph<WebPage, Link> getGraph() {
         return this.graph;
     }
-
+    
     public List<WebPage> getWebPagesNotFound() {
         return webPagesNotFound;
     }
 
-    // Setters
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc=" Setters ">
     /**
      * Set the number of web pages to how criteria
      *
@@ -205,21 +206,24 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         this.rootWebPage = rootWebPage;
     }
 
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc=" Methods ">
     /**
      * Clear the all elements in the graph.
      */
     public void clearGraph() {
-
+        
         this.graph.edges().forEach((edge) -> {
             this.graph.removeEdge(edge);
         });
-
+        
         this.graph.vertices().forEach((webPage) -> {
             this.graph.removeVertex(webPage);
         });
-
+        
         this.isFinished = true;
-
+        
         setChanged();
         notifyObservers();
     }
@@ -235,12 +239,12 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
         // Assign values
         this.numCriteria = numCriteria;
-
+        
         if (this.numCriteria != 0) {
             this.rootWebPage = new WebPage(inputUrl);
             this.graph.insertVertex(this.rootWebPage);
         }
-
+        
         switch (criteria) {
             case PAGES:
                 this.searchCriteria = new SearchPages(this);
@@ -266,9 +270,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @throws IOException
      */
     public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) throws IOException {
-
+        
         this.searchPagesAndPrint(subRoot.element());
-
+        
         setChanged();
         notifyObservers();
     }
@@ -280,17 +284,17 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      */
     private void searchPagesAndPrint(WebPage rootWebPage) {
         Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
-
+        
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
         print(" »»»»» Páginas não encontradas (%d) «««««", this.countPageNotFound);
         print(" »»»»» Ligações HTTPS (%d) «««««", this.countHttpsLinks);
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
-
+        
         setChanged();
         notifyObservers();
     }
-
+    
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
@@ -318,7 +322,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @return Counter of pages
      */
     public int getPagesNotFound(WebPage myWebPage) {
-
+        
         if (myWebPage.getStatusCode() == 404) {
             return 1;
         }
@@ -370,10 +374,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @return Number of titles (Vertex)
      */
     public int countWebPages() {
-
+        
         return graph.numVertices();
     }
-
+    
     @Override
     public IMemento save() {
         // Creates a new private Memento Object and returns it
@@ -384,22 +388,22 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         }
         return null;
     }
-
+    
     @Override
     public void restore(IMemento savedState) {
-
+        
         WebCrawlerMemento save = (WebCrawlerMemento) savedState;
         
         this.clearGraph();
-
-        for(Vertex<WebPage> webPage : save.getGraph().vertices()){
-           System.out.println("Vertex a inserir -> " + webPage.element().getPersonalURL());
-           this.graph.insertVertex(webPage.element());
+        
+        for (Vertex<WebPage> webPage : save.getGraph().vertices()) {
+            System.out.println("Vertex a inserir -> " + webPage.element().getPersonalURL());
+            this.graph.insertVertex(webPage.element());
         }
         
-        for(Edge<Link, WebPage> edge : save.getGraph().edges()){
-           System.out.println("Edge a inserir -> " + edge.element().getLinkName());
-           this.graph.insertEdge(edge.vertices()[0],edge.vertices()[1], edge.element());
+        for (Edge<Link, WebPage> edge : save.getGraph().edges()) {
+            System.out.println("Edge a inserir -> " + edge.element().getLinkName());
+            this.graph.insertEdge(edge.vertices()[0], edge.vertices()[1], edge.element());
         }
         
         this.isFinished = true; // Just for testing, TODO
@@ -408,6 +412,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers();
         
     }
+
+    // </editor-fold>
 
     /**
      * Private class to implement the memento

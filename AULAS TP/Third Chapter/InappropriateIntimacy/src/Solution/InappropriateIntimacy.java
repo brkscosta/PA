@@ -20,9 +20,10 @@ public class InappropriateIntimacy {
         
         GrupoFormacao g1= new GrupoFormacao("grupo1");
         g1.addPeople(960313828, "joanacosta@gmail.com", "282124719", "Joanã Costa");
+        g1.addPeople(961343878, "vitorgomes@gmail.com", "281154219", "Vitor Gomes");
        
         //Hide Delegate
-        System.out.println("Numero de elementos  " + g1.getElementos().size());
+        System.out.println("Numero de elementos  " + g1.getNumberElements());
         System.out.println("g1 " + g1);
     }
     

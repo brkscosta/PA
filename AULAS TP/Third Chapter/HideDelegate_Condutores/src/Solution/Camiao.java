@@ -12,6 +12,7 @@ import hidedelegate.*;
  * @author Utilizador
  */
 public class Camiao {
+    
     public Matricula matricula;
     public String modelo;
 
@@ -19,13 +20,24 @@ public class Camiao {
         this.matricula = matricula;
         this.modelo = modelo;
     }
-
+    
     public Matricula getMatricula() {
         return matricula;
     }
-
+   
+    public String getMatriculaId(){
+        return matricula.getId();
+    }
+    
     public String getModelo() {
         return modelo;
     }
+    
+    @Override
+    public String toString() {
+        return "Camiao{"+ matricula + ", modelo = " + modelo + '}';
+    }
+    
+    
     
 }

@@ -5,21 +5,18 @@
  */
 package Solution;
 
-import messagechain.*;
-import javafx.scene.paint.Color;
-
 /**
  *
  * @author Utilizador
  */
 public class Ponto { //Data Class
-   private int x,y;
-   
+
+    private int x, y;
 
     public Ponto(int x, int y) {
         this.x = x;
         this.y = y;
-       
+
     }
 
     public int getX() {
@@ -38,12 +35,19 @@ public class Ponto { //Data Class
         this.y = y;
     }
 
-    @Override
-    public String toString() {
-        return "(" + x +","+y+")";
+    // move um ponto
+    public void move(int dx, int dy) {
+        this.x += dx;
+        this.y += dy;
     }
 
-   
-   
-    
+    public boolean same(int x, int y) {
+        return this.x == x && this.y == y;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
+    }
+
 }

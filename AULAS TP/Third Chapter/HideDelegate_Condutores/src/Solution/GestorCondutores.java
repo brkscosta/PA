@@ -20,27 +20,33 @@ public class GestorCondutores {
 
     }
 
-    public ArrayList<Solution.Condutor> getCondutores(){
+    public ArrayList<Solution.Condutor> getCondutores() {
         return listCondutores;
     }
-    
+
     public void imprimeCondutoresInicial(char inicial) {
         for (Condutor condutor : listCondutores) {
             if (condutor.getNome().charAt(0) == inicial) {
                 System.out.println(" Condutor " + condutor.getNome());
-                System.out.println(" Camiao " + condutor.getCamiao().getMatricula().getId());
+                System.out.println(" Camiao " + condutor.getCamiaoMatriculaId());
             }
         }
     }
 
     public Condutor pesquisaCondutorCamiao(String matricula) {
         for (Condutor condutor : listCondutores) {
-           String m=condutor.getCamiao().getMatricula().getId();
-            if(m.equals(matricula)){
+            String m = condutor.getCamiaoMatriculaId();
+            if (m.equals(matricula)) {
                 return condutor;
             }
         }
         return null;
+    }
+
+    public String pesquisaNomeCondutorMatricula(String matricula) {
+        Condutor condutor = pesquisaCondutorCamiao(matricula);
+        return (condutor != null ? condutor.getNome() : "não encontrado");
+
     }
 
     public void addCondutor(Condutor condutor) {

@@ -39,9 +39,14 @@ public class GrupoFormacao {
         this.elementos.add(new Pessoa(phone,email,nif,nome));
     }
     
+    public int getNumberElements(){
+        return elementos.size();
+    }
+    
     @Override
     public String toString() {
-        return "GrupoFormacao{" + "elementos=" + elementos + ", nome=" + nome + ", date=" + date + '}';
+        return "GrupoFormacao{" + "elementos=" + elementos + ", nome=" + nome 
+                + ", date=" + date + '}';
     }
      
     

@@ -18,7 +18,6 @@ public class MainTeste {
         Figura f1= new Figura();
         
         f1.addLinha(1, 2, 0, 0);
-        
         System.out.println("f1 "+ f1);
         f1.moveFigura(5, 2);
         System.out.println("f1 "+ f1);

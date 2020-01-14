@@ -27,6 +27,15 @@ public class Linha { //Data Class
         return p2;
     }
 
+    public void move (int dx, int dy){
+        p1.move(dx, dy);
+        p2.move(dx, dy);
+    }
+    
+    public boolean contains(int x, int y){
+        return p1.same(x, y) || p2.same(x, y);
+    }
+    
     @Override
     public String toString() {
         return p1 + "-" + p2;

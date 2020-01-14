@@ -12,6 +12,7 @@ import hidedelegate.*;
  * @author Utilizador
  */
 public class Condutor {
+
     public String nome;
     public Camiao camiao;
 
@@ -27,7 +28,13 @@ public class Condutor {
     public Camiao getCamiao() {
         return camiao;
     }
+
+    public String getCamiaoMatriculaId(){
+        return camiao.getMatriculaId();
+    }
     
-    
-    
+    @Override
+    public String toString() {
+        return "Caminhão: " + this.getCamiao();
+    }
 }

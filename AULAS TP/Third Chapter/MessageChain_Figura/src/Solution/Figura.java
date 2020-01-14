@@ -24,10 +24,7 @@ public class Figura {//Data Clump & Innapropriate Intimacy & Message Chain
     public void moveFigura(int dx, int dy) {
 
         for (Linha l : linhas) {
-            l.getP1().setX(l.getP1().getX() + dx);
-            l.getP1().setY(l.getP1().getY() + dy);
-            l.getP2().setX(l.getP2().getX() + dx);
-            l.getP2().setY(l.getP2().getY() + dy);
+            l.move(dx, dy);
         }
 
     }
@@ -35,15 +32,9 @@ public class Figura {//Data Clump & Innapropriate Intimacy & Message Chain
     public boolean pesquisaPonto(Ponto ponto) {
 
         for (Linha l : linhas) {
-            if (l.getP1().getX() == ponto.getX() && l.getP1().getY() == ponto.getY()) {
+            if(l.contains(ponto.getX(), ponto.getY()))
                 return true;
-            }
-            if (l.getP2().getX() == ponto.getX() && l.getP2().getY() == ponto.getY()) {
-                return true;
-            }
-
         }
-
         return false;
     }
 
@@ -58,7 +49,7 @@ public class Figura {//Data Clump & Innapropriate Intimacy & Message Chain
     }
 
     @Override
-    public String toString() {
+        public String toString() {
         return "Figura{" + "linhas=" + linhas + '}';
     }
 

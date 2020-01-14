@@ -33,6 +33,12 @@ public class Matricula {
     public int getMes() {
         return mes;
     }
+
+    @Override
+    public String toString() {
+        return id + " - /" + ano + "/" + mes;
+    }
+    
     
     
 }

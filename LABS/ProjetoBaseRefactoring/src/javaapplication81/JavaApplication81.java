@@ -15,6 +15,7 @@ public class JavaApplication81 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         // TODO code application logic here
         Agenda minhaAgenda = new Agenda("Escola");
         minhaAgenda.adicionaContacto("Ana", 23413);

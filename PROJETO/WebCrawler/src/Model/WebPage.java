@@ -59,45 +59,19 @@ public class WebPage {
 
     }
 
-    /**
-     * This method insert the title of the webpage in case if the response of
-     * the page is 200 OK or 404 - Not Found.
-     *
-     * @param connection Receives object of the type Connection
-     * {@link org.jsoup}
-     */
-    private void insertStatusCodeTitle(Connection connection) {
-        try {
-            switch (statusCode) {
-                case 404:
-                    this.statusCode = 404;
-                    this.titleName = "404 - Page not found";
-                    break;
-                case 200:
-                    this.titleName = connection.get().title();
-                    this.statusCode = 200;
-                    break;
-                default:
-                    this.titleName = Integer.toString(getStatusCode());
-                    break;
-            }
-        } catch (IOException ex) {
-            logger.writeToLog(ex.getMessage());
-            getView().showErrorStackTraceException(ex.getMessage());
-        }
-    }
-
-    // Getters
+    // <editor-fold defaultstate="collapsed" desc=" Getters ">
     /**
      * This method get the depth
+     *
      * @return A number
      */
     public int getDepth() {
         return this.depth;
     }
-    
+
     /**
      * Get the if is the last of the level
+     *
      * @return True or False
      */
     public boolean getIsLastOfALevel() {
@@ -133,7 +107,7 @@ public class WebPage {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
-
+            
             return connection.getResponseCode();
         } catch (IOException ex) {
             logger.writeToLog(ex.getMessage());
@@ -141,10 +115,10 @@ public class WebPage {
         }
         return 0;
     }
-    
+
     /**
      * Return all incidents WebPages in a queue {@link java.util.Queue}.
-     * 
+     *
      * @return A queue with all incident pages.
      */
     public Queue<Link> getListIncidentsWebPages() {
@@ -154,6 +128,8 @@ public class WebPage {
     public int getNumberLinks() {
         return listIncidentsWebPages.size();
     }
+
+// </editor-fold>
     
     /**
      * Return all incident pages connected to the current WebPage
@@ -196,10 +172,40 @@ public class WebPage {
             return listIncidentsWebPages;
         }
     }
-
-    // Setters
+    
+    /**
+     * This method insert the title of the webpage in case if the response of
+     * the page is 200 OK or 404 - Not Found.
+     *
+     * @param connection Receives object of the type Connection
+     * {@link org.jsoup}
+     */
+    private void insertStatusCodeTitle(Connection connection) {
+        try {
+            switch (statusCode) {
+                case 404:
+                    this.statusCode = 404;
+                    this.titleName = "404 - Page not found";
+                    break;
+                case 200:
+                    this.titleName = connection.get().title();
+                    this.statusCode = 200;
+                    break;
+                default:
+                    this.titleName = Integer.toString(getStatusCode());
+                    break;
+            }
+        } catch (IOException ex) {
+            logger.writeToLog(ex.getMessage());
+            getView().showErrorStackTraceException(ex.getMessage());
+        }
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc=" Setters ">
+// Setters
     /**
      * Set the a depth number
+     *
      * @param depth A number
      */
     public void setDepth(int depth) {
@@ -208,14 +214,16 @@ public class WebPage {
 
     /**
      * Set with true or false if the last of level.
+     *
      * @param isLastOfALevel True or False
      */
     public void setIsLastOfALevel(boolean isLastOfALevel) {
         this.isLastOfALevel = isLastOfALevel;
     }
-    
+
     /**
      * Set the status code
+     *
      * @param status A number
      */
     public void setStatusCode(int status) {
@@ -240,7 +248,9 @@ public class WebPage {
         this.titleName = titleName;
     }
 
-    // Other methods
+// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc=" Auxiliar Methods ">
     /**
      * Process different types of URL
      *
@@ -280,6 +290,8 @@ public class WebPage {
         return pos <= -1 ? path : path.substring(0, pos + 1);
     }
 
+// </editor-fold>
+    
     /**
      * To print WebPage object
      *

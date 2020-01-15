@@ -22,8 +22,6 @@ import java.util.Queue;
 public class SearchDepth implements ISearchCriteria {
 
     private WebCrawler model;
-    private int countHttpsLinks = 0;
-    private int countPageNotFound = 0;
     private LoggerWriter logW = LoggerWriter.getInstance();
     
     public SearchDepth(WebCrawler model) {
@@ -33,8 +31,10 @@ public class SearchDepth implements ISearchCriteria {
     @Override
     public Iterable<WebPage> searchPages(WebPage webPage) {
         try {
-            // Variable that counts the number of links that are far away from root
+            
             int countLevelReached = -1;
+            int countHttpsLinks = 0;
+            int countPageNotFound = 0;
             
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
             
@@ -59,8 +59,8 @@ public class SearchDepth implements ISearchCriteria {
             webPagesToVisit.add(webPage);
             this.model.getPagesList().add(webPage);
             
-            this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
-            this.countPageNotFound = this.model.getPagesNotFound(webPage);
+            countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
+            countPageNotFound = this.model.getPagesNotFound(webPage);
             
             while (!webPagesToVisit.isEmpty()){
                 

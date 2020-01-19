@@ -10,11 +10,12 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
+ * This class is the point to start the application
  *
  * @author BRKsCosta
  */
 public class Main extends Application {
-    
+
     /**
      * @param args the command line arguments
      */

@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="WebCrawler">
+  <ClassDiagramComponents>
+    <Class name="HomeController" package="Controller" visibility="public" xPosition="1991.0" yPosition="574.0">
+      <Fields>
+        <Field name="view" type="HomeView" visibility="private" isFinal="true"/>
+        <Field name="model" type="WebCrawler" visibility="private" isFinal="true"/>
+        <Field name="caretaker" type="CareTaker" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+          <Argument type="HomeView" name="view"/>
+          <Argument type="CareTaker" name="caretaker"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getView" returnType="HomeView" visibility="public"/>
+        <Method name="getModel" returnType="WebCrawler" visibility="public"/>
+        <Method name="getCaretaker" returnType="CareTaker" visibility="public"/>
+        <Method name="startSearch" returnType="void" visibility="public">
+          <Argument type="HomeView.StopCriteria" name="criteria"/>
+          <Argument type="int" name="numCriteria"/>
+        </Method>
+        <Method name="exitApp" returnType="void" visibility="public"/>
+        <Method name="getRootPage" returnType="Vertex&lt;WebPage&gt;" visibility="public"/>
+        <Method name="clearErrors" returnType="void" visibility="public"/>
+        <Method name="importFiles" returnType="void" visibility="public">
+          <Argument type="String" name="fileType"/>
+        </Method>
+        <Method name="exportFile" returnType="void" visibility="public">
+          <Argument type="String" name="fileType"/>
+        </Method>
+        <Method name="undoAction" returnType="void" visibility="public"/>
+        <Method name="openWebPage" returnType="void" visibility="public">
+          <Argument type="String" name="url"/>
+        </Method>
+        <Method name="clearGraph" returnType="void" visibility="public"/>
+        <Method name="insertNewSubRoot" returnType="void" visibility="public">
+          <Argument type="SmartGraphVertex&lt;WebPage&gt;" name="subRoot"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Main" package="Main" visibility="public" xPosition="144.0" yPosition="188.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="ignored"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Link" package="Model" visibility="public" xPosition="1639.0" yPosition="304.0">
+      <Fields>
+        <Field name="linkName" type="String" visibility="private"/>
+        <Field name="array" type="List&lt;String&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="name"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="removeDuplicates" returnType="void" visibility="private">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getLinkName" returnType="String" visibility="public"/>
+        <Method name="setLinkName" returnType="void" visibility="public">
+          <Argument type="String" name="linkName"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="MyDigraph" package="Model" visibility="public" xPosition="88.0" yPosition="1067.0">
+      <Fields>
+        <Field name="vertices" type="Map&lt;V, Vertex&lt;V&gt;&gt;" visibility="private"/>
+        <Field name="edges" type="Map&lt;E, Edge&lt;E, V&gt;&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="incidentEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public" isSynchronized="true">
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+        </Method>
+        <Method name="outboundEdges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public" isSynchronized="true">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+        </Method>
+        <Method name="areAdjacent" returnType="boolean" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public" isSynchronized="true">
+          <Argument type="Vertex&lt;V&gt;" name="outbound"/>
+          <Argument type="Vertex&lt;V&gt;" name="inbound"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="insertEdge" returnType="Edge&lt;E, V&gt;" visibility="public" isSynchronized="true">
+          <Argument type="V" name="outboundElement"/>
+          <Argument type="V" name="inboundElement"/>
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="numVertices" returnType="int" visibility="public"/>
+        <Method name="numEdges" returnType="int" visibility="public"/>
+        <Method name="vertices" returnType="Collection&lt;Vertex&lt;V&gt;&gt;" visibility="public" isSynchronized="true"/>
+        <Method name="edges" returnType="Collection&lt;Edge&lt;E, V&gt;&gt;" visibility="public" isSynchronized="true"/>
+        <Method name="opposite" returnType="Vertex&lt;V&gt;" visibility="public" isSynchronized="true">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="insertVertex" returnType="Vertex&lt;V&gt;" visibility="public" isSynchronized="true">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="removeVertex" returnType="V" visibility="public" isSynchronized="true">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="removeEdge" returnType="E" visibility="public" isSynchronized="true">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+        <Method name="replace" returnType="V" visibility="public">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+          <Argument type="V" name="newElement"/>
+        </Method>
+        <Method name="replace" returnType="E" visibility="public">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+          <Argument type="E" name="newElement"/>
+        </Method>
+        <Method name="vertexOf" returnType="MyVertex" visibility="private">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="existsVertexWith" returnType="boolean" visibility="private">
+          <Argument type="V" name="vElement"/>
+        </Method>
+        <Method name="existsEdgeWith" returnType="boolean" visibility="private">
+          <Argument type="E" name="edgeElement"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="checkVertex" returnType="MyVertex" visibility="private">
+          <Argument type="Vertex&lt;V&gt;" name="v"/>
+        </Method>
+        <Method name="checkEdge" returnType="MyEdge" visibility="private">
+          <Argument type="Edge&lt;E, V&gt;" name="e"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="WebCrawler" package="Model" visibility="public" xPosition="592.0" yPosition="520.0">
+      <Fields>
+        <Field name="logger" type="LoggerWriter" visibility="private" isFinal="true"/>
+        <Field name="searchCriteria" type="ISearchCriteria" visibility="private"/>
+        <Field name="rootWebPage" type="WebPage" visibility="private"/>
+        <Field name="subRootWebPageChoosed" type="WebPage" visibility="private"/>
+        <Field name="webPagesNotFound" type="List&lt;WebPage&gt;" visibility="private"/>
+        <Field name="previousSubRootWebPageChoosed" type="WebPage" visibility="private"/>
+        <Field name="stopCriteriaChoosed" type="StopCriteria" visibility="private"/>
+        <Field name="pagesList" type="List&lt;WebPage&gt;" visibility="private" isFinal="true"/>
+        <Field name="graph" type="Graph&lt;WebPage, Link&gt;" visibility="private" isFinal="true"/>
+        <Field name="countHttpsLinks" type="int" visibility="private"/>
+        <Field name="countPageNotFound" type="int" visibility="private"/>
+        <Field name="numCriteria" type="int" visibility="private"/>
+        <Field name="isFinished" type="boolean" visibility="public"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="Graph" name="graph"/>
+        </Constructor>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="getLogger" returnType="LoggerWriter" visibility="public"/>
+        <Method name="getAllLinks" returnType="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="public"/>
+        <Method name="getPagesList" returnType="List&lt;WebPage&gt;" visibility="public"/>
+        <Method name="getNumCriteria" returnType="int" visibility="public"/>
+        <Method name="getCountHttpsLinks" returnType="int" visibility="public"/>
+        <Method name="getCountPageNotFound" returnType="int" visibility="public"/>
+        <Method name="getStopCriteriaChoosed" returnType="StopCriteria" visibility="public"/>
+        <Method name="getRootWebPage" returnType="Vertex&lt;WebPage&gt;" visibility="public"/>
+        <Method name="getGraph" returnType="Graph&lt;WebPage, Link&gt;" visibility="public"/>
+        <Method name="getWebPagesNotFound" returnType="List&lt;WebPage&gt;" visibility="public"/>
+        <Method name="setNumCriteria" returnType="void" visibility="public">
+          <Argument type="int" name="numCriteria"/>
+        </Method>
+        <Method name="setSubRootWebPageChoosed" returnType="void" visibility="public">
+          <Argument type="WebPage" name="subRootWebPageChoosed"/>
+        </Method>
+        <Method name="setCountHttpsLinks" returnType="void" visibility="public">
+          <Argument type="int" name="countHttpsLinks"/>
+        </Method>
+        <Method name="setCountPageNotFound" returnType="void" visibility="public">
+          <Argument type="int" name="countPageNotFound"/>
+        </Method>
+        <Method name="setStopCriteriaChoosed" returnType="void" visibility="public">
+          <Argument type="StopCriteria" name="stopCriteriaChoosed"/>
+        </Method>
+        <Method name="setRootWebPage" returnType="void" visibility="public">
+          <Argument type="WebPage" name="rootWebPage"/>
+        </Method>
+        <Method name="clearGraph" returnType="void" visibility="public"/>
+        <Method name="insertPage" returnType="void" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+        <Method name="insertLink" returnType="void" visibility="public">
+          <Argument type="WebPage" name="visitedWebPage"/>
+          <Argument type="WebPage" name="webPageInserting"/>
+          <Argument type="Link" name="link"/>
+        </Method>
+        <Method name="buildWebCrawler" returnType="void" visibility="public">
+          <Argument type="StopCriteria" name="criteria"/>
+          <Argument type="int" name="numCriteria"/>
+          <Argument type="String" name="inputUrl"/>
+        </Method>
+        <Method name="insertNewSubWebPageCrawler" returnType="void" visibility="public">
+          <Argument type="Vertex&lt;WebPage&gt;" name="subRoot"/>
+        </Method>
+        <Method name="searchPagesAndPrint" returnType="void" visibility="private">
+          <Argument type="WebPage" name="rootWebPage"/>
+        </Method>
+        <Method name="print" returnType="void" visibility="private" isStatic="true">
+          <Argument type="String" name="msg"/>
+          <Argument type="Object" name="args"/>
+        </Method>
+        <Method name="countHttpsProtocols" returnType="int" visibility="public">
+          <Argument type="String" name="startURL"/>
+        </Method>
+        <Method name="getPagesNotFound" returnType="int" visibility="public">
+          <Argument type="WebPage" name="myWebPage"/>
+        </Method>
+        <Method name="checkIfHasWebPage" returnType="boolean" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+        <Method name="getEqualWebPageVertex" returnType="Vertex&lt;WebPage&gt;" visibility="public">
+          <Argument type="String" name="linkName"/>
+        </Method>
+        <Method name="countLinks" returnType="int" visibility="public"/>
+        <Method name="countWebPages" returnType="int" visibility="public"/>
+        <Method name="save" returnType="IMemento" visibility="public"/>
+        <Method name="restore" returnType="void" visibility="public">
+          <Argument type="IMemento" name="savedState"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="WebCrawlerException" package="Model" visibility="public" xPosition="108.0" yPosition="73.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="string"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Class name="WebPage" package="Model" visibility="public" xPosition="1227.0" yPosition="28.0">
+      <Fields>
+        <Field name="logger" type="LoggerWriter" visibility="private"/>
+        <Field name="depth" type="int" visibility="private"/>
+        <Field name="isLastOfALevel" type="boolean" visibility="private"/>
+        <Field name="titleName" type="String" visibility="private"/>
+        <Field name="personalURL" type="String" visibility="private"/>
+        <Field name="listIncidentsWebPages" type="Queue&lt;Link&gt;" visibility="private" isFinal="true"/>
+        <Field name="statusCode" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="url"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getDepth" returnType="int" visibility="public"/>
+        <Method name="getIsLastOfALevel" returnType="boolean" visibility="public"/>
+        <Method name="getTitleName" returnType="String" visibility="public"/>
+        <Method name="getPersonalURL" returnType="String" visibility="public"/>
+        <Method name="getStatusCode" returnType="int" visibility="public" isFinal="true"/>
+        <Method name="getListIncidentsWebPages" returnType="Queue&lt;Link&gt;" visibility="public"/>
+        <Method name="getNumberLinks" returnType="int" visibility="public"/>
+        <Method name="getAllIncidentWebPages" returnType="Queue&lt;Link&gt;" visibility="public">
+          <Argument type="String" name="personalLink"/>
+        </Method>
+        <Method name="insertStatusCodeTitle" returnType="void" visibility="private">
+          <Argument type="Connection" name="connection"/>
+        </Method>
+        <Method name="setDepth" returnType="void" visibility="public">
+          <Argument type="int" name="depth"/>
+        </Method>
+        <Method name="setIsLastOfALevel" returnType="void" visibility="public">
+          <Argument type="boolean" name="isLastOfALevel"/>
+        </Method>
+        <Method name="setStatusCode" returnType="void" visibility="public">
+          <Argument type="int" name="status"/>
+        </Method>
+        <Method name="setPersonalURL" returnType="void" visibility="public">
+          <Argument type="String" name="personalURL"/>
+        </Method>
+        <Method name="setTitleName" returnType="void" visibility="public">
+          <Argument type="String" name="titleName"/>
+        </Method>
+        <Method name="processLink" returnType="String" visibility="private">
+          <Argument type="String" name="link"/>
+          <Argument type="String" name="startURL"/>
+        </Method>
+        <Method name="stripFilename" returnType="String" visibility="private">
+          <Argument type="String" name="path"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="WebCrawlerFile" package="Patterns.DAO" visibility="public" xPosition="342.0" yPosition="73.0">
+      <Fields>
+        <Field name="logger" type="LoggerWriter" visibility="private"/>
+        <Field name="FILENAME" type="String" visibility="public" isStatic="true" isFinal="true"/>
+        <Field name="inMemory" type="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="private"/>
+        <Field name="edgesMap" type="Map&lt;String, List&lt;String&gt;&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="saveAll" returnType="void" visibility="public"/>
+        <Method name="readAll" returnType="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="public"/>
+        <Method name="saveFile" returnType="void" visibility="private"/>
+        <Method name="loadFile" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="WebCrawlerJson" package="Patterns.DAO" visibility="public" xPosition="629.0" yPosition="99.0">
+      <Fields>
+        <Field name="FILENAME" type="String" visibility="public" isStatic="true" isFinal="true"/>
+        <Field name="logger" type="LoggerWriter" visibility="private"/>
+        <Field name="inMemory" type="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="private"/>
+        <Field name="edgesMap" type="Map&lt;String, List&lt;String&gt;&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="saveAll" returnType="void" visibility="public"/>
+        <Method name="saveFile" returnType="void" visibility="private"/>
+        <Method name="loadFile" returnType="void" visibility="public"/>
+        <Method name="readAll" returnType="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Factories" package="Patterns.Factories" visibility="public" xPosition="1639.0" yPosition="28.0">
+      <Fields>
+        <Field name="view" type="HomeView" visibility="private" isStatic="true"/>
+        <Field name="controller" type="HomeController" visibility="private" isStatic="true"/>
+        <Field name="stage" type="Stage" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="showApp" returnType="void" visibility="public" isStatic="true"/>
+        <Method name="getAppStage" returnType="Stage" visibility="public" isStatic="true"/>
+        <Method name="createMVCApp" returnType="Scene" visibility="private" isStatic="true"/>
+        <Method name="createFileType" returnType="IWebCrawlerDAO" visibility="public" isStatic="true">
+          <Argument type="String" name="fileType"/>
+          <Argument type="WebCrawler" name="model"/>
+        </Method>
+        <Method name="getView" returnType="HomeView" visibility="public" isStatic="true"/>
+        <Method name="getController" returnType="HomeController" visibility="public" isStatic="true"/>
+      </Methods>
+    </Class>
+    <Class name="CareTaker" package="Patterns.Memento" visibility="public" xPosition="1321.0" yPosition="901.0">
+      <Fields>
+        <Field name="originator" type="IOriginator" visibility="private"/>
+        <Field name="mementos" type="Stack&lt;IMemento&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="IOriginator" name="originator"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="requestSave" returnType="void" visibility="public"/>
+        <Method name="requestRestore" returnType="void" visibility="public"/>
+        <Method name="canUndo" returnType="boolean" visibility="public"/>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="LoggerException" package="Patterns.Singleton" visibility="public" xPosition="176.0" yPosition="947.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="message"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Class name="LoggerWriter" package="Patterns.Singleton" visibility="public" isFinal="true" xPosition="1236.0" yPosition="646.0">
+      <Fields>
+        <Field name="LOGGERFILE" type="String" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="printStream" type="PrintStream" visibility="private"/>
+        <Field name="instance" type="LoggerWriter" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="LoggerWriter" visibility="public" isStatic="true"/>
+        <Method name="connect" returnType="boolean" visibility="public"/>
+        <Method name="writeToLog" returnType="void" visibility="public">
+          <Argument type="String" name="str"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="SearchDepth" package="Patterns.Stategy" visibility="public" xPosition="144.0" yPosition="543.0">
+      <Fields>
+        <Field name="model" type="WebCrawler" visibility="private"/>
+        <Field name="logW" type="LoggerWriter" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="searchPages" returnType="Iterable&lt;WebPage&gt;" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="SearchExpandedPages" package="Patterns.Stategy" visibility="public" xPosition="144.0" yPosition="353.0">
+      <Fields>
+        <Field name="model" type="WebCrawler" visibility="private"/>
+        <Field name="logW" type="LoggerWriter" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="searchPages" returnType="Iterable&lt;WebPage&gt;" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="SearchIterative" package="Patterns.Stategy" visibility="public" xPosition="144.0" yPosition="718.0">
+      <Fields>
+        <Field name="model" type="WebCrawler" visibility="private"/>
+        <Field name="countHttpsLinks" type="int" visibility="private"/>
+        <Field name="countPageNotFound" type="int" visibility="private"/>
+        <Field name="logW" type="LoggerWriter" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="searchPages" returnType="Iterable&lt;WebPage&gt;" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="SearchPages" package="Patterns.Stategy" visibility="public" xPosition="873.0" yPosition="1563.0">
+      <Fields>
+        <Field name="model" type="WebCrawler" visibility="private"/>
+        <Field name="countHttpsLinks" type="int" visibility="private"/>
+        <Field name="countPageNotFound" type="int" visibility="private"/>
+        <Field name="logW" type="LoggerWriter" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="searchPages" returnType="Iterable&lt;WebPage&gt;" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="HomeView" package="Views" visibility="public" xPosition="1556.0" yPosition="601.0">
+      <Fields>
+        <Field name="logW" type="LoggerWriter" visibility="package"/>
+        <Field name="strategy" type="SmartPlacementStrategy" visibility="private"/>
+        <Field name="graphView" type="SmartGraphPanel&lt;WebPage, Link&gt;" visibility="private"/>
+        <Field name="menuBar" type="MenuBar" visibility="private"/>
+        <Field name="menuFile" type="Menu" visibility="private"/>
+        <Field name="menuEdit" type="Menu" visibility="private"/>
+        <Field name="menuHelp" type="Menu" visibility="private"/>
+        <Field name="mFileItemExportFile" type="MenuItem" visibility="private"/>
+        <Field name="mFileItemImportFile" type="MenuItem" visibility="private"/>
+        <Field name="mFileItemExit" type="MenuItem" visibility="private"/>
+        <Field name="mEditUndo" type="MenuItem" visibility="private"/>
+        <Field name="mEditClearGraph" type="MenuItem" visibility="private"/>
+        <Field name="mEditRedo" type="MenuItem" visibility="private"/>
+        <Field name="mHelpAbout" type="MenuItem" visibility="private"/>
+        <Field name="separatorMenu" type="SeparatorMenuItem" visibility="private"/>
+        <Field name="separatorEdit" type="SeparatorMenuItem" visibility="private"/>
+        <Field name="btnStartCrawler" type="Button" visibility="private"/>
+        <Field name="txtFieldURL" type="TextField" visibility="private"/>
+        <Field name="txtFieldNumPages" type="TextField" visibility="private"/>
+        <Field name="rdBtnBreadthFirst" type="RadioButton" visibility="private"/>
+        <Field name="rdBtnDepth" type="RadioButton" visibility="private"/>
+        <Field name="rdBtnIterative" type="RadioButton" visibility="private"/>
+        <Field name="rdBtnExpandedPages" type="RadioButton" visibility="private"/>
+        <Field name="spinner" type="Spinner" visibility="private" isFinal="true"/>
+        <Field name="splitPane" type="SplitPane" visibility="private"/>
+        <Field name="anchorPaneLeft" type="AnchorPane" visibility="private"/>
+        <Field name="anchorPaneRigth" type="AnchorPane" visibility="private"/>
+        <Field name="bottomHBox" type="HBox" visibility="private"/>
+        <Field name="lblStatistics" type="Label" visibility="private"/>
+        <Field name="lblInfo" type="Label" visibility="private"/>
+        <Field name="lblCriteria" type="Label" visibility="private"/>
+        <Field name="lblAnotherThing" type="Label" visibility="private"/>
+        <Field name="lblWebCrawler" type="Label" visibility="private"/>
+        <Field name="lblNumPages" type="Label" visibility="private"/>
+        <Field name="INITAL_VALUE" type="String" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="scene" type="Scene" visibility="private"/>
+        <Field name="edgeClicked" type="SmartGraphEdge&lt;Link, WebPage&gt;" visibility="package"/>
+        <Field name="vertexClicked" type="SmartGraphVertex&lt;WebPage&gt;" visibility="package"/>
+        <Field name="inIterativeMode" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="WebCrawler" name="model"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getGraphView" returnType="SmartGraphPanel&lt;WebPage, Link&gt;" visibility="public"/>
+        <Method name="setGraphView" returnType="void" visibility="public">
+          <Argument type="SmartGraphPanel&lt;WebPage, Link&gt;" name="graphView"/>
+        </Method>
+        <Method name="initializeComponents" returnType="void" visibility="private"/>
+        <Method name="barChart" returnType="VBox" visibility="private"/>
+        <Method name="update" returnType="void" visibility="public">
+          <Argument type="Observable" name="o"/>
+          <Argument type="Object" name="o1"/>
+        </Method>
+        <Method name="getInputURL" returnType="String" visibility="public"/>
+        <Method name="importFile" returnType="void" visibility="public">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="exportFile" returnType="void" visibility="public">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="exitApp" returnType="void" visibility="public"/>
+        <Method name="clearError" returnType="void" visibility="public"/>
+        <Method name="showError" returnType="void" visibility="public">
+          <Argument type="String" name="errorMsg"/>
+        </Method>
+        <Method name="setTriggersButtons" returnType="void" visibility="public">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="redoGraph" returnType="void" visibility="private"/>
+        <Method name="selectSearchType" returnType="void" visibility="private">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="setColorRootPage" returnType="void" visibility="public">
+          <Argument type="Vertex&lt;WebPage&gt;" name="p"/>
+        </Method>
+        <Method name="updateGraph" returnType="void" visibility="public"/>
+        <Method name="showErrorStackTraceException" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="chooseFileType" returnType="void" visibility="private">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Interface name="IWebCrawlerDAO" package="Patterns.DAO" visibility="public" xPosition="920.0" yPosition="7.0">
+      <Methods>
+        <Method name="saveAll" returnType="void" visibility="public"/>
+        <Method name="readAll" returnType="List&lt;Edge&lt;Link, WebPage&gt;&gt;" visibility="public"/>
+        <Method name="loadFile" returnType="void" visibility="public"/>
+      </Methods>
+    </Interface>
+    <Interface name="IMemento" package="Patterns.Memento" visibility="public" xPosition="1099.0" yPosition="925.0">
+      <Methods>
+        <Method name="getDescription" returnType="String" visibility="public"/>
+      </Methods>
+    </Interface>
+    <Interface name="IOriginator" package="Patterns.Memento" visibility="public" xPosition="1309.0" yPosition="1606.0">
+      <Methods>
+        <Method name="save" returnType="IMemento" visibility="public"/>
+        <Method name="restore" returnType="void" visibility="public">
+          <Argument type="IMemento" name="savedState"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Interface name="ISearchCriteria" package="Patterns.Stategy" visibility="public" xPosition="715.0" yPosition="384.0">
+      <Methods>
+        <Method name="searchPages" returnType="Iterable&lt;WebPage&gt;" visibility="public">
+          <Argument type="WebPage" name="webPage"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Interface name="IHomeOperations" package="Views" visibility="public" xPosition="1892.0" yPosition="309.0">
+      <Methods>
+        <Method name="getInputURL" returnType="String" visibility="package"/>
+        <Method name="importFile" returnType="void" visibility="package">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="exportFile" returnType="void" visibility="package">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+        <Method name="exitApp" returnType="void" visibility="package"/>
+        <Method name="clearError" returnType="void" visibility="package"/>
+        <Method name="showError" returnType="void" visibility="package">
+          <Argument type="String" name="errorMsg"/>
+        </Method>
+        <Method name="setTriggersButtons" returnType="void" visibility="package">
+          <Argument type="HomeController" name="controller"/>
+        </Method>
+      </Methods>
+    </Interface>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="edgeClicked" source="Views.HomeView" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Factories.Factories" target="Views.HomeView" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Model.WebCrawler" target="Patterns.Memento.IOriginator"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.DAO.WebCrawlerJson" target="Patterns.DAO.IWebCrawlerDAO"/>
+    <HasRelation name="logW" source="Views.HomeView" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Model.WebPage" target="Model.Link" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="model" source="Patterns.Stategy.SearchPages" target="Model.WebCrawler" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Views.HomeView" target="Controller.HomeController" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Stategy.SearchPages" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Controller.HomeController" target="Patterns.Memento.CareTaker" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="vertexClicked" source="Views.HomeView" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.Stategy.SearchExpandedPages" target="Patterns.Stategy.ISearchCriteria"/>
+    <HasRelation name="logW" source="Patterns.Stategy.SearchExpandedPages" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.DAO.WebCrawlerFile" target="Patterns.DAO.IWebCrawlerDAO"/>
+    <UseRelation source="Model.WebCrawler" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Model.WebCrawler" target="Patterns.Singleton.LoggerWriter" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="previousSubRootWebPageChoosed" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Singleton.LoggerWriter" target="Patterns.Singleton.LoggerWriter" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="instance" source="Patterns.Singleton.LoggerWriter" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="model" source="Patterns.Stategy.SearchDepth" target="Model.WebCrawler" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.DAO.WebCrawlerFile" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.DAO.IWebCrawlerDAO" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="graphView" source="Views.HomeView" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Controller.HomeController" target="Model.WebCrawler" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Factories.Factories" target="Patterns.DAO.IWebCrawlerDAO" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="logger" source="Model.WebCrawler" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="model" source="Patterns.Stategy.SearchIterative" target="Model.WebCrawler" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Controller.HomeController" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Stategy.SearchDepth" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.DAO.WebCrawlerJson" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Stategy.ISearchCriteria" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="searchCriteria" source="Model.WebCrawler" target="Patterns.Stategy.ISearchCriteria" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Controller.HomeController" target="Views.HomeView" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="logW" source="Patterns.Stategy.SearchIterative" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="caretaker" source="Controller.HomeController" target="Patterns.Memento.CareTaker" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="model" source="Controller.HomeController" target="Model.WebCrawler" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="inMemory" source="Patterns.DAO.WebCrawlerFile" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Edge&lt;Link, WebPage&gt;&gt;"/>
+    <HasRelation name="rootWebPage" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Views.HomeView" target="Views.IHomeOperations"/>
+    <HasRelation name="logger" source="Patterns.DAO.WebCrawlerFile" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Memento.IOriginator" target="Patterns.Memento.IMemento" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="inMemory" source="Patterns.DAO.WebCrawlerJson" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Edge&lt;Link, WebPage&gt;&gt;"/>
+    <HasRelation name="view" source="Patterns.Factories.Factories" target="Views.HomeView" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="webPagesNotFound" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;WebPage&gt;"/>
+    <HasRelation name="logW" source="Patterns.Stategy.SearchPages" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="listIncidentsWebPages" source="Model.WebPage" target="Model.Link" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="Queue&lt;Link&gt;"/>
+    <UseRelation source="Views.HomeView" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.Stategy.SearchIterative" target="Patterns.Stategy.ISearchCriteria"/>
+    <HasRelation name="subRootWebPageChoosed" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Stategy.SearchIterative" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="logger" source="Patterns.DAO.WebCrawlerJson" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.Stategy.SearchDepth" target="Patterns.Stategy.ISearchCriteria"/>
+    <HasRelation name="pagesList" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;WebPage&gt;"/>
+    <HasRelation name="logW" source="Patterns.Stategy.SearchDepth" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="view" source="Controller.HomeController" target="Views.HomeView" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="controller" source="Patterns.Factories.Factories" target="Controller.HomeController" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mementos" source="Patterns.Memento.CareTaker" target="Patterns.Memento.IMemento" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Model.WebCrawler" target="Patterns.Memento.IMemento" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="Patterns.Stategy.SearchPages" target="Patterns.Stategy.ISearchCriteria"/>
+    <HasRelation name="originator" source="Patterns.Memento.CareTaker" target="Patterns.Memento.IOriginator" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Stategy.SearchExpandedPages" target="Model.WebPage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Patterns.Factories.Factories" target="Controller.HomeController" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="graph" source="Model.WebCrawler" target="Model.WebPage" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="model" source="Patterns.Stategy.SearchExpandedPages" target="Model.WebCrawler" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="logger" source="Model.WebPage" target="Patterns.Singleton.LoggerWriter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Views.IHomeOperations" target="Controller.HomeController" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

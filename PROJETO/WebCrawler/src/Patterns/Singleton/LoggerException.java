@@ -6,7 +6,7 @@
 package Patterns.Singleton;
 
 /**
- *
+ *  This class throw an exception by logger
  * @author BRKsCosta
  */
 public class LoggerException extends RuntimeException {

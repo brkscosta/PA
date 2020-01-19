@@ -8,7 +8,8 @@ package Patterns.Memento;
 import java.util.Stack;
 
 /**
- *
+ *  This class manage the requests to save and restores states of the object
+ * 
  * @author BRKsCosta and danielcordeiro
  */
 public class CareTaker {

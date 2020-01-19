@@ -79,7 +79,9 @@ import javafx.stage.StageStyle;
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
 
-    // Enum for searchCriteria
+    /**
+     * This enum represents  the stop criteria type
+     */
     public enum StopCriteria {
         PAGES, DEPTH, ITERATIVE, EXPANDED;
     }

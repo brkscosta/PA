@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.Date;
 
 /**
- *
+ *  This class is responsible to write loggers on a text file
  * @author BRKsCosta
  */
 public final class LoggerWriter {

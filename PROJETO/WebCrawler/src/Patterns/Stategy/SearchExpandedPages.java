@@ -10,7 +10,6 @@ import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
 import Patterns.Singleton.LoggerWriter;
-import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -18,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This is another strategy stop criteria class to search the WebPages
  *
  * @author BRKsCosta
  */

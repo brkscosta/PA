@@ -19,7 +19,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * The class create a factory of any object type
+ * This class is responsible for creating the MVC structure and the 
+ * exported file types.
  *
  * @author BRKsCosta and danielcordeiro
  */

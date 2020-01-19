@@ -7,8 +7,6 @@ import java.util.List;
 /**
  * Class that represents de <code>Edge<V, E></code> on graph.
  *
- * Class that represents de Edge on graph.
- *
  * @author BRKsCosta
  */
 public class Link {

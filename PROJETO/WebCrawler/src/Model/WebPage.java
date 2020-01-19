@@ -18,8 +18,11 @@ import java.util.Set;
 import org.jsoup.HttpStatusException;
 
 /**
- * Class that represents the <code>Vertex</code> on graph.
+ * Class that represents the vertex in the graph. 
+ * This class is a representation of a specific web page.
  *
+ * @see com.brunomnsilva.smartgraph.graph.Vertex
+ * 
  * @author BRKsCosta and danielcordeiro.
  *
  */

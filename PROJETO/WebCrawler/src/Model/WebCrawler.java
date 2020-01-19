@@ -23,9 +23,14 @@ import Views.HomeView.StopCriteria;
 import java.util.LinkedList;
 
 /**
- * Model to be created to build de graph Link Vertex WebPage and Edge Use the
- * methods setChanged() and notifyObservers()
+ * This class is responsible for creating our WebCrawler model based on the
+ * implemented MyDigraph class, where the vertices are represented by the
+ * concrete web page (class WebPage) and the parts by a link on page (class
+ * Link).
  *
+ * @see Model.Link
+ * @see Model.WebPage
+ * 
  * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawler extends Observable implements IOriginator, Serializable {

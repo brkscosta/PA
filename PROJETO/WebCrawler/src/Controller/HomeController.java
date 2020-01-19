@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * This class is responsible to manager all the business logic
+ * This class is responsible for managing all business logic between model and view.
  *
  * @author BRKsCosta and danielcordeiro
  */

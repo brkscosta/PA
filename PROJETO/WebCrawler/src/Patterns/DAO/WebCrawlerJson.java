@@ -26,6 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This class is to generate a new file of the type <b>JSON</b> by java
+ * serialization. Implements a interface the make operation to save and load the
+ * file.
  *
  * @author BRKsCosta
  */
@@ -56,7 +59,7 @@ public class WebCrawlerJson implements IWebCrawlerDAO {
         }
         this.saveFile();
     }
-    
+
     /**
      * Save to a file
      */

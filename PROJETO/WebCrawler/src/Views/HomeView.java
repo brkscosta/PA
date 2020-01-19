@@ -69,7 +69,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
 
 /**
- * This class contains all implementation about the UI. Implement a behavioral
+ * This class contains all implementation about the UI. Implements a behavioral
  * of the view and a observer to keep updated when model is changed.
  *
  * @see Model.WebCrawler

@@ -16,6 +16,7 @@ import Patterns.Memento.IMemento;
 import Patterns.Memento.IOriginator;
 import Patterns.Stategy.ISearchCriteria;
 import Patterns.Stategy.SearchDepth;
+import Patterns.Stategy.SearchExpandedPages;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView.StopCriteria;
@@ -30,29 +31,27 @@ import java.util.LinkedList;
  */
 public class WebCrawler extends Observable implements IOriginator, Serializable {
 
+    //<editor-fold defaultstate="collapsed" desc="Variables">
     private final LoggerWriter logger = LoggerWriter.getInstance();
-
     private ISearchCriteria searchCriteria;
-
+    
     // Pertinent variables to the DiGraph structure:
     private WebPage rootWebPage;
-
+    
     // Iterative variables
     private WebPage subRootWebPageChoosed;
     private List<WebPage> webPagesNotFound;
-
     private WebPage previousSubRootWebPageChoosed; // Still seing if it is needed
-
-    private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, ITERATIVE.
+    private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, Extended,ITERATIVE.
     private final List<WebPage> pagesList = new ArrayList<>();
-
     private final Graph<WebPage, Link> graph;
-
+    
     // Statistics
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
     private int numCriteria = 0;
     public boolean isFinished = false;
+//</editor-fold>
 
     public WebCrawler(Graph graph) {
         this.graph = graph;
@@ -227,7 +226,19 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         setChanged();
         notifyObservers();
     }
-
+    
+    /**
+     * Insert new WebPage on the graph
+     * @param webPage WebPage Object
+     */
+    public void insertPage(WebPage webPage) {
+        this.getGraph().insertVertex(webPage);
+    }
+    
+    public void insertLink(WebPage visitedWebPage, WebPage webPageInserting, Link link) {
+       this.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+    }
+    
     /**
      * This method is responsible to select a type of search to the WebPages
      *
@@ -251,6 +262,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 break;
             case DEPTH:
                 this.searchCriteria = new SearchDepth(this);
+                break;
+            case EXPANDED:
+                this.searchCriteria = new SearchExpandedPages(this);
                 break;
             default: // Iterative
                 this.searchCriteria = new SearchIterative(this);
@@ -412,6 +426,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers();
         
     }
+
+    
 
     // </editor-fold>
 

@@ -69,19 +69,19 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
 
 /**
- * This class contains all implementation about the UI. Implement a behavioral 
+ * This class contains all implementation about the UI. Implement a behavioral
  * of the view and a observer to keep updated when model is changed.
- * 
+ *
  * @see Model.WebCrawler
  * @see Views.IHomeOperations
- * 
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class HomeView extends VBox implements Observer, IHomeOperations {
 
     // Enum for searchCriteria
     public enum StopCriteria {
-        PAGES, DEPTH, ITERATIVE;
+        PAGES, DEPTH, ITERATIVE, EXPANDED;
     }
 
     LoggerWriter logW = LoggerWriter.getInstance();
@@ -112,6 +112,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
     private RadioButton rdBtnBreadthFirst;
     private RadioButton rdBtnDepth;
     private RadioButton rdBtnIterative;
+    private RadioButton rdBtnExpandedPages;
     private final Spinner spinner = new Spinner();
 
     //Layout
@@ -148,17 +149,19 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         update(model, null);
 
     }
-    
+
     /**
      * Get SmartGraphPanel
+     *
      * @return A object SmartGraphPanel
      */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
-    
+
     /**
      * Set the SmartGraphPanel
+     *
      * @param graphView Object SmartGraphPanel
      */
     public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
@@ -213,6 +216,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.rdBtnBreadthFirst.setToggleGroup(group);
         this.rdBtnBreadthFirst.setSelected(true);
 
+        this.rdBtnExpandedPages = new RadioButton("Limitar Expansão de Páginas");
+        this.rdBtnExpandedPages.setToggleGroup(group);
+        this.rdBtnExpandedPages.setSelected(false);
+
         this.lblNumPages = new Label("Número de páginas");
         this.txtFieldNumPages = new TextField();
         this.txtFieldNumPages.setId("textFieldNumPages");
@@ -234,14 +241,20 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(1));
-        int row = 0;
-        grid.add(new Label("Nº Pages: "), 0, row);
-        grid.add(spinner, 1, row);
+        grid.add(spinner, 1, 0);
 
-        VBox items = new VBox(lblCriteria, txtFieldURL, btnStartCrawler,
-                rdBtnBreadthFirst, grid, rdBtnDepth, rdBtnIterative);
-        items.setPadding(new Insets(5, 0, 0, 10));
-        AnchorPane.setTopAnchor(items, 15.0);
+        HBox a = new HBox(btnStartCrawler, grid);
+        a.setPadding(new Insets(15, 0, 0, 0));
+
+        VBox vboxRadio = new VBox(rdBtnBreadthFirst, rdBtnExpandedPages,
+                rdBtnDepth, rdBtnIterative);
+        
+        vboxRadio.setPadding(new Insets(20, 0, 0, 0));
+        
+        VBox items = new VBox(lblCriteria, txtFieldURL, a, vboxRadio);
+        
+        items.setPadding(new Insets(0, 0, 0, 10));
+        AnchorPane.setTopAnchor(items, 16.0);
         AnchorPane.setLeftAnchor(items, 10.0);
         AnchorPane.setRightAnchor(items, 10.0);
         this.anchorPaneLeft.getChildren().add(items);
@@ -252,7 +265,7 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.anchorPaneRigth = new AnchorPane();
         VBox vboxChart = barChart();
         AnchorPane.setTopAnchor(vboxChart, 10.0);
-        AnchorPane.setLeftAnchor(vboxChart, 10.0);
+        AnchorPane.setLeftAnchor(vboxChart, 15.0);
         AnchorPane.setRightAnchor(vboxChart, 80.0);
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
@@ -327,16 +340,16 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             }
         }
     }
-    
+
     // IHomeOperations methods
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
     }
-    
+
     @Override
     public void importFile(HomeController controller) {
-       FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir Ficheiro");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Data File", "*.data"),
@@ -413,41 +426,37 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-        
+
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
 
-            if(this.inIterativeMode){
+            if (this.inIterativeMode) {
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
                     controller.getCaretaker().requestSave();
                 } catch (IOException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }else{
+            } else {
                 controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             }
-            
+
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-        
-        // Double click in one edge. 
-        // It will have to toogle between edges. It can't be possible to have more than one clicked edge at the same time. 
-        // Lets see, we can click in one, show description. If we click in another one the older one has to come back to the older color and we get the description and color of the new clicked one.
-        // It can be possible to double click one edge, change the color and give the description and if we double click again it changes the color again to the older one and doens0t print it's description.
+
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("EDGE -1");
             //dynamically change the style when clicked
-            if (this.edgeClicked != null){
+            if (this.edgeClicked != null) {
                 System.out.println("EDGE 0");
                 // Check if the clicked edge is the same as the edge passed as an argument
                 if (graphEdge.getUnderlyingEdge() == this.edgeClicked) {
                     // Change the color to the default
                     graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
                     this.edgeClicked = null;
-                    
+
                     System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
@@ -493,22 +502,23 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
     }
-    
+
     /**
      * This method make redo action on graph
-     * 
+     *
      */
     private void redoGraph() {
         // TODO
         System.out.println("Views.Home.redoGraph()");
     }
-    
+
     /**
      * This method execute the search requested
+     *
      * @param controller The controller object
      * @throws LoggerException
      * @throws WebCrawlerException
-     * @throws NumberFormatException 
+     * @throws NumberFormatException
      */
     private void selectSearchType(HomeController controller) throws
             LoggerException, WebCrawlerException, NumberFormatException {
@@ -518,14 +528,18 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
 
             if (rdBtnBreadthFirst.isSelected()) {
                 this.inIterativeMode = false;
-                lblAnotherThing.setText("Selecionou BFS");
+                lblInfo.setText("Selecionou BFS");
                 controller.startSearch(HomeView.StopCriteria.PAGES, parseInt);
             } else if (rdBtnDepth.isSelected()) {
                 this.inIterativeMode = false;
-                lblAnotherThing.setText("Selecionou DFS");
+                lblInfo.setText("Selecionou DFS");
                 controller.startSearch(HomeView.StopCriteria.DEPTH, parseInt);
+            } else if (rdBtnExpandedPages.isSelected()) {
+                lblInfo.setText("Selecionou Expansão de Páginas");
+                this.inIterativeMode = false;
+                controller.startSearch(HomeView.StopCriteria.EXPANDED, parseInt);
             } else {
-                lblAnotherThing.setText("Selecionou Iterativo");
+                lblInfo.setText("Selecionou Iterativo");
                 this.inIterativeMode = true;
                 controller.startSearch(HomeView.StopCriteria.ITERATIVE, parseInt);
             }
@@ -533,9 +547,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
         }
     }
-    
+
     /**
      * Set the root webpage
+     *
      * @param p The concrete vertex
      */
     public void setColorRootPage(Vertex<WebPage> p) {
@@ -543,16 +558,17 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         System.out.println("graphview ? " + graphView.getStylableVertex(p));
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
-    
+
     /**
      * Update the graph view
      */
     public void updateGraph() {
         graphView.update();
     }
-    
+
     /**
      * Show errors along the application
+     *
      * @param msg The error message
      */
     public void showErrorStackTraceException(String msg) {
@@ -590,9 +606,10 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         alert.showAndWait();
         exitApp();
     }
-    
+
     /**
      * Open the dialog to open the file
+     *
      * @param controller The controller object
      */
     private void chooseFileType(HomeController controller) {

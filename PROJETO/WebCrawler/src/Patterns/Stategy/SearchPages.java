@@ -87,16 +87,17 @@ public class SearchPages implements ISearchCriteria {
                     // Check if it exists already a WebPage with that link
                     if(vertexWebPageFound != null){
                         // Insert a new Link between WebPagess
-                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
+                        this.model.insertLink(visitedWebPage, vertexWebPageFound.element(), link);
                     }else{
+
                         // Insert a new WebPage in the graph
                         WebPage webPageInserting = new WebPage(link.getLinkName());
-                        this.model.getGraph().insertVertex(webPageInserting);
+                        this.model.insertPage(webPageInserting);
                         this.model.getPagesList().add(webPageInserting);
                         webPagesToVisit.add(webPageInserting);
-                        
+
                         // Insert a new Link between WebPages
-                        this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+                        this.model.insertLink(visitedWebPage, webPageInserting, link);
 
                         logW.writeToLog(webPageInserting.getTitleName() + " | "
                             + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()

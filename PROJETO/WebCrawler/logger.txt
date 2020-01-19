@@ -1,9 +1,0 @@
-Thu Jan 09 14:06:43 WET 2020  Same Title | http://www.brunomnsilva.com/sandbox/same1.html | INDEX | 1
-Thu Jan 09 14:06:43 WET 2020  B | http://www.brunomnsilva.com/sandbox/b.html | INDEX | 1
-Thu Jan 09 14:06:43 WET 2020  D | http://www.brunomnsilva.com/sandbox/d.html | INDEX | 1
-Thu Jan 09 14:06:43 WET 2020  E | http://www.brunomnsilva.com/sandbox/e.html | INDEX | 1
-Thu Jan 09 14:06:44 WET 2020  Same Title | http://www.brunomnsilva.com/sandbox/same2.html | INDEX | 1
-Thu Jan 09 14:06:44 WET 2020  C | http://www.brunomnsilva.com/sandbox/c.html | INDEX | 1
-Thu Jan 09 14:06:44 WET 2020  A | http://www.brunomnsilva.com/sandbox/a.html | INDEX | 1
-Thu Jan 09 14:06:44 WET 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete1.html | INDEX | 1
-Thu Jan 09 14:06:44 WET 2020  J | http://www.brunomnsilva.com/sandbox/j.html | B | 1

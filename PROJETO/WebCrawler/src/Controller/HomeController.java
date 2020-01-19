@@ -22,6 +22,7 @@ import java.net.URL;
 
 /**
  * This class is responsible to manager all the business logic
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class HomeController {
@@ -151,7 +152,9 @@ public class HomeController {
     public void openWebPage(String url) {
 
         try {
+
             Desktop.getDesktop().browse(new URL(url).toURI());
+
         } catch (MalformedURLException ex) {
             model.getLogger().writeToLog(ex.getMessage());
             view.showErrorStackTraceException(ex.getMessage());

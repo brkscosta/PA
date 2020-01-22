@@ -9,7 +9,9 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
+import Patterns.Singleton.LoggerException;
 import Patterns.Singleton.LoggerWriter;
+import com.brunomnsilva.smartgraph.graph.InvalidVertexException;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,8 +25,6 @@ import java.util.Queue;
 public class SearchPages implements ISearchCriteria {
 
     private WebCrawler model;
-    private int countHttpsLinks = 0;
-    private int countPageNotFound = 0;
     private LoggerWriter logW = LoggerWriter.getInstance();
 
     public SearchPages(WebCrawler model) {
@@ -36,7 +36,8 @@ public class SearchPages implements ISearchCriteria {
             throws WebCrawlerException {
 
         try {
-            // Contar numero de WebPages contadas
+
+            // Contagens
             int countMaxVisitedPage = 0;
 
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
@@ -46,11 +47,11 @@ public class SearchPages implements ISearchCriteria {
             }
 
             if (this.model.checkIfHasWebPage(webPage) == false) {
+
                 // Insert the webPage in the graph
-                this.model.getGraph().insertVertex(webPage);
-                logW.writeToLog(webPage.getTitleName() + " | "
-                        + webPage.getPersonalURL() + " | " + webPage.getTitleName()
-                        + " | " + webPage.getNumberLinks());
+                this.model.insertPage(webPage);
+
+                this.wiriteToLogger(webPage, webPage);
             }
 
             webPagesToVisit.add(webPage);
@@ -58,8 +59,9 @@ public class SearchPages implements ISearchCriteria {
 
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;
-            this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
-            this.countPageNotFound = this.model.getPagesNotFound(webPage);
+
+            this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.model.getPagesNotFound(webPage);
 
             while (!webPagesToVisit.isEmpty()) {
                 WebPage visitedWebPage = webPagesToVisit.poll();
@@ -79,16 +81,14 @@ public class SearchPages implements ISearchCriteria {
                         return this.model.getPagesList();
                     }
 
-                    countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
-                    
                     // This WebPage can already exists with that link
                     Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
 
                     // Check if it exists already a WebPage with that link
-                    if(vertexWebPageFound != null){
+                    if (vertexWebPageFound != null) {
                         // Insert a new Link between WebPagess
                         this.model.insertLink(visitedWebPage, vertexWebPageFound.element(), link);
-                    }else{
+                    } else {
 
                         // Insert a new WebPage in the graph
                         WebPage webPageInserting = new WebPage(link.getLinkName());
@@ -99,17 +99,17 @@ public class SearchPages implements ISearchCriteria {
                         // Insert a new Link between WebPages
                         this.model.insertLink(visitedWebPage, webPageInserting, link);
 
-                        logW.writeToLog(webPageInserting.getTitleName() + " | "
-                            + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
-                            + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
+                        wiriteToLogger(webPageInserting, visitedWebPage);
 
                         // Increment countMaxVisitedPage by 1
                         countMaxVisitedPage++;
-                        
+
                         System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
-                        
-                        countPageNotFound += this.model.getPagesNotFound(webPageInserting);
+
+                        this.model.countHttpsProtocols(webPage.getPersonalURL());
+                        this.model.getPagesNotFound(webPage);
                     }
+
                 }
                 System.out.println("]\n");
             }
@@ -119,6 +119,21 @@ public class SearchPages implements ISearchCriteria {
             model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
         }
         return null;
+    }
+
+    /**
+     * Write to the logger in text file
+     *
+     * @param webPageInserting Object WebPage to insert
+     * @param visitedWebPage The visited WebPage
+     * @throws InvalidVertexException Exception from graph
+     * @throws LoggerException Exception from logger
+     */
+    private void wiriteToLogger(WebPage webPageInserting, WebPage visitedWebPage)
+            throws InvalidVertexException, LoggerException {
+        logW.writeToLog(webPageInserting.getTitleName() + " | "
+                + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
+                + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
     }
 
 }

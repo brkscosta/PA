@@ -21,6 +21,7 @@ import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView.StopCriteria;
 import java.util.LinkedList;
+import Patterns.Stategy.Statistics;
 
 /**
  * This class is responsible for creating our WebCrawler model based on the
@@ -30,7 +31,7 @@ import java.util.LinkedList;
  *
  * @see Model.Link
  * @see Model.WebPage
- * 
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawler extends Observable implements IOriginator, Serializable {
@@ -46,21 +47,23 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     // Iterative variables
     private WebPage subRootWebPageChoosed;
-    private List<WebPage> webPagesNotFound;
+    //private List<WebPage> webPagesNotFound;
     private WebPage previousSubRootWebPageChoosed; // Still seing if it is needed
+
     private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, Extended,ITERATIVE.
+
     private final List<WebPage> pagesList = new ArrayList<>();
     private final Graph<WebPage, Link> graph;
 
     // Statistics
-    private int countHttpsLinks = 0;
-    private int countPageNotFound = 0;
-    private int numCriteria = 0;
+    Statistics statistcs;
     public boolean isFinished = false;
-//</editor-fold>
+    private int numCriteria = 0;
 
+//</editor-fold>
     public WebCrawler(Graph graph) {
         this.graph = graph;
+        this.statistcs = new Statistics();
     }
 
     public WebCrawler() {
@@ -105,24 +108,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Get HTTPS links
-     *
-     * @return A number
-     */
-    public int getCountHttpsLinks() {
-        return countHttpsLinks;
-    }
-
-    /**
-     * Get count of pages not found
-     *
-     * @return A number
-     */
-    public int getCountPageNotFound() {
-        return countPageNotFound;
-    }
-
-    /**
      * Get stop criteria
      *
      * @return
@@ -150,10 +135,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return this.graph;
     }
 
-    public List<WebPage> getWebPagesNotFound() {
-        return webPagesNotFound;
-    }
-
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc=" Setters ">
     /**
@@ -172,24 +153,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      */
     public void setSubRootWebPageChoosed(WebPage subRootWebPageChoosed) {
         this.subRootWebPageChoosed = subRootWebPageChoosed;
-    }
-
-    /**
-     * Set the count of HTTPS pages
-     *
-     * @param countHttpsLinks A number
-     */
-    public void setCountHttpsLinks(int countHttpsLinks) {
-        this.countHttpsLinks = countHttpsLinks;
-    }
-
-    /**
-     * Set the pages not found
-     *
-     * @param countPageNotFound A number
-     */
-    public void setCountPageNotFound(int countPageNotFound) {
-        this.countPageNotFound = countPageNotFound;
     }
 
     /**
@@ -276,8 +239,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 break;
         }
 
-        this.webPagesNotFound = new LinkedList<>();
-
         this.searchPagesAndPrint(this.rootWebPage);
     }
 
@@ -306,8 +267,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
         print("\n ========= Estatísticas ========= \n");
         print(" »»»»» Páginas Visitadas (%d) ««««« \n\n %s", this.countWebPages(), it);
-        print(" »»»»» Páginas não encontradas (%d) «««««", this.countPageNotFound);
-        print(" »»»»» Ligações HTTPS (%d) «««««", this.countHttpsLinks);
+        print(" »»»»» Páginas não encontradas (%d) «««««", this.statistcs.getCountPageNotFound());
+        print(" »»»»» Ligações HTTPS (%d) «««««", this.statistcs.getCountHttpsLinks());
         print(" »»»»» Ligações entre páginas (%d) «««««", this.countLinks());
 
         setChanged();
@@ -322,16 +283,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * Count HTTPS protocols
      *
      * @param startURL site URL
-     * @return Number of pages founded
      * @throws MalformedURLException
      */
-    public int countHttpsProtocols(String startURL) throws MalformedURLException {
-        int count = 0;
+    public void countHttpsProtocols(String startURL) throws MalformedURLException {
         URL u = new URL(startURL);
-        if (u.getProtocol().equals("https")) {
-            count++;
+        if (u.getProtocol().equals("http")) {
+            statistcs.incrementHttpsLinks();
         }
-        return count;
     }
 
     /**
@@ -340,12 +298,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @param myWebPage
      * @return Counter of pages
      */
-    public int getPagesNotFound(WebPage myWebPage) {
+    public void getPagesNotFound(WebPage myWebPage) {
 
         if (myWebPage.getStatusCode() == 404) {
-            return 1;
+            statistcs.incrementPageNotFound();
         }
-        return 0;
     }
 
     /**
@@ -400,12 +357,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     @Override
     public IMemento save() {
         // Creates a new private Memento Object and returns it
-        try {
-            return new WebCrawlerMemento(this.graph, this.webPagesNotFound, this.rootWebPage);
-        } catch (IOException ex) {
-            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return new WebCrawlerMemento(this.graph, this.rootWebPage);
     }
 
     @Override
@@ -441,9 +393,8 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         private WebPage rootWebPage;
         private final Graph<WebPage, Link> graph;
         private final Date createdAt;
-        private List<WebPage> webPagesNotFound;
 
-        public WebCrawlerMemento(Graph<WebPage, Link> graph, List<WebPage> webPagesNotFound, WebPage rootWebPage) throws IOException {
+        public WebCrawlerMemento(Graph<WebPage, Link> graph, WebPage rootWebPage) {
 
             this.graph = new MyDigraph<>();
 
@@ -455,7 +406,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 this.graph.insertEdge(edge.vertices()[0], edge.vertices()[1], edge.element());
             });
 
-            this.webPagesNotFound = new LinkedList<>(webPagesNotFound);
             this.rootWebPage = rootWebPage;
             this.createdAt = new Date();
         }
@@ -468,10 +418,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
          */
         public WebPage getRootWebPage() {
             return this.rootWebPage;
-        }
-
-        public List<WebPage> getPagesNotFound() {
-            return this.webPagesNotFound;
         }
 
         /**

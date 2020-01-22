@@ -15,17 +15,15 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *  This class is a strategy to search pages by interactive mode
- * 
+ * This class is a strategy to search pages by interactive mode
+ *
  * @author BRKsCosta and danielcordeiro
  */
 public class SearchIterative implements ISearchCriteria {
 
     private WebCrawler model;
-    private int countHttpsLinks = 0;
-    private int countPageNotFound = 0;
     private LoggerWriter logW = LoggerWriter.getInstance();
-    
+
     public SearchIterative(WebCrawler model) {
         this.model = model;
     }
@@ -35,47 +33,45 @@ public class SearchIterative implements ISearchCriteria {
         try {
             // For the memento
             this.model.setSubRootWebPageChoosed(webPage);
-            
-            this.countHttpsLinks = this.model.countHttpsProtocols(webPage.getPersonalURL());
-            this.countPageNotFound = this.model.getPagesNotFound(webPage);
-            
+             
+            this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.model.getPagesNotFound(webPage);
+
             System.out.println("Link da página subRoot: " + webPage.getPersonalURL() + "\nIncident WebPages:\n[");
 
             // Get all incident links in the visited WebPage -> This will always come in random order... and only for those who aren't 404 page not found TODO
             Queue<Link> allIncidentWebLinks;
-            
-            if(webPage.getStatusCode() == 404){
-                this.model.getWebPagesNotFound().add(webPage);
+
+            if (webPage.getStatusCode() == 404) {
                 allIncidentWebLinks = new LinkedList();
-            }else{
+            } else {
                 allIncidentWebLinks = webPage.getAllIncidentWebPages(webPage.getPersonalURL());
             }
 
             for (Link link : allIncidentWebLinks) {
-                
-                countHttpsLinks += this.model.countHttpsProtocols(link.getLinkName());
-                
+
                 // This WebPage can already exists with that link
                 Vertex<WebPage> vertexWebPageFound = this.model.getEqualWebPageVertex(link.getLinkName());
-                
+
                 // Check if it exists already a WebPage with that link
-                if(vertexWebPageFound != null){
+                if (vertexWebPageFound != null) {
                     // Insert a new Link between WebPages
                     this.model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
-                }else{
+                } else {
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
                     this.model.getGraph().insertVertex(webPageInserting);
                     this.model.getPagesList().add(webPageInserting);
-                    this.model.getGraph().insertEdge(webPage, webPageInserting, link); 
-                  
+                    this.model.getGraph().insertEdge(webPage, webPageInserting, link);
+
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
-                    
-                    countPageNotFound += this.model.getPagesNotFound(webPageInserting);
+
+                    this.model.countHttpsProtocols(webPage.getPersonalURL());
+                    this.model.getPagesNotFound(webPage);
                 }
             }
             System.out.println("]\n");
-            
+
             return this.model.getPagesList();
         } catch (IOException ex) {
             this.model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());

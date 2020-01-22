@@ -40,7 +40,15 @@ public class Ponto { //Data Class
         this.x += dx;
         this.y += dy;
     }
-
+    
+    public void moveHorizontal(int dx){
+        this.x += dx;
+    }
+    
+    public void moveVertical(int dy){
+        this.y += dy;
+    }
+    
     public boolean same(int x, int y) {
         return this.x == x && this.y == y;
     }

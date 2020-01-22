@@ -57,7 +57,7 @@ public class SearchDepth implements ISearchCriteria {
             webPagesToVisit.add(webPage);
             this.model.getPagesList().add(webPage);
 
-            this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
 
             while (!webPagesToVisit.isEmpty()) {
@@ -111,7 +111,7 @@ public class SearchDepth implements ISearchCriteria {
                     webPagesToVisit.add(webPageInserting);
                     incidentLinksAdded++;
 
-                    this.model.countHttpsProtocols(webPage.getPersonalURL());
+                    this.model.countHttpProtocols(webPage.getPersonalURL());
                     this.model.getPagesNotFound(webPage);
 
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());

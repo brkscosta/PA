@@ -77,254 +77,49 @@ import javafx.stage.StageStyle;
  *
  * @author BRKsCosta and danielcordeiro
  */
-public class HomeView extends VBox implements Observer, IHomeOperations {
+public class HomeView extends HomeComponents implements Observer, IHomeOperations {
 
     /**
-     * This enum represents  the stop criteria type
+     * This ENUM represents the stop criteria type
      */
     public enum StopCriteria {
         PAGES, DEPTH, ITERATIVE, EXPANDED;
     }
 
     LoggerWriter logW = LoggerWriter.getInstance();
-    //SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-    //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-    private SmartPlacementStrategy strategy;
-    private SmartGraphPanel<WebPage, Link> graphView;
 
-    //Menu  
-    private MenuBar menuBar;
-    private Menu menuFile;
-    private Menu menuEdit;
-    private Menu menuHelp;
-    private MenuItem mFileItemExportFile;
-    private MenuItem mFileItemImportFile;
-    private MenuItem mFileItemExit;
-    private MenuItem mEditUndo;
-    private MenuItem mEditClearGraph;
-    private MenuItem mEditRedo;
-    private MenuItem mHelpAbout;
-    private SeparatorMenuItem separatorMenu;
-    private SeparatorMenuItem separatorEdit;
-
-    //Actions left panel
-    private Button btnStartCrawler;
-    private TextField txtFieldURL;
-    private TextField txtFieldNumPages;
-    private RadioButton rdBtnBreadthFirst;
-    private RadioButton rdBtnDepth;
-    private RadioButton rdBtnIterative;
-    private RadioButton rdBtnExpandedPages;
-    private final Spinner spinner = new Spinner();
-
-    //Layout
-    private SplitPane splitPane;
-    private AnchorPane anchorPaneLeft;
-    private AnchorPane anchorPaneRigth;
-    private HBox bottomHBox;
-
-    //Labels
-    private Label lblStatistics;
-    private Label lblInfo;
-    private Label lblCriteria;
-    private Label lblAnotherThing;
-    private Label lblWebCrawler;
-    private Label lblNumPages;
-
-    private static final String INITAL_VALUE = "10";
     private Scene scene;
 
     // Graph interface
-    SmartGraphEdge<Link, WebPage> edgeClicked = null;
-    SmartGraphVertex<WebPage> vertexClicked;
+    private SmartGraphEdge<Link, WebPage> edgeClicked = null;
+    private SmartGraphVertex<WebPage> vertexClicked;
+    
+    private BorderPane window;
     private boolean inIterativeMode = false;
 
+    private SmartPlacementStrategy strategy;
+    private SmartGraphPanel<WebPage, Link> graphView;
+    
     public HomeView(WebCrawler model) {
+
         this.strategy = new SmartCircularSortedPlacementStrategy();
         this.graphView = new SmartGraphPanel<>(model.getGraph(), strategy);
-        BorderPane window = new BorderPane(HomeView.this);
+
+        window = new BorderPane(HomeView.this);
         window.setCenter(HomeView.this);
+
         this.scene = new Scene(window, 1500, 700);
 
-        this.initializeComponents();
+        this.initializeComponents(graphView);
 
         update(model, null);
 
     }
 
-    /**
-     * Get SmartGraphPanel
-     *
-     * @return A object SmartGraphPanel
-     */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
-
-    /**
-     * Set the SmartGraphPanel
-     *
-     * @param graphView Object SmartGraphPanel
-     */
-    public void setGraphView(SmartGraphPanel<WebPage, Link> graphView) {
-        this.graphView = graphView;
-    }
-
-    /**
-     * Initialize all components present on UI.
-     */
-    private void initializeComponents() {
-        //Set up menu bar
-        this.menuFile = new Menu("File");
-        this.mFileItemImportFile = new MenuItem("Import File");
-        this.mFileItemExportFile = new MenuItem("Export File");
-        this.mFileItemExit = new MenuItem("Exit");
-        this.separatorMenu = new SeparatorMenuItem();
-
-        this.menuFile.getItems().addAll(mFileItemExportFile, mFileItemImportFile,
-                separatorMenu, mFileItemExit);
-
-        this.menuEdit = new Menu("Edit");
-        this.mEditUndo = new MenuItem("Undo");
-        this.mEditRedo = new MenuItem("Redo");
-        this.mEditClearGraph = new MenuItem("Clear Graph");
-        this.separatorEdit = new SeparatorMenuItem();
-        this.menuEdit.getItems().addAll(mEditUndo, mEditRedo, separatorEdit, mEditClearGraph);
-
-        this.mHelpAbout = new MenuItem("About");
-        this.menuHelp = new Menu("Help");
-        this.menuHelp.getItems().add(mHelpAbout);
-
-        this.menuBar = new MenuBar();
-        this.menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
-
-        // Criteria type on left pane
-        final ToggleGroup group = new ToggleGroup();
-        this.lblCriteria = new Label("Modos Pesquisa");
-        this.lblCriteria.setFont(new Font("Verdana", 16));
-        this.lblCriteria.setPadding(new Insets(0, 0, 15, 0));
-        lblCriteria.setMaxWidth(Double.MAX_VALUE);
-        AnchorPane.setLeftAnchor(lblCriteria, 0.0);
-        AnchorPane.setRightAnchor(lblCriteria, 0.0);
-        lblCriteria.setAlignment(Pos.CENTER);
-
-        this.txtFieldURL = new TextField();
-        this.txtFieldURL.setText("http://www.brunomnsilva.com/sandbox/index.html");
-        this.txtFieldURL.setId("textFieldSearchURL");
-        this.txtFieldURL.setPrefSize(6, 15);
-
-        this.btnStartCrawler = new Button("GO!");
-        this.rdBtnBreadthFirst = new RadioButton("Largura");
-        this.rdBtnBreadthFirst.setToggleGroup(group);
-        this.rdBtnBreadthFirst.setSelected(true);
-
-        this.rdBtnExpandedPages = new RadioButton("Limitar Expansão de Páginas");
-        this.rdBtnExpandedPages.setToggleGroup(group);
-        this.rdBtnExpandedPages.setSelected(false);
-
-        this.lblNumPages = new Label("Número de páginas");
-        this.txtFieldNumPages = new TextField();
-        this.txtFieldNumPages.setId("textFieldNumPages");
-        this.txtFieldNumPages.setMinSize(10, 10);
-        this.rdBtnDepth = new RadioButton("Profundidade");
-        this.rdBtnDepth.setToggleGroup(group);
-        this.rdBtnDepth.setSelected(false);
-        this.rdBtnIterative = new RadioButton("Iterativo");
-        this.rdBtnIterative.setToggleGroup(group);
-        this.rdBtnIterative.setSelected(false);
-
-        //Left Layout
-        this.anchorPaneLeft = new AnchorPane();
-        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000,
-                Integer.parseInt(INITAL_VALUE)));
-        spinner.setEditable(true);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(1));
-        grid.add(spinner, 1, 0);
-
-        HBox a = new HBox(btnStartCrawler, grid);
-        a.setPadding(new Insets(15, 0, 0, 0));
-
-        VBox vboxRadio = new VBox(rdBtnBreadthFirst, rdBtnExpandedPages,
-                rdBtnDepth, rdBtnIterative);
-        
-        vboxRadio.setPadding(new Insets(20, 0, 0, 0));
-        
-        VBox items = new VBox(lblCriteria, txtFieldURL, a, vboxRadio);
-        
-        items.setPadding(new Insets(0, 0, 0, 10));
-        AnchorPane.setTopAnchor(items, 16.0);
-        AnchorPane.setLeftAnchor(items, 10.0);
-        AnchorPane.setRightAnchor(items, 10.0);
-        this.anchorPaneLeft.getChildren().add(items);
-        //END LEFT LAYOUT
-
-        // Statistics on right pane
-        this.lblStatistics = new Label("Estatísticas");
-        this.anchorPaneRigth = new AnchorPane();
-        VBox vboxChart = barChart();
-        AnchorPane.setTopAnchor(vboxChart, 10.0);
-        AnchorPane.setLeftAnchor(vboxChart, 15.0);
-        AnchorPane.setRightAnchor(vboxChart, 80.0);
-        AnchorPane.setBottomAnchor(vboxChart, 80.0);
-        anchorPaneRigth.getChildren().addAll(vboxChart);
-
-        //Center pane graph will shows here
-        VBox boxScroll = new VBox();
-        this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
-        this.lblWebCrawler.setFont(new Font("Verdana", 16));
-        this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
-
-        //Graph interface
-        SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
-        graphView.setAutomaticLayout(true);
-
-        this.splitPane = new SplitPane();
-        this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
-        this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
-
-        //Config HBox Bootom
-        Pane panelBottom = new Pane();
-        panelBottom.setPadding(new Insets(0, 410, 0, 410));
-        this.lblInfo = new Label("Bem-Vindo!");
-        this.lblInfo.setTextFill(Paint.valueOf("#ff6961"));
-        this.lblAnotherThing = new Label("Outra Coisa");
-        this.bottomHBox = new HBox();
-        HBox.setHgrow(panelBottom, Priority.ALWAYS);
-        this.bottomHBox.getChildren().addAll(lblInfo, panelBottom /*, lblAnotherThing*/);
-        bottomHBox.setStyle("-fx-background-color: #867B71;");
-
-        /*Creates layout*/
-        HomeView.setVgrow(splitPane, Priority.ALWAYS);
-        this.getChildren().addAll(menuBar, splitPane, bottomHBox);
-        getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
-    }
-
-    /**
-     * This method build the bar chart
-     *
-     * @return Return the statistics on chart
-     */
-    private VBox barChart() {
-        CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Devices");
-        NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Visits");
-        BarChart barChart = new BarChart(xAxis, yAxis);
-        XYChart.Series dataSeries1 = new XYChart.Series();
-        dataSeries1.setName("2014");
-        dataSeries1.getData().add(new XYChart.Data("Desktop", 567));
-        dataSeries1.getData().add(new XYChart.Data("Phone", 65));
-        dataSeries1.getData().add(new XYChart.Data("Tablet", 23));
-        barChart.getData().add(dataSeries1);
-        VBox vbox = new VBox(barChart);
-        return vbox;
-    }
-
-    // Observer method implemented
+    
     @Override
     public void update(Observable o, Object o1) {
 
@@ -343,12 +138,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         }
     }
 
-    // IHomeOperations methods
+    //<editor-fold defaultstate="collapsed" desc="Class Behaviors">
     @Override
     public String getInputURL() {
         return this.txtFieldURL.getText();
     }
-
+    
     @Override
     public void importFile(HomeController controller) {
         FileChooser fileChooser = new FileChooser();
@@ -362,27 +157,27 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             String fileExtension = fileName.substring(fileName.lastIndexOf(".")
                     + 1, selectedFile.getName().length());
             controller.importFiles(fileExtension.toUpperCase());
-
+            
         }
     }
-
+    
     @Override
     public void exportFile(HomeController controller) {
         chooseFileType(controller);
     }
-
+    
     @Override
     public void exitApp() {
         Platform.exit();
         System.out.println("Views.Home.exitApp()");
         System.exit(0);
     }
-
+    
     @Override
     public void clearError() {
         this.lblInfo.setText("");
     }
-
+    
     @Override
     public void showError(String errorMsg) {
         Alert alert = new Alert(AlertType.WARNING);
@@ -392,47 +187,47 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
         alert.initStyle(StageStyle.TRANSPARENT);
         alert.showAndWait();
     }
-
+    
     @Override
     public void setTriggersButtons(HomeController controller) {
-
+        
         // Quit app
         this.mFileItemExit.setOnAction((ActionEvent event) -> {
             controller.exitApp();
         });
-
+        
         // Apply DAO - TODO
         this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
             exportFile(controller);
         });
-
+        
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
             importFile(controller);
         });
-
+        
         // Apply Memento - Undo
         this.mEditUndo.setOnAction((ActionEvent event) -> {
             controller.undoAction();
         });
-
+        
         this.mEditRedo.setOnAction((ActionEvent event) -> {
             redoGraph();
         });
-
+        
         this.mEditClearGraph.setOnAction(((event) -> {
             controller.clearGraph();
             System.out.println("Clear graph");
         }));
-
+        
         // Show the graph
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-
+        
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-
+            
             if (this.inIterativeMode) {
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
@@ -443,11 +238,11 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
             } else {
                 controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             }
-
+            
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-
+        
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("EDGE -1");
             //dynamically change the style when clicked
@@ -458,12 +253,12 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                     // Change the color to the default
                     graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
                     this.edgeClicked = null;
-
+                    
                     System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
                     this.edgeClicked.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
-
+                    
                     // Assign to the edgeClicked a new value
                     this.edgeClicked = graphEdge;
                     this.edgeClicked.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
@@ -475,14 +270,14 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
                 System.out.println("EDGE 3");
             }
-
+            
             // Refresh color's
             this.graphView.update();
         });
-
+        
         // Try to catch the ENTER key event
         EventHandler<KeyEvent> enterKeyEventHandler;
-
+        
         enterKeyEventHandler = (KeyEvent event) -> {
             // handle users "enter key event"
             if (event.getCode() == KeyCode.ENTER) {
@@ -492,18 +287,19 @@ public class HomeView extends VBox implements Observer, IHomeOperations {
                 } catch (NumberFormatException e) {
                     // show message to user: "only numbers allowed"
                     // reset editor to INITAL_VALUE
-                    spinner.getEditor().textProperty().set(INITAL_VALUE);
-
+                    spinner.getEditor().textProperty().set("10");
+                    
                 }
             }
         };
-
+        
         // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
         // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
         // throw an exception
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
-
+        
     }
+//</editor-fold>
 
     /**
      * This method make redo action on graph

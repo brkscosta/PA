@@ -47,7 +47,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     // Iterative variables
     private WebPage subRootWebPageChoosed;
-    //private List<WebPage> webPagesNotFound;
     private WebPage previousSubRootWebPageChoosed; // Still seing if it is needed
 
     private StopCriteria stopCriteriaChoosed; // PAGES, DEPTH, Extended,ITERATIVE.
@@ -136,6 +135,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
 // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc=" Setters ">
     /**
      * Set the number of web pages to how criteria
@@ -174,6 +174,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
 // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc=" Methods ">
     /**
      * Clear the all elements in the graph.
@@ -285,7 +286,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @param startURL site URL
      * @throws MalformedURLException
      */
-    public void countHttpsProtocols(String startURL) throws MalformedURLException {
+    public void countHttpProtocols(String startURL) throws MalformedURLException {
         URL u = new URL(startURL);
         if (u.getProtocol().equals("http")) {
             statistcs.incrementHttpsLinks();
@@ -385,6 +386,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     // </editor-fold>
+    
     /**
      * Private inner class to implement the memento
      */

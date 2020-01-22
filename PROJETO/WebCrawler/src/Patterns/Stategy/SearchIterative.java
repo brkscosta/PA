@@ -31,10 +31,11 @@ public class SearchIterative implements ISearchCriteria {
     @Override
     public Iterable<WebPage> searchPages(WebPage webPage) {
         try {
+            
             // For the memento
             this.model.setSubRootWebPageChoosed(webPage);
              
-            this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
 
             System.out.println("Link da página subRoot: " + webPage.getPersonalURL() + "\nIncident WebPages:\n[");
@@ -56,17 +57,19 @@ public class SearchIterative implements ISearchCriteria {
                 // Check if it exists already a WebPage with that link
                 if (vertexWebPageFound != null) {
                     // Insert a new Link between WebPages
-                    this.model.getGraph().insertEdge(webPage, vertexWebPageFound.element(), link);
+                    this.model.insertLink(webPage, vertexWebPageFound.element(), link);
                 } else {
+                    
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
-                    this.model.getGraph().insertVertex(webPageInserting);
+                    this.model.insertPage(webPageInserting);
+                    this.model.insertLink(webPage, webPageInserting, link);
+
                     this.model.getPagesList().add(webPageInserting);
-                    this.model.getGraph().insertEdge(webPage, webPageInserting, link);
 
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
-                    this.model.countHttpsProtocols(webPage.getPersonalURL());
+                    this.model.countHttpProtocols(webPage.getPersonalURL());
                     this.model.getPagesNotFound(webPage);
                 }
             }

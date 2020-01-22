@@ -60,7 +60,7 @@ public class SearchPages implements ISearchCriteria {
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;
 
-            this.model.countHttpsProtocols(webPage.getPersonalURL());
+            this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
 
             while (!webPagesToVisit.isEmpty()) {
@@ -106,7 +106,7 @@ public class SearchPages implements ISearchCriteria {
 
                         System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
-                        this.model.countHttpsProtocols(webPage.getPersonalURL());
+                        this.model.countHttpProtocols(webPage.getPersonalURL());
                         this.model.getPagesNotFound(webPage);
                     }
 

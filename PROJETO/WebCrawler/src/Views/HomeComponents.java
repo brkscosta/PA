@@ -5,13 +5,8 @@
  */
 package Views;
 
-import Model.Link;
-import Model.WebCrawler;
-import Model.WebPage;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
-import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
@@ -40,6 +35,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
 /**
+ * This class supports all components present on HomeView
  *
  * @author BRKsCosta
  */
@@ -59,7 +55,13 @@ public class HomeComponents extends VBox {
     protected MenuItem mHelpAbout;
     protected SeparatorMenuItem separatorMenu;
     protected SeparatorMenuItem separatorEdit;
-    
+
+    //Chart variables
+    private XYChart.Series chartVisitedPages;
+    private XYChart.Series chartNotFound;
+    private XYChart.Series chartHttpsProtocol;
+    private XYChart.Series chartLinks;
+
     //Actions left panel
     protected Button btnStartCrawler;
     protected TextField txtFieldURL;
@@ -69,13 +71,13 @@ public class HomeComponents extends VBox {
     protected RadioButton rdBtnIterative;
     protected RadioButton rdBtnExpandedPages;
     protected final Spinner spinner = new Spinner();
-    
+
     //Layout
     protected SplitPane splitPane;
     protected AnchorPane anchorPaneLeft;
     protected AnchorPane anchorPaneRigth;
     protected HBox bottomHBox;
-    
+
     //Labels
     protected Label lblStatistics;
     protected Label lblInfo;
@@ -83,14 +85,31 @@ public class HomeComponents extends VBox {
     protected Label lblAnotherThing;
     protected Label lblWebCrawler;
     protected Label lblNumPages;
-    
+
     public HomeComponents() {
-        
+
+    }
+
+    public XYChart.Series chartGetLinks() {
+        return chartLinks;
+    }
+
+    public XYChart.Series chartGetVisited() {
+        return chartVisitedPages;
+    }
+
+    public XYChart.Series chartGetNotFound() {
+        return chartNotFound;
+    }
+
+    public XYChart.Series chartGetHttpsProtocol() {
+        return chartHttpsProtocol;
     }
 
     /**
      * Initialize all components present on UI.
-     * @param graphview
+     *
+     * @param graphView SmartGraphPanel lib parameter
      */
     protected void initializeComponents(SmartGraphPanel graphView) {
         //Set up menu bar
@@ -170,17 +189,19 @@ public class HomeComponents extends VBox {
         AnchorPane.setRightAnchor(vboxChart, 80.0);
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
+
         //Center pane graph will shows here
-        VBox boxScroll = new VBox();
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
+
         //Graph interface
         SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
         graphView.setAutomaticLayout(true);
         this.splitPane = new SplitPane();
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
+
         //Config HBox Bootom
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
@@ -204,16 +225,28 @@ public class HomeComponents extends VBox {
      */
     private VBox barChart() {
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Devices");
+        xAxis.setLabel("Páginas Web");
         NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Visits");
+        yAxis.setLabel("Nº Pág. Visitas");
         BarChart barChart = new BarChart(xAxis, yAxis);
-        XYChart.Series dataSeries1 = new XYChart.Series();
-        dataSeries1.setName("2014");
-        dataSeries1.getData().add(new XYChart.Data("Desktop", 567));
-        dataSeries1.getData().add(new XYChart.Data("Phone", 65));
-        dataSeries1.getData().add(new XYChart.Data("Tablet", 23));
-        barChart.getData().add(dataSeries1);
+
+        chartVisitedPages = new XYChart.Series();
+        chartNotFound = new XYChart.Series();
+        chartHttpsProtocol = new XYChart.Series();
+        chartLinks = new XYChart.Series();
+
+        chartVisitedPages.setName("Visitadas");
+        chartNotFound.setName("Não encontradas");
+        chartHttpsProtocol.setName("Protocolos HTTP");
+        chartLinks.setName("Links entre páginas");
+        
+        chartVisitedPages.getData().add(new XYChart.Data("", 0));
+        chartNotFound.getData().add(new XYChart.Data("", 0));
+        chartHttpsProtocol.getData().add(new XYChart.Data("", 0));
+        chartLinks.getData().add(new XYChart.Data("", 0));
+
+        barChart.getData().addAll(chartVisitedPages, chartNotFound, 
+                chartHttpsProtocol, chartLinks);
         VBox vbox = new VBox(barChart);
         return vbox;
     }

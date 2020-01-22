@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import javafx.scene.chart.XYChart;
 
 /**
- * This class is responsible for managing all business logic between model and view.
+ * This class is responsible for managing all business logic between model and
+ * view.
  *
  * @author BRKsCosta and danielcordeiro
  */
@@ -84,8 +86,24 @@ public class HomeController {
 
         // Init the WebCrawler
         this.model.buildWebCrawler(criteria, numCriteria, view.getInputURL());
+        updateStatistics();
 
         this.caretaker.requestSave();
+    }
+    
+    /**
+     * Update statistics of the graph
+     */
+    private void updateStatistics() {
+        int countHttps = model.getStatistcs().getCountHttpsLinks();
+        int countNotFound = model.getStatistcs().getCountPageNotFound();
+        int countVisitedPages = model.getStatistcs().getCountWebPages();
+        int countLinks = model.getStatistcs().getCountLinks();
+
+        this.view.chartGetHttpsProtocol().getData().add(new XYChart.Data("", countHttps));
+        this.view.chartGetNotFound().getData().add(new XYChart.Data("", countNotFound));
+        this.view.chartGetLinks().getData().add(new XYChart.Data("", countLinks));
+        this.view.chartGetVisited().getData().add(new XYChart.Data("", countVisitedPages));
     }
 
     /**
@@ -115,7 +133,6 @@ public class HomeController {
      * Import files
      */
     public void importFiles(String fileType) {
-
         IWebCrawlerDAO dao = createFileType(fileType, model);
         dao.loadFile();
     }

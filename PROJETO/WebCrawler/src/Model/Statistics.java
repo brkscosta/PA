@@ -3,16 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Patterns.Stategy;
+package Model;
 
 /**
- *  Storage statistics
+ * Storage statistics
+ *
  * @author BRKsCosta
  */
 public class Statistics {
 
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
+    private int countWebPages = 0;
+    private int countLinks = 0;
+
+    public void setCountWebPages(int countWebPages) {
+        this.countWebPages = countWebPages;
+    }
+
+    public void setCountLinks(int countLinks) {
+        this.countLinks = countLinks;
+    }
     
     public Statistics() {
     }
@@ -40,4 +51,14 @@ public class Statistics {
     public void incrementHttpsLinks() {
         this.countHttpsLinks++;
     }
+
+    public int getCountWebPages() {
+        return countWebPages;
+    }
+
+    public int getCountLinks() {
+        return countLinks;
+    }
+    
+    
 }

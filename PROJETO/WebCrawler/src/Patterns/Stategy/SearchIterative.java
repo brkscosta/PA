@@ -69,8 +69,8 @@ public class SearchIterative implements ISearchCriteria {
 
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
-                    this.model.countHttpProtocols(webPage.getPersonalURL());
-                    this.model.getPagesNotFound(webPage);
+                    this.model.countHttpProtocols(webPageInserting.getPersonalURL());
+                    this.model.getPagesNotFound(webPageInserting);
                 }
             }
             System.out.println("]\n");

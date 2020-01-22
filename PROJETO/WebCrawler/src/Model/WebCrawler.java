@@ -10,8 +10,6 @@ import java.util.Observable;
 import Patterns.Singleton.LoggerWriter;
 import java.util.Date;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import Patterns.Memento.IMemento;
 import Patterns.Memento.IOriginator;
 import Patterns.Stategy.ISearchCriteria;
@@ -20,8 +18,6 @@ import Patterns.Stategy.SearchExpandedPages;
 import Patterns.Stategy.SearchIterative;
 import Patterns.Stategy.SearchPages;
 import Views.HomeView.StopCriteria;
-import java.util.LinkedList;
-import Patterns.Stategy.Statistics;
 
 /**
  * This class is responsible for creating our WebCrawler model based on the
@@ -41,8 +37,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     //<editor-fold defaultstate="collapsed" desc="Variables">
     private final LoggerWriter logger = LoggerWriter.getInstance();
     private ISearchCriteria searchCriteria;
-
-    // Pertinent variables to the DiGraph structure:
     private WebPage rootWebPage;
 
     // Iterative variables
@@ -56,6 +50,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 
     // Statistics
     Statistics statistcs;
+    
     public boolean isFinished = false;
     private int numCriteria = 0;
 
@@ -70,6 +65,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Getters ">
+
+    public Statistics getStatistcs() {
+        return statistcs;
+    }
+    
     /**
      * Get a instance of the logger
      *
@@ -176,6 +176,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
 // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Methods ">
+    
     /**
      * Clear the all elements in the graph.
      */
@@ -203,7 +204,13 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     public void insertPage(WebPage webPage) {
         this.getGraph().insertVertex(webPage);
     }
-
+    
+    /**
+     * Insert new link between to the current webpage to another
+     * @param visitedWebPage Current webpage
+     * @param webPageInserting The incident webpage
+     * @param link The link that connect the both
+     */
     public void insertLink(WebPage visitedWebPage, WebPage webPageInserting, Link link) {
         this.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
     }
@@ -218,9 +225,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     public void buildWebCrawler(StopCriteria criteria, int numCriteria, String inputUrl) {
 
         // Assign values
-        this.numCriteria = numCriteria;
+        this.setNumCriteria(numCriteria);
 
-        if (this.numCriteria != 0) {
+        if (this.getNumCriteria() != 0) {
             this.rootWebPage = new WebPage(inputUrl);
             this.graph.insertVertex(this.rootWebPage);
         }
@@ -240,7 +247,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
                 break;
         }
 
-        this.searchPagesAndPrint(this.rootWebPage);
+        this.printStatistics(this.rootWebPage);
     }
 
     /**
@@ -252,7 +259,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      */
     public void insertNewSubWebPageCrawler(Vertex<WebPage> subRoot) throws IOException {
 
-        this.searchPagesAndPrint(subRoot.element());
+        this.printStatistics(subRoot.element());
 
         setChanged();
         notifyObservers();
@@ -263,7 +270,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      *
      * @param rootWebPage A object of the type WebPage
      */
-    private void searchPagesAndPrint(WebPage rootWebPage) {
+    private void printStatistics(WebPage rootWebPage) {
         Iterable<WebPage> it = searchCriteria.searchPages(rootWebPage);
 
         print("\n ========= Estatísticas ========= \n");
@@ -297,7 +304,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * Count number of pages not found
      *
      * @param myWebPage
-     * @return Counter of pages
      */
     public void getPagesNotFound(WebPage myWebPage) {
 
@@ -342,6 +348,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @return Number of links (Edges)
      */
     public int countLinks() {
+        this.statistcs.setCountLinks(graph.numEdges());
         return graph.numEdges();
     }
 
@@ -351,7 +358,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @return Number of titles (Vertex)
      */
     public int countWebPages() {
-
+        this.statistcs.setCountWebPages(graph.numVertices());
         return graph.numVertices();
     }
 

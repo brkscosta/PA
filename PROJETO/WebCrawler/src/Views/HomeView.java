@@ -12,39 +12,16 @@ import Model.WebCrawlerException;
 import Model.WebPage;
 import static Patterns.Factories.Factories.getAppStage;
 import Patterns.Singleton.LoggerException;
-import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.*;
 import java.io.IOException;
 import java.util.Observable;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -60,10 +37,10 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.StageStyle;
@@ -77,7 +54,7 @@ import javafx.stage.StageStyle;
  *
  * @author BRKsCosta and danielcordeiro
  */
-public class HomeView extends HomeComponents implements Observer, IHomeOperations {
+public final class HomeView extends HomeComponents implements Observer, IHomeOperations {
 
     /**
      * This ENUM represents the stop criteria type
@@ -93,13 +70,13 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
     // Graph interface
     private SmartGraphEdge<Link, WebPage> edgeClicked = null;
     private SmartGraphVertex<WebPage> vertexClicked;
-    
+
     private BorderPane window;
     private boolean inIterativeMode = false;
 
     private SmartPlacementStrategy strategy;
     private SmartGraphPanel<WebPage, Link> graphView;
-    
+
     public HomeView(WebCrawler model) {
 
         this.strategy = new SmartCircularSortedPlacementStrategy();
@@ -110,7 +87,7 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
 
         this.scene = new Scene(window, 1500, 700);
 
-        this.initializeComponents(graphView);
+        super.initializeComponents(graphView);
 
         update(model, null);
 
@@ -119,7 +96,27 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
-    
+
+    @Override
+    public XYChart.Series chartGetVisited() {
+        return super.chartGetVisited();
+    }
+
+    @Override
+    public XYChart.Series chartGetNotFound() {
+        return super.chartGetNotFound();
+    }
+
+    @Override
+    public XYChart.Series chartGetHttpsProtocol() {
+        return super.chartGetHttpsProtocol();
+    }
+
+    @Override
+    public XYChart.Series chartGetLinks() {
+        return super.chartGetLinks();
+    }
+
     @Override
     public void update(Observable o, Object o1) {
 
@@ -143,7 +140,7 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
     public String getInputURL() {
         return this.txtFieldURL.getText();
     }
-    
+
     @Override
     public void importFile(HomeController controller) {
         FileChooser fileChooser = new FileChooser();
@@ -157,27 +154,27 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
             String fileExtension = fileName.substring(fileName.lastIndexOf(".")
                     + 1, selectedFile.getName().length());
             controller.importFiles(fileExtension.toUpperCase());
-            
+
         }
     }
-    
+
     @Override
     public void exportFile(HomeController controller) {
         chooseFileType(controller);
     }
-    
+
     @Override
     public void exitApp() {
         Platform.exit();
         System.out.println("Views.Home.exitApp()");
         System.exit(0);
     }
-    
+
     @Override
     public void clearError() {
         this.lblInfo.setText("");
     }
-    
+
     @Override
     public void showError(String errorMsg) {
         Alert alert = new Alert(AlertType.WARNING);
@@ -187,47 +184,47 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
         alert.initStyle(StageStyle.TRANSPARENT);
         alert.showAndWait();
     }
-    
+
     @Override
     public void setTriggersButtons(HomeController controller) {
-        
+
         // Quit app
         this.mFileItemExit.setOnAction((ActionEvent event) -> {
             controller.exitApp();
         });
-        
+
         // Apply DAO - TODO
         this.mFileItemExportFile.setOnAction((ActionEvent event) -> {
             exportFile(controller);
         });
-        
+
         this.mFileItemImportFile.setOnAction((ActionEvent event) -> {
             importFile(controller);
         });
-        
+
         // Apply Memento - Undo
         this.mEditUndo.setOnAction((ActionEvent event) -> {
             controller.undoAction();
         });
-        
+
         this.mEditRedo.setOnAction((ActionEvent event) -> {
             redoGraph();
         });
-        
+
         this.mEditClearGraph.setOnAction(((event) -> {
             controller.clearGraph();
             System.out.println("Clear graph");
         }));
-        
+
         // Show the graph
         this.btnStartCrawler.setOnAction((ActionEvent t) -> {
             selectSearchType(controller);
         });
-        
+
         // VISIT WEB PAGE
         this.graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
-            
+
             if (this.inIterativeMode) {
                 try {
                     controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
@@ -238,11 +235,11 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
             } else {
                 controller.openWebPage(graphVertex.getUnderlyingVertex().element().getPersonalURL());
             }
-            
+
             graphVertex.setStyle("-fx-fill: gold; -fx-stroke: brown;");
             graphView.update();
         });
-        
+
         this.graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("EDGE -1");
             //dynamically change the style when clicked
@@ -253,12 +250,12 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
                     // Change the color to the default
                     graphEdge.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
                     this.edgeClicked = null;
-                    
+
                     System.out.println("EDGE 1");
                 } else {
                     // Change the color of the old edgeClicked to the default
                     this.edgeClicked.setStyle("-fx-stroke: #FF6D66; -fx-stroke-width: 2;");
-                    
+
                     // Assign to the edgeClicked a new value
                     this.edgeClicked = graphEdge;
                     this.edgeClicked.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
@@ -270,14 +267,14 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
                 graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
                 System.out.println("EDGE 3");
             }
-            
+
             // Refresh color's
             this.graphView.update();
         });
-        
+
         // Try to catch the ENTER key event
         EventHandler<KeyEvent> enterKeyEventHandler;
-        
+
         enterKeyEventHandler = (KeyEvent event) -> {
             // handle users "enter key event"
             if (event.getCode() == KeyCode.ENTER) {
@@ -288,16 +285,16 @@ public class HomeView extends HomeComponents implements Observer, IHomeOperation
                     // show message to user: "only numbers allowed"
                     // reset editor to INITAL_VALUE
                     spinner.getEditor().textProperty().set("10");
-                    
+
                 }
             }
         };
-        
+
         // note: use KeyEvent.KEY_PRESSED, because KeyEvent.KEY_TYPED is to late, spinners
         // SpinnerValueFactory reached new value before key released an SpinnerValueFactory will
         // throw an exception
         spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
-        
+
     }
 //</editor-fold>
 

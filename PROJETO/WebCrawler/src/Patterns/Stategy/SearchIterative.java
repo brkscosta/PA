@@ -32,9 +32,7 @@ public class SearchIterative implements ISearchCriteria {
     public Iterable<WebPage> searchPages(WebPage webPage) {
         try {
             
-            // For the memento
-            this.model.setSubRootWebPageChoosed(webPage);
-             
+            this.model.setSubRootWebPageChoosed(webPage); 
             this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
 
@@ -64,15 +62,14 @@ public class SearchIterative implements ISearchCriteria {
                     WebPage webPageInserting = new WebPage(link.getLinkName());
                     this.model.insertPage(webPageInserting);
                     this.model.insertLink(webPage, webPageInserting, link);
-
                     this.model.insertInPageList(webPageInserting);
 
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
                     this.model.countHttpProtocols(webPageInserting.getPersonalURL());
                     this.model.getPagesNotFound(webPageInserting);
-                    
-                    this.logW.webPageInsertWriteToLog(webPageInserting, webPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
+
+                    this.logW.webPageInsertWriteToLog(webPageInserting, webPage, this.model.getIncidentLinksSize(webPageInserting));
                 }
             }
             System.out.println("]\n");

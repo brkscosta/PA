@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * This class is a strategy to search pages by interactive mode
+ * This class is a strategy to search pages by depth mode
  *
  * @author BRKsCosta
  */
@@ -46,14 +46,13 @@ public class SearchDepth implements ISearchCriteria {
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
                 this.model.insertPage(webPage);
-                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPage.getPersonalURL())).size());
+                
+                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getIncidentLinksSize(webPage));
             }
 
             countLevelReached++;
-
             webPagesToVisit.add(webPage);
             this.model.insertInPageList(webPage);
-
             this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
 
@@ -114,8 +113,7 @@ public class SearchDepth implements ISearchCriteria {
 
                     // Insert a new Link between WebPages
                     this.model.insertLink(visitedWebPage, webPageInserting, link);
-                    this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
-                    
+                    this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getIncidentLinksSize(webPageInserting));
                 }
                 System.out.println("]\n");
             }

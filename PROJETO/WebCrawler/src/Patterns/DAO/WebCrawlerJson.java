@@ -30,14 +30,16 @@ import java.util.logging.Logger;
  * serialization. Implements a interface the make operation to save and load the
  * file.
  *
- * @author BRKsCosta
+ * @author BRKsCosta and danielcordeiro
  */
 public class WebCrawlerJson implements IWebCrawlerDAO {
 
+    //<editor-fold defaultstate="collapsed" desc="Variables">
     public static final String FILENAME = "Webcrawler.json";
     private LoggerWriter logger = LoggerWriter.getInstance();
     private List<Edge<Link, WebPage>> inMemory;
     private Map<String, List<String>> edgesMap;
+//</editor-fold>
 
     public WebCrawlerJson(WebCrawler model) {
         this.inMemory = model.getAllLinks();

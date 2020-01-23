@@ -63,8 +63,8 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         PAGES, DEPTH, ITERATIVE, EXPANDED;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Variables">
     LoggerWriter logW = LoggerWriter.getInstance();
-
     private Scene scene;
 
     // Graph interface
@@ -76,6 +76,7 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
 
     private SmartPlacementStrategy strategy;
     private SmartGraphPanel<WebPage, Link> graphView;
+//</editor-fold>
 
     public HomeView(WebCrawler model) {
 
@@ -93,10 +94,17 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Getters">
+    /**
+     * this method will return a SmartGraphPanel<WebPage, Link> instance
+     *
+     * @return a SmartGraphPanel<WebPage, Link> object
+     */
     public SmartGraphPanel<WebPage, Link> getGraphView() {
         return graphView;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Chart Getters">
     @Override
     public XYChart.Series chartGetVisited() {
         return super.chartGetVisited();
@@ -116,24 +124,8 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
     public XYChart.Series chartGetLinks() {
         return super.chartGetLinks();
     }
-
-    @Override
-    public void update(Observable o, Object o1) {
-
-        WebCrawler obsModel = (WebCrawler) o; // Model
-
-        if (o instanceof WebCrawler) {
-            // Não será preciso fazer update se não houver páginas
-            if (obsModel.countWebPages() > 0) {
-                graphView.update();
-            }
-
-            if (obsModel.isFinished == true) {
-                graphView.update();
-                obsModel.isFinished = false;
-            }
-        }
-    }
+//</editor-fold>
+//</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Class Behaviors">
     @Override
@@ -298,6 +290,26 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
     }
 //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Methods">
+    
+    @Override
+    public void update(Observable o, Object o1) {
+
+        WebCrawler obsModel = (WebCrawler) o; // Model
+
+        if (o instanceof WebCrawler) {
+            // Não será preciso fazer update se não houver páginas
+            if (obsModel.countWebPages() > 0) {
+                graphView.update();
+            }
+
+            if (obsModel.isFinished == true) {
+                graphView.update();
+                obsModel.isFinished = false;
+            }
+        }
+    }
+    
     /**
      * This method make redo action on graph
      *
@@ -306,7 +318,7 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         // TODO
         System.out.println("Views.Home.redoGraph()");
     }
-
+    
     /**
      * This method execute the search requested
      *
@@ -320,7 +332,7 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         try {
             // Get the numPages
             int parseInt = Integer.parseInt(spinner.getEditor().textProperty().get());
-
+            
             if (rdBtnBreadthFirst.isSelected()) {
                 this.inIterativeMode = false;
                 lblInfo.setText("Selecionou BFS");
@@ -342,7 +354,7 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
             LoggerWriter.getInstance().writeToLog("Classe View btnStarcrawler: " + ex.getStackTrace()[0]);
         }
     }
-
+    
     /**
      * Set the root webpage
      *
@@ -353,14 +365,14 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         System.out.println("graphview ? " + graphView.getStylableVertex(p));
         graphView.getStylableVertex(p).setStyle("-fx-fill: gold; -fx-stroke: brown;");
     }
-
+    
     /**
      * Update the graph view
      */
     public void updateGraph() {
         graphView.update();
     }
-
+    
     /**
      * Show errors along the application
      *
@@ -372,36 +384,36 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         alert.setHeaderText("Hmmm, algo não está bom");
         alert.initStyle(StageStyle.UTILITY);
         Exception ex = new WebCrawlerException(msg);
-
+        
         // Create expandable Exception.
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
-
+        
         Label label = new Label("The exception stacktrace was:");
-
+        
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);
         textArea.setWrapText(true);
-
+        
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMaxHeight(Double.MAX_VALUE);
         GridPane.setVgrow(textArea, Priority.ALWAYS);
         GridPane.setHgrow(textArea, Priority.ALWAYS);
-
+        
         GridPane expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
         expContent.add(label, 0, 0);
         expContent.add(textArea, 0, 1);
-
+        
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
-
+        
         alert.showAndWait();
         exitApp();
     }
-
+    
     /**
      * Open the dialog to open the file
      *
@@ -411,19 +423,20 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
         List<String> choices = new ArrayList<>();
         choices.add("DATA");
         choices.add("JSON");
-
+        
         ChoiceDialog<String> dialog = new ChoiceDialog<>("DATA", choices);
         dialog.initStyle(StageStyle.UTILITY);
         dialog.setTitle("Exportar");
         dialog.setHeaderText("Por favor, selecione um formato.");
         dialog.setContentText("Formato:");
-
+        
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             controller.exportFile(result.get());
         }
     }
+//</editor-fold>
 
     @Override
     public String toString() {

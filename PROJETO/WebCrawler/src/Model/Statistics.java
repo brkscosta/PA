@@ -12,53 +12,100 @@ package Model;
  */
 public class Statistics {
 
+    //<editor-fold defaultstate="collapsed" desc="variables">
     private int countHttpsLinks = 0;
     private int countPageNotFound = 0;
     private int countWebPages = 0;
     private int countLinks = 0;
-
-    public void setCountWebPages(int countWebPages) {
-        this.countWebPages = countWebPages;
-    }
-
-    public void setCountLinks(int countLinks) {
-        this.countLinks = countLinks;
-    }
+//</editor-fold>
     
+    /**
+     * Default Constructor
+     */
     public Statistics() {
     }
-
+    
+    //<editor-fold defaultstate="collapsed" desc="Getters">
+    /**
+     * the count of links with http protocol
+     * @return a number
+     */
     public int getCountHttpsLinks() {
         return countHttpsLinks;
     }
-
-    public void setCountHttpsLinks(int countHttpsLinks) {
-        this.countHttpsLinks = countHttpsLinks;
-    }
-
+    
+    /**
+     * the count of pages not found
+     * @return a number
+     */
     public int getCountPageNotFound() {
         return countPageNotFound;
     }
-
-    public void setCountPageNotFound(int countPageNotFound) {
-        this.countPageNotFound = countPageNotFound;
-    }
-
-    public void incrementPageNotFound() {
-        this.countPageNotFound++;
-    }
-
-    public void incrementHttpsLinks() {
-        this.countHttpsLinks++;
-    }
-
+    
+    /**
+     * the count of web pages
+     * @return a number
+     */
     public int getCountWebPages() {
         return countWebPages;
     }
-
+    
+    /**
+     * Count of link
+     * @return a number
+     */
     public int getCountLinks() {
         return countLinks;
     }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Setters">
     
+    /**
+     * sets new value
+     * @param countWebPages a number
+     */
+    public void setCountWebPages(int countWebPages) {
+        this.countWebPages = countWebPages;
+    }
+    /**
+     * sets new value
+     * @param countLinks a number
+     */
+    public void setCountLinks(int countLinks) {
+        this.countLinks = countLinks;
+    }
+    /**
+     * sets new value
+     * @param countHttpsLinks a number
+     */
+    public void setCountHttpsLinks(int countHttpsLinks) {
+        this.countHttpsLinks = countHttpsLinks;
+    }
+    /**
+     * sets new value
+     * @param countPageNotFound a number
+     */
+    public void setCountPageNotFound(int countPageNotFound) {
+        this.countPageNotFound = countPageNotFound;
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Increment Methods">
+    
+    /**
+     * This method increments 1 number
+     */
+    public void incrementPageNotFound() {
+        this.countPageNotFound++;
+    }
+    
+    /**
+     * This method increments 1 number
+     */
+    public void incrementHttpsLinks() {
+        this.countHttpsLinks++;
+    }
+//</editor-fold>
     
 }

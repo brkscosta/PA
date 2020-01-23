@@ -8,8 +8,8 @@ package Patterns.Stategy;
 import Model.WebPage;
 
 /**
- * 
- * @author BRKsCosta
+ * This interface decides the algorithm to use with the Strategy pattern.
+ * @author BRKsCosta and danielcordeiro
  */
 public interface ISearchCriteria {
     

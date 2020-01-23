@@ -41,7 +41,8 @@ import javafx.scene.text.Font;
  */
 public class HomeComponents extends VBox {
 
-    //Menu
+    //<editor-fold defaultstate="collapsed" desc="Variables">
+    //<editor-fold defaultstate="collapsed" desc="Menu">
     protected MenuBar menuBar;
     protected Menu menuFile;
     protected Menu menuEdit;
@@ -55,14 +56,16 @@ public class HomeComponents extends VBox {
     protected MenuItem mHelpAbout;
     protected SeparatorMenuItem separatorMenu;
     protected SeparatorMenuItem separatorEdit;
-
-    //Chart variables
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Chart variables">
     private XYChart.Series chartVisitedPages;
     private XYChart.Series chartNotFound;
     private XYChart.Series chartHttpsProtocol;
     private XYChart.Series chartLinks;
-
-    //Actions left panel
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Actions left panel">
     protected Button btnStartCrawler;
     protected TextField txtFieldURL;
     protected TextField txtFieldNumPages;
@@ -71,41 +74,64 @@ public class HomeComponents extends VBox {
     protected RadioButton rdBtnIterative;
     protected RadioButton rdBtnExpandedPages;
     protected final Spinner spinner = new Spinner();
-
-    //Layout
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Layout">
     protected SplitPane splitPane;
     protected AnchorPane anchorPaneLeft;
     protected AnchorPane anchorPaneRigth;
     protected HBox bottomHBox;
-
-    //Labels
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Labels">
     protected Label lblStatistics;
     protected Label lblInfo;
     protected Label lblCriteria;
     protected Label lblAnotherThing;
     protected Label lblWebCrawler;
     protected Label lblNumPages;
+//</editor-fold>
+//</editor-fold>
 
     public HomeComponents() {
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Chart Getters">
+    /**
+     * This get method will give a XYChart.Series instance
+     * @return a XYChart.Series object
+     */
     public XYChart.Series chartGetLinks() {
         return chartLinks;
     }
-
+    
+    /**
+     * This get method will give a XYChart.Series instance
+     * @return a XYChart.Series object
+     */
     public XYChart.Series chartGetVisited() {
         return chartVisitedPages;
     }
-
+    
+    /**
+     * This get method will give a XYChart.Series instance
+     * @return a XYChart.Series object
+     */
     public XYChart.Series chartGetNotFound() {
         return chartNotFound;
     }
-
+    
+    /**
+     * This get method will give a XYChart.Series instance
+     * @return a XYChart.Series object
+     */
     public XYChart.Series chartGetHttpsProtocol() {
         return chartHttpsProtocol;
     }
+//</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Methods">
     /**
      * Initialize all components present on UI.
      *
@@ -189,19 +215,19 @@ public class HomeComponents extends VBox {
         AnchorPane.setRightAnchor(vboxChart, 80.0);
         AnchorPane.setBottomAnchor(vboxChart, 80.0);
         anchorPaneRigth.getChildren().addAll(vboxChart);
-
+        
         //Center pane graph will shows here
         this.lblWebCrawler = new Label("Welcome to your WebCrawler Graph");
         this.lblWebCrawler.setFont(new Font("Verdana", 16));
         this.lblWebCrawler.setPadding(new Insets(0, 0, 15, 0));
-
+        
         //Graph interface
         SmartGraphDemoContainer graphContainter = new SmartGraphDemoContainer(graphView);
         graphView.setAutomaticLayout(true);
         this.splitPane = new SplitPane();
         this.splitPane.setDividerPositions(0.5f, 1.3f, 0.4f);
         this.splitPane.getItems().addAll(anchorPaneLeft, graphContainter, anchorPaneRigth);
-
+        
         //Config HBox Bootom
         Pane panelBottom = new Pane();
         panelBottom.setPadding(new Insets(0, 410, 0, 410));
@@ -217,7 +243,7 @@ public class HomeComponents extends VBox {
         this.getChildren().addAll(menuBar, splitPane, bottomHBox);
         getStylesheets().add(this.getClass().getResource("/Resources/css/styles.css").toExternalForm());
     }
-
+    
     /**
      * This method build the bar chart
      *
@@ -229,12 +255,12 @@ public class HomeComponents extends VBox {
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Nº Pág. Visitas");
         BarChart barChart = new BarChart(xAxis, yAxis);
-
+        
         chartVisitedPages = new XYChart.Series();
         chartNotFound = new XYChart.Series();
         chartHttpsProtocol = new XYChart.Series();
         chartLinks = new XYChart.Series();
-
+        
         chartVisitedPages.setName("Visitadas");
         chartNotFound.setName("Não encontradas");
         chartHttpsProtocol.setName("Protocolos HTTP");
@@ -244,10 +270,11 @@ public class HomeComponents extends VBox {
         chartNotFound.getData().add(new XYChart.Data("", 0));
         chartHttpsProtocol.getData().add(new XYChart.Data("", 0));
         chartLinks.getData().add(new XYChart.Data("", 0));
-
-        barChart.getData().addAll(chartVisitedPages, chartNotFound, 
+        
+        barChart.getData().addAll(chartVisitedPages, chartNotFound,
                 chartHttpsProtocol, chartLinks);
         VBox vbox = new VBox(barChart);
         return vbox;
     }
+//</editor-fold>
 }

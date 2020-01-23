@@ -55,19 +55,64 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     private int numCriteria = 0;
 
 //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Constructors">
     public WebCrawler(Graph graph) {
         this.graph = graph;
         this.statistcs = new Statistics();
     }
-
+    
     public WebCrawler() {
         this(new MyDigraph<>());
     }
+//</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Getters ">
 
+    /**
+     * Count number of pages not found
+     *
+     * @param myWebPage
+     */
+    public void getPagesNotFound(WebPage myWebPage) {
+
+        if (myWebPage.getStatusCode() == 404) {
+            statistcs.incrementPageNotFound();
+        }
+    }
+    
+    /**
+     * Get if the link is equal the link web page
+     *
+     * @param linkName
+     * @return
+     */
+    public Vertex<WebPage> getEqualWebPageVertex(String linkName) {
+        for (Vertex<WebPage> page : graph.vertices()) {
+            if (page.element().getPersonalURL().equals(linkName)) {
+                return page;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the instance of a Statistic object
+     * @return a Statistic object
+     */
     public Statistics getStatistcs() {
         return statistcs;
+    }
+    
+    
+    /**
+     * This method will return the number of incidentEdges one given WebPage has
+     * @param webPage given WebPage to get incidentEdges size
+     * @return a number 
+     */
+    public int getIncidentLinksSize(WebPage webPage){
+        Vertex<WebPage> webPageFound = getEqualWebPageVertex(webPage.getPersonalURL());
+        return this.graph.incidentEdges(webPageFound).size();
     }
     
     /**
@@ -130,6 +175,10 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         return null;
     }
 
+    /**
+     * returns the instance of a Graph<WebPage, Link> object
+     * @return a Graph<WebPage, Link> object
+     */
     public Graph<WebPage, Link> getGraph() {
         return this.graph;
     }
@@ -314,18 +363,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
     }
 
     /**
-     * Count number of pages not found
-     *
-     * @param myWebPage
-     */
-    public void getPagesNotFound(WebPage myWebPage) {
-
-        if (myWebPage.getStatusCode() == 404) {
-            statistcs.incrementPageNotFound();
-        }
-    }
-
-    /**
      * Checks if exists already a webPage like the parameter inside the webPage
      *
      * @param webPage we want to check
@@ -338,21 +375,6 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
             }
         }
         return false;
-    }
-
-    /**
-     * Get if the link is equal the link web page
-     *
-     * @param linkName
-     * @return
-     */
-    public Vertex<WebPage> getEqualWebPageVertex(String linkName) {
-        for (Vertex<WebPage> page : graph.vertices()) {
-            if (page.element().getPersonalURL().equals(linkName)) {
-                return page;
-            }
-        }
-        return null;
     }
 
     /**
@@ -404,7 +426,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers();
 
     }
-
+    
     // </editor-fold>
     
     /**
@@ -412,9 +434,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      */
     private class WebCrawlerMemento implements IMemento {
 
+        //<editor-fold defaultstate="collapsed" desc="Private Memento Variables">
         private WebPage rootWebPage;
         private final Graph<WebPage, Link> graph;
         private final Date createdAt;
+//</editor-fold>
 
         public WebCrawlerMemento(Graph<WebPage, Link> graph, WebPage rootWebPage) {
 
@@ -432,7 +456,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
             this.createdAt = new Date();
         }
 
-        // Getters
+        //<editor-fold defaultstate="collapsed" desc="Private Memento Getters">
         /**
          * Get the root web page
          *
@@ -441,7 +465,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         public WebPage getRootWebPage() {
             return this.rootWebPage;
         }
-
+        
         /**
          * Get the create date
          *
@@ -450,10 +474,16 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         public Date getCreatedAt() {
             return this.createdAt;
         }
-
+        
+        /**
+         * Returns a Graph<WebPage, Link> instance
+         *
+         * @return a Graph<WebPage, Link> object
+         */
         public Graph<WebPage, Link> getGraph() {
             return this.graph;
         }
+//</editor-fold>
 
         @Override
         public String getDescription() {

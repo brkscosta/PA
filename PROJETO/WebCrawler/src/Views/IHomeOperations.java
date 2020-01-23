@@ -8,7 +8,7 @@ package Views;
 import Controller.HomeController;
 import java.util.Observer;
 /**
- *
+ * This interface will give the main operations for the HomeView
  * @author BRKsCosta
  */
 public interface IHomeOperations extends Observer {

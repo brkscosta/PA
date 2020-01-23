@@ -12,7 +12,7 @@ import java.util.List;
 public class Link {
 
     private String linkName = "";
-    private List<String> array = new ArrayList();
+    private List<String> array = new ArrayList(); // This array is used to clean the duplicated links
 
     /**
      * Build a new object
@@ -25,21 +25,6 @@ public class Link {
         removeDuplicates(linkName);
     }
     
-    /**
-     * This method remove duplicated links
-     * @param name The concrete link
-     */
-    private void removeDuplicates(String name) {
-        for (Iterator<String> iterator = array.iterator(); iterator.hasNext();) {
-            String value = iterator.next();
-            if (array.contains(value)) {
-                iterator.remove();
-            } else {
-                this.linkName = name;
-            }
-        }
-    }
-
     /**
      * Get the URL
      *
@@ -56,6 +41,21 @@ public class Link {
      */
     public void setLinkName(String linkName) {
         this.linkName = linkName;
+    }
+    
+    /**
+     * This method remove duplicated links
+     * @param name The concrete link
+     */
+    private void removeDuplicates(String name) {
+        for (Iterator<String> iterator = array.iterator(); iterator.hasNext();) {
+            String value = iterator.next();
+            if (array.contains(value)) {
+                iterator.remove();
+            } else {
+                this.linkName = name;
+            }
+        }
     }
 
     /**

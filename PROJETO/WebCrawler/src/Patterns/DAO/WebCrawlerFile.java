@@ -36,21 +36,17 @@ import java.util.logging.Logger;
  */
 public class WebCrawlerFile implements IWebCrawlerDAO {
 
+    //<editor-fold defaultstate="collapsed" desc="Variables">
     private LoggerWriter logger = LoggerWriter.getInstance();
-
     public static final String FILENAME = "Webcrawler.data";
-
     private List<Edge<Link, WebPage>> inMemory;
     private Map<String, List<String>> edgesMap;
-
+//</editor-fold>
     public WebCrawlerFile(WebCrawler model) {
         this.inMemory = model.getAllLinks();
         this.edgesMap = new HashMap<>();
     }
 
-    /**
-     * Save all data to a file text.
-     */
     @Override
     public void saveAll() {
 
@@ -69,11 +65,6 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
         this.saveFile();
     }
 
-    /**
-     * Read the collection in memory.
-     *
-     * @return Collection of edges
-     */
     @Override
     public List<Edge<Link, WebPage>> readAll() {
         return inMemory;
@@ -99,9 +90,6 @@ public class WebCrawlerFile implements IWebCrawlerDAO {
         }
     }
 
-    /**
-     * Load the concrete file.
-     */
     @Override
     public void loadFile() {
         try {

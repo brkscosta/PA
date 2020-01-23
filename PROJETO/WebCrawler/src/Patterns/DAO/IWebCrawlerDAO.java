@@ -11,8 +11,9 @@ import com.brunomnsilva.smartgraph.graph.Edge;
 import java.util.List;
 
 /**
- *
- * @author BRKsCosta
+ *  Interface with the WebCrawler Data Access Object behaviour
+ * 
+ * @author BRKsCosta and danielcordeiro
  */
 public interface IWebCrawlerDAO {
 

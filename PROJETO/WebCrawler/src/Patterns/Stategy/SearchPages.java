@@ -9,9 +9,7 @@ import Model.Link;
 import Model.WebCrawler;
 import Model.WebCrawlerException;
 import Model.WebPage;
-import Patterns.Singleton.LoggerException;
 import Patterns.Singleton.LoggerWriter;
-import com.brunomnsilva.smartgraph.graph.InvalidVertexException;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -37,7 +35,7 @@ public class SearchPages implements ISearchCriteria {
 
         try {
 
-            // Contagens
+            // Count
             int countMaxVisitedPage = 0;
 
             Queue<WebPage> webPagesToVisit = new LinkedList<>();
@@ -51,8 +49,7 @@ public class SearchPages implements ISearchCriteria {
                 // Insert the webPage in the graph
                 this.model.insertPage(webPage);
 
-                //this.wiriteToLogger(webPage, webPage);
-                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPage.getPersonalURL())).size());
+                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getIncidentLinksSize(webPage));
             }
 
             webPagesToVisit.add(webPage);
@@ -100,7 +97,7 @@ public class SearchPages implements ISearchCriteria {
                         // Insert a new Link between WebPages
                         this.model.insertLink(visitedWebPage, webPageInserting, link);
                         
-                        this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
+                        this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getIncidentLinksSize(webPageInserting));
 
                         // Increment countMaxVisitedPage by 1
                         countMaxVisitedPage++;

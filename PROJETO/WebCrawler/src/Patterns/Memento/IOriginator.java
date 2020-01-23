@@ -6,23 +6,24 @@
 package Patterns.Memento;
 
 /**
+ * This interface will save a given memento and will restore a saved state
  *
  * @author BRKsCosta and danielcordeiro
  */
 public interface IOriginator {
-    
-     /**
+
+    /**
      * Request of memento for current state.
-     * 
-     * @return      the memento state 
+     *
+     * @return the memento state
      */
     public IMemento save();
-    
+
     /**
      * Request to change state for this memento.
-     * 
-     * @param savedState    the memento state to restore
+     *
+     * @param savedState the memento state to restore
      */
     public void restore(IMemento savedState);
-    
+
 }

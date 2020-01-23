@@ -13,7 +13,6 @@ import Patterns.DAO.IWebCrawlerDAO;
 import static Patterns.Factories.Factories.createFileType;
 import Views.*;
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -90,7 +89,7 @@ public class HomeController {
 
         this.caretaker.requestSave();
     }
-    
+
     /**
      * Update statistics of the graph
      */
@@ -130,7 +129,9 @@ public class HomeController {
     }
 
     /**
-     * Import files
+     * Import files from a certain type
+     *
+     * @param fileType type of file we want to import
      */
     public void importFiles(String fileType) {
         IWebCrawlerDAO dao = createFileType(fileType, model);
@@ -164,7 +165,7 @@ public class HomeController {
     /**
      * Open the a web page on browser
      *
-     * @param url
+     * @param url web page url
      */
     public void openWebPage(String url) {
 
@@ -187,11 +188,11 @@ public class HomeController {
     public void clearGraph() {
         model.clearGraph();
     }
-    
+
     /**
      * This method request's a save on the caretacker
      */
-    public void saveCaretacker(){
+    public void saveCaretacker() {
         this.caretaker.requestSave();
     }
 

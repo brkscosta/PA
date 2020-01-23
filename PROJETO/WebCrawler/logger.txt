@@ -1,73 +1,9 @@
-Thu Jan 23 03:47:13 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete1.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same2.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same1.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  D | http://www.brunomnsilva.com/sandbox/d.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  B | http://www.brunomnsilva.com/sandbox/b.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  A | http://www.brunomnsilva.com/sandbox/a.html | INDEX | 0
-Thu Jan 23 03:47:13 GMT 2020  C | http://www.brunomnsilva.com/sandbox/c.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same2.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  D | http://www.brunomnsilva.com/sandbox/d.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  A | http://www.brunomnsilva.com/sandbox/a.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  B | http://www.brunomnsilva.com/sandbox/b.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete1.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  C | http://www.brunomnsilva.com/sandbox/c.html | INDEX | 0
-Thu Jan 23 03:48:26 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same1.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  C | http://www.brunomnsilva.com/sandbox/c.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  D | http://www.brunomnsilva.com/sandbox/d.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  A | http://www.brunomnsilva.com/sandbox/a.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  B | http://www.brunomnsilva.com/sandbox/b.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same2.html | INDEX | 0
-Thu Jan 23 03:48:44 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same1.html | INDEX | 0
-Thu Jan 23 03:48:45 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | INDEX | 0
-Thu Jan 23 03:48:45 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete1.html | INDEX | 0
-Thu Jan 23 03:48:45 GMT 2020  INDEX | http://www.brunomnsilva.com/sandbox/index.html | INDEX | 0
-Thu Jan 23 03:48:45 GMT 2020  INDEX | http://www.brunomnsilva.com/sandbox/index.html | INDEX | 1
-Thu Jan 23 03:49:52 GMT 2020  I | http://www.brunomnsilva.com/sandbox/i.html | A | 0
-Thu Jan 23 03:49:52 GMT 2020  INDEX | http://www.brunomnsilva.com/sandbox/index.html | A | 0
-Thu Jan 23 03:51:35 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 0
-Thu Jan 23 03:51:35 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 0
-Thu Jan 23 03:51:35 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 0
-Thu Jan 23 03:51:35 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 0
-Thu Jan 23 03:51:35 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:35 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:51:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | E | 0
-Thu Jan 23 03:55:54 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 0
-Thu Jan 23 03:55:54 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 0
-Thu Jan 23 03:55:54 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 0
-Thu Jan 23 03:55:54 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 0
-Thu Jan 23 03:56:02 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 1
-Thu Jan 23 03:56:02 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 1
-Thu Jan 23 03:56:02 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 1
-Thu Jan 23 03:56:02 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 1
-Thu Jan 23 03:56:02 GMT 2020  L | http://www.brunomnsilva.com/sandbox/l.html | G | 1
-Thu Jan 23 03:56:02 GMT 2020  M | http://www.brunomnsilva.com/sandbox/m.html | G | 1
-Thu Jan 23 03:56:02 GMT 2020  K | http://www.brunomnsilva.com/sandbox/k.html | G | 1
-Thu Jan 23 03:56:02 GMT 2020  O | http://www.brunomnsilva.com/sandbox/o.html | F | 1
-Thu Jan 23 03:56:02 GMT 2020  N | http://www.brunomnsilva.com/sandbox/n.html | M | 1
-Thu Jan 23 03:56:42 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 1
-Thu Jan 23 03:56:42 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 1
-Thu Jan 23 03:56:42 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 1
-Thu Jan 23 03:56:42 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 1
-Thu Jan 23 03:56:44 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 1
-Thu Jan 23 03:56:44 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 1
-Thu Jan 23 03:56:44 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 1
-Thu Jan 23 03:56:44 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 1
-Thu Jan 23 03:56:44 GMT 2020  M | http://www.brunomnsilva.com/sandbox/m.html | G | 1
-Thu Jan 23 03:56:44 GMT 2020  L | http://www.brunomnsilva.com/sandbox/l.html | G | 1
-Thu Jan 23 03:56:44 GMT 2020  K | http://www.brunomnsilva.com/sandbox/k.html | G | 1
-Thu Jan 23 03:56:44 GMT 2020  O | http://www.brunomnsilva.com/sandbox/o.html | F | 1
-Thu Jan 23 03:56:54 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete2.html | E | 1
-Thu Jan 23 03:56:54 GMT 2020  H | http://www.brunomnsilva.com/sandbox/h.html | E | 1
-Thu Jan 23 03:56:54 GMT 2020  G | http://www.brunomnsilva.com/sandbox/g.html | E | 1
-Thu Jan 23 03:56:54 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 1
-Thu Jan 23 03:56:58 GMT 2020  O | http://www.brunomnsilva.com/sandbox/o.html | F | 1
-Thu Jan 23 03:56:59 GMT 2020  K | http://www.brunomnsilva.com/sandbox/k.html | G | 1
-Thu Jan 23 03:56:59 GMT 2020  M | http://www.brunomnsilva.com/sandbox/m.html | G | 1
-Thu Jan 23 03:56:59 GMT 2020  L | http://www.brunomnsilva.com/sandbox/l.html | G | 1
-Thu Jan 23 03:57:01 GMT 2020  N | http://www.brunomnsilva.com/sandbox/n.html | M | 1
+Thu Jan 23 05:29:36 GMT 2020  E | http://www.brunomnsilva.com/sandbox/e.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  B | http://www.brunomnsilva.com/sandbox/b.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same1.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  C | http://www.brunomnsilva.com/sandbox/c.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  404 - Page not found | http://www.brunomnsilva.com/sandbox/delete1.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  A | http://www.brunomnsilva.com/sandbox/a.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  Same Title | http://www.brunomnsilva.com/sandbox/same2.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  D | http://www.brunomnsilva.com/sandbox/d.html | INDEX | 1
+Thu Jan 23 05:29:36 GMT 2020  F | http://www.brunomnsilva.com/sandbox/f.html | E | 1

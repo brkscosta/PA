@@ -202,7 +202,15 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @param webPage WebPage Object
      */
     public void insertPage(WebPage webPage) {
-        this.getGraph().insertVertex(webPage);
+        this.graph.insertVertex(webPage);
+    }
+    
+    /**
+     * This method add's a new WebPage to the pageList attribute
+     * @param webPage 
+     */
+    public void insertInPageList(WebPage webPage){
+        this.pagesList.add(webPage);
     }
     
     /**
@@ -212,7 +220,7 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
      * @param link The link that connect the both
      */
     public void insertLink(WebPage visitedWebPage, WebPage webPageInserting, Link link) {
-        this.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+        this.graph.insertEdge(visitedWebPage, webPageInserting, link);
     }
 
     /**
@@ -227,9 +235,9 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         // Assign values
         this.setNumCriteria(numCriteria);
 
-        if (this.getNumCriteria() != 0) {
+        if (numCriteria != 0) {
             this.rootWebPage = new WebPage(inputUrl);
-            this.graph.insertVertex(this.rootWebPage);
+            this.insertPage(this.rootWebPage);
         }
 
         switch (criteria) {
@@ -283,6 +291,11 @@ public class WebCrawler extends Observable implements IOriginator, Serializable 
         notifyObservers();
     }
 
+    /**
+     * This method prints an output
+     * @param msg
+     * @param args 
+     */
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }

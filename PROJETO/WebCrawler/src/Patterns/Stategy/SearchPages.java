@@ -55,7 +55,7 @@ public class SearchPages implements ISearchCriteria {
             }
 
             webPagesToVisit.add(webPage);
-            this.model.getPagesList().add(webPage);
+            this.model.insertInPageList(webPage);
 
             // Increment countMaxVisitedPage by 1
             countMaxVisitedPage++;

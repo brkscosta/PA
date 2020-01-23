@@ -41,14 +41,57 @@ public class SearchExpandedPages implements ISearchCriteria {
 
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
-                this.model.getGraph().insertVertex(webPage);
+                this.model.insertPage(webPage);
                 logW.writeToLog(webPage.getTitleName() + " | "
                         + webPage.getPersonalURL() + " | " + webPage.getTitleName()
                         + " | " + webPage.getNumberLinks());
             }
 
             webPagesToVisit.add(webPage);
-            this.model.getPagesList().add(webPage);
+            this.model.insertInPageList(webPage);
+            
+            while (!webPagesToVisit.isEmpty()) {
+                Queue<Link> incidentLinks = new LinkedList();
+                
+                WebPage visitedWebPage = webPagesToVisit.poll();
+                
+                if (visitedWebPage.getStatusCode() != 404) {
+                    incidentLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
+                    
+                    boolean hasLowerOutboundNumber = incidentLinks.size() < model.getNumCriteria();
+                    
+                    // First check if the webpage has more outbounds than the criteria number
+                    // If it is lower, insert in vertex
+                    // If it is greater or equal, don't insert
+                    if(hasLowerOutboundNumber){
+                        for (Link incidentLink : incidentLinks) {
+
+                            WebPage subWebPageInserting = new WebPage(incidentLink.getLinkName());
+                            webPagesToVisit.offer(subWebPageInserting);
+
+                            this.model.insertPage(subWebPageInserting);
+                            this.model.insertLink(visitedWebPage, subWebPageInserting, incidentLink);
+                        }
+                    }
+                }
+                //webPagesToVisit.poll();
+            }
+            
+            
+            
+            
+            
+            
+            /*if (this.model.checkIfHasWebPage(webPage) == false) {
+                // Insert the webPage in the graph
+                this.model.insertPage(webPage);
+                logW.writeToLog(webPage.getTitleName() + " | "
+                        + webPage.getPersonalURL() + " | " + webPage.getTitleName()
+                        + " | " + webPage.getNumberLinks());
+            }
+
+            webPagesToVisit.add(webPage);
+            this.model.insertInPageList(webPage);
 
             while (!webPagesToVisit.isEmpty()) {
 
@@ -72,7 +115,7 @@ public class SearchExpandedPages implements ISearchCriteria {
 
                     webPagesToVisit.poll();
                 }
-            }
+            }*/
 
         } catch (WebCrawlerException | IOException ex) {
             Logger.getLogger(SearchExpandedPages.class.getName()).log(Level.SEVERE, null, ex);

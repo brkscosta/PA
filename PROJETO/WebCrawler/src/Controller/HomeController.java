@@ -187,6 +187,13 @@ public class HomeController {
     public void clearGraph() {
         model.clearGraph();
     }
+    
+    /**
+     * This method request's a save on the caretacker
+     */
+    public void saveCaretacker(){
+        this.caretaker.requestSave();
+    }
 
     /**
      * Inserts a new page from parent
@@ -194,8 +201,8 @@ public class HomeController {
      * @param subRoot The parent
      * @throws IOException
      */
-    public void insertNewSubRoot(SmartGraphVertex<WebPage> subRoot) throws IOException {
-        model.insertNewSubWebPageCrawler(subRoot.getUnderlyingVertex());
+    public void insertNewSubRoot(Vertex<WebPage> subRoot) throws IOException {
+        this.model.insertNewSubWebPageCrawler(subRoot);
     }
 
     @Override

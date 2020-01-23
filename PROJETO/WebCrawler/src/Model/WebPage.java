@@ -29,7 +29,6 @@ import org.jsoup.HttpStatusException;
 public class WebPage {
 
     private LoggerWriter logger = LoggerWriter.getInstance();
-    private int depth = 0;
     private boolean isLastOfALevel = false;
     private String titleName = "";
     private String personalURL = "";
@@ -63,14 +62,6 @@ public class WebPage {
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Getters ">
-    /**
-     * This method get the depth
-     *
-     * @return A number
-     */
-    public int getDepth() {
-        return this.depth;
-    }
 
     /**
      * Get the if is the last of the level
@@ -206,14 +197,6 @@ public class WebPage {
     
     // <editor-fold defaultstate="collapsed" desc=" Setters ">
 // Setters
-    /**
-     * Set the a depth number
-     *
-     * @param depth A number
-     */
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
 
     /**
      * Set with true or false if the last of level.

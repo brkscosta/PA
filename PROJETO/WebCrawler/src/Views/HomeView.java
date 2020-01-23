@@ -227,8 +227,8 @@ public final class HomeView extends HomeComponents implements Observer, IHomeOpe
 
             if (this.inIterativeMode) {
                 try {
-                    controller.getModel().insertNewSubWebPageCrawler(graphVertex.getUnderlyingVertex());
-                    controller.getCaretaker().requestSave();
+                    controller.insertNewSubRoot(graphVertex.getUnderlyingVertex());
+                    controller.saveCaretacker();
                 } catch (IOException ex) {
                     Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -40,13 +40,12 @@ public class SearchDepth implements ISearchCriteria {
                 return this.model.getPagesList();
             }
 
-            // First of all set the depth level 1 to the webPage root and set the attribute that it is the last WebPage of the level 1, Obvious, it is the root!!
-            webPage.setDepth(0);
+            // First set the attribute of the root webPage that it is the last WebPage of the level 1, Obvious, it is the root!!
             webPage.setIsLastOfALevel(true);
 
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
-                this.model.getGraph().insertVertex(webPage);
+                this.model.insertPage(webPage);
                 logW.writeToLog(webPage.getTitleName() + " | "
                         + webPage.getPersonalURL() + " | " + webPage.getTitleName()
                         + " | " + webPage.getNumberLinks());
@@ -55,7 +54,8 @@ public class SearchDepth implements ISearchCriteria {
             countLevelReached++;
 
             webPagesToVisit.add(webPage);
-            this.model.getPagesList().add(webPage);
+            //this.model.getPagesList().add(webPage);
+            this.model.insertInPageList(webPage);
 
             this.model.countHttpProtocols(webPage.getPersonalURL());
             this.model.getPagesNotFound(webPage);
@@ -87,7 +87,7 @@ public class SearchDepth implements ISearchCriteria {
                         // Remove this link from the list
                         allIncidentWebLinks.remove(link);
                         // Insert a new Link between WebPages
-                        this.model.getGraph().insertEdge(visitedWebPage, vertexWebPageFound.element(), link);
+                        this.model.insertLink(visitedWebPage, vertexWebPageFound.element(), link);
                     }
                 }
 
@@ -98,7 +98,6 @@ public class SearchDepth implements ISearchCriteria {
 
                     // Insert a new WebPage in the graph
                     WebPage webPageInserting = new WebPage(link.getLinkName());
-                    webPageInserting.setDepth(countLevelReached + 1);
 
                     // Conditional Struture to check if it is visiting the last WebPage of the previous level AND the webPageInserting is the last incident of that last WebPage
                     if (visitedWebPage.getIsLastOfALevel() == true && incidentLinksAdded == allIncidentWebLinks.size() - 1) {

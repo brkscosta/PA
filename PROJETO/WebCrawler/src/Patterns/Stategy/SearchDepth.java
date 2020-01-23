@@ -105,8 +105,8 @@ public class SearchDepth implements ISearchCriteria {
                         countLevelReached++; // finished the BFS of this level
                     }
 
-                    this.model.getGraph().insertVertex(webPageInserting);
-                    this.model.getPagesList().add(webPageInserting);
+                    this.model.insertPage(webPageInserting);
+                    this.model.insertInPageList(webPageInserting);
                     webPagesToVisit.add(webPageInserting);
                     incidentLinksAdded++;
 
@@ -116,7 +116,7 @@ public class SearchDepth implements ISearchCriteria {
                     System.out.println("Link da sub-página: " + webPageInserting.getPersonalURL());
 
                     // Insert a new Link between WebPages
-                    this.model.getGraph().insertEdge(visitedWebPage, webPageInserting, link);
+                    this.model.insertLink(visitedWebPage, webPageInserting, link);
                     logW.writeToLog(webPageInserting.getTitleName() + " | "
                             + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
                             + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());

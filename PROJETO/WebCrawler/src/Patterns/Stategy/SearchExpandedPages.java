@@ -46,9 +46,17 @@ public class SearchExpandedPages implements ISearchCriteria {
                         + webPage.getPersonalURL() + " | " + webPage.getTitleName()
                         + " | " + webPage.getNumberLinks());
             }
-
-            webPagesToVisit.add(webPage);
+            
             this.model.insertInPageList(webPage);
+            
+            // we need to add all the incidentLinks from the rootPage to thew webPagesToVisit variable
+            for (Link incidentLink : webPage.getAllIncidentWebPages(webPage.getPersonalURL())) {
+                WebPage subWebPageInserting = new WebPage(incidentLink.getLinkName());
+                webPagesToVisit.offer(webPage);
+                this.model.insertPage(subWebPageInserting);
+                this.model.insertLink(webPage, subWebPageInserting, incidentLink);
+            }
+            
             
             while (!webPagesToVisit.isEmpty()) {
                 Queue<Link> incidentLinks = new LinkedList();
@@ -56,14 +64,15 @@ public class SearchExpandedPages implements ISearchCriteria {
                 WebPage visitedWebPage = webPagesToVisit.poll();
                 
                 if (visitedWebPage.getStatusCode() != 404) {
+                    
                     incidentLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
                     
-                    boolean hasLowerOutboundNumber = incidentLinks.size() < model.getNumCriteria();
+                    
                     
                     // First check if the webpage has more outbounds than the criteria number
                     // If it is lower, insert in vertex
                     // If it is greater or equal, don't insert
-                    if(hasLowerOutboundNumber){
+                    if(incidentLinks.size() < model.getNumCriteria()){
                         for (Link incidentLink : incidentLinks) {
 
                             WebPage subWebPageInserting = new WebPage(incidentLink.getLinkName());

@@ -51,7 +51,8 @@ public class SearchPages implements ISearchCriteria {
                 // Insert the webPage in the graph
                 this.model.insertPage(webPage);
 
-                this.wiriteToLogger(webPage, webPage);
+                //this.wiriteToLogger(webPage, webPage);
+                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPage.getPersonalURL())).size());
             }
 
             webPagesToVisit.add(webPage);
@@ -74,7 +75,7 @@ public class SearchPages implements ISearchCriteria {
                 } else {
                     allIncidentWebLinks = visitedWebPage.getAllIncidentWebPages(visitedWebPage.getPersonalURL());
                 }
-
+                
                 for (Link link : allIncidentWebLinks) {
 
                     if (countMaxVisitedPage == this.model.getNumCriteria()) {
@@ -93,13 +94,13 @@ public class SearchPages implements ISearchCriteria {
                         // Insert a new WebPage in the graph
                         WebPage webPageInserting = new WebPage(link.getLinkName());
                         this.model.insertPage(webPageInserting);
-                        this.model.getPagesList().add(webPageInserting);
+                        this.model.insertInPageList(webPageInserting);
                         webPagesToVisit.add(webPageInserting);
 
                         // Insert a new Link between WebPages
                         this.model.insertLink(visitedWebPage, webPageInserting, link);
-
-                        wiriteToLogger(webPageInserting, visitedWebPage);
+                        
+                        this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
 
                         // Increment countMaxVisitedPage by 1
                         countMaxVisitedPage++;
@@ -119,21 +120,6 @@ public class SearchPages implements ISearchCriteria {
             model.getLogger().writeToLog("Error Search Pages algorithm: " + ex.getMessage());
         }
         return null;
-    }
-
-    /**
-     * Write to the logger in text file
-     *
-     * @param webPageInserting Object WebPage to insert
-     * @param visitedWebPage The visited WebPage
-     * @throws InvalidVertexException Exception from graph
-     * @throws LoggerException Exception from logger
-     */
-    private void wiriteToLogger(WebPage webPageInserting, WebPage visitedWebPage)
-            throws InvalidVertexException, LoggerException {
-        logW.writeToLog(webPageInserting.getTitleName() + " | "
-                + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
-                + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
     }
 
 }

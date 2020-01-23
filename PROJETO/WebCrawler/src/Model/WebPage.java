@@ -119,6 +119,10 @@ public class WebPage {
         return listIncidentsWebPages;
     }
     
+    /**
+     * Returns the number of incident links
+     * @return 
+     */
     public int getNumberLinks() {
         return listIncidentsWebPages.size();
     }

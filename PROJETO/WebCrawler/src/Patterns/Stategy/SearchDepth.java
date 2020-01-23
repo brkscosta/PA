@@ -46,15 +46,12 @@ public class SearchDepth implements ISearchCriteria {
             if (this.model.checkIfHasWebPage(webPage) == false) {
                 // Insert the webPage in the graph
                 this.model.insertPage(webPage);
-                logW.writeToLog(webPage.getTitleName() + " | "
-                        + webPage.getPersonalURL() + " | " + webPage.getTitleName()
-                        + " | " + webPage.getNumberLinks());
+                this.logW.webPageInsertWriteToLog(webPage, webPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPage.getPersonalURL())).size());
             }
 
             countLevelReached++;
 
             webPagesToVisit.add(webPage);
-            //this.model.getPagesList().add(webPage);
             this.model.insertInPageList(webPage);
 
             this.model.countHttpProtocols(webPage.getPersonalURL());
@@ -117,9 +114,8 @@ public class SearchDepth implements ISearchCriteria {
 
                     // Insert a new Link between WebPages
                     this.model.insertLink(visitedWebPage, webPageInserting, link);
-                    logW.writeToLog(webPageInserting.getTitleName() + " | "
-                            + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
-                            + " | " + this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
+                    this.logW.webPageInsertWriteToLog(webPageInserting, visitedWebPage, this.model.getGraph().incidentEdges(this.model.getEqualWebPageVertex(webPageInserting.getPersonalURL())).size());
+                    
                 }
                 System.out.println("]\n");
             }

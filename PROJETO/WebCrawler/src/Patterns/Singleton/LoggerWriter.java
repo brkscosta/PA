@@ -5,6 +5,7 @@
  */
 package Patterns.Singleton;
 
+import Model.WebPage;
 import java.io.*;
 import java.util.Date;
 
@@ -49,6 +50,13 @@ public final class LoggerWriter {
         printStream.println(new Date().toString() + "  " + str);
 
     }
+    
+    public void webPageInsertWriteToLog(WebPage webPageInserting, WebPage visitedWebPage, int incidentsSize){
+        this.writeToLog(webPageInserting.getTitleName() + " | "
+                + webPageInserting.getPersonalURL() + " | " + visitedWebPage.getTitleName()
+                + " | " + incidentsSize);
+    }
+    
 
     @Override
     public String toString() {

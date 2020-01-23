@@ -1,1 +1,0 @@
-Strategy -  Usar como tipo de import de ficheiros no projeto
